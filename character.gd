@@ -3,7 +3,7 @@ extends CharacterBody3D
 
 const SPEED = 5.0
 const JUMP_VELOCITY = 4.5
-const CAMERA_ROTATION_SPEED = 0.01
+const CAMERA_ROTATION_SPEED = 50.0 * deg_to_rad(0.022)
 
 @onready var neck := $Neck
 @onready var camera := $Neck/Camera3D
@@ -38,6 +38,6 @@ func _unhandled_input(event: InputEvent) -> void:
 		
 	if Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
 		if event is InputEventMouseMotion:
-			neck.rotate_y(-event.relative.x * CAMERA_ROTATION_SPEED)
-			camera.rotate_x(-event.relative.y * CAMERA_ROTATION_SPEED)
+			neck.rotate_y(deg_to_rad(-event.relative.x * CAMERA_ROTATION_SPEED))
+			camera.rotate_x(deg_to_rad(-event.relative.y * CAMERA_ROTATION_SPEED))
 			camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(-60), deg_to_rad(90))

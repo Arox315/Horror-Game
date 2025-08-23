@@ -1,7 +1,20 @@
-[gd_scene load_steps=5 format=3 uid="uid://dvi7lqoafi1cl"]
+[gd_scene load_steps=8 format=3 uid="uid://dvi7lqoafi1cl"]
 
 [ext_resource type="PackedScene" uid="uid://352pm4hcxqtx" path="res://block.tscn" id="1_rupst"]
 [ext_resource type="PackedScene" uid="uid://c7ksecespxm2u" path="res://character.tscn" id="2_wt17y"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_wt17y"]
+sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
+ground_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
+
+[sub_resource type="Sky" id="Sky_m8u5f"]
+sky_material = SubResource("ProceduralSkyMaterial_wt17y")
+
+[sub_resource type="Environment" id="Environment_is3ju"]
+background_mode = 2
+sky = SubResource("Sky_m8u5f")
+tonemap_mode = 2
+glow_enabled = true
 
 [sub_resource type="BoxMesh" id="BoxMesh_edjgo"]
 size = Vector3(15, 0.5, 15)
@@ -10,6 +23,9 @@ size = Vector3(15, 0.5, 15)
 size = Vector3(15, 0.5, 15)
 
 [node name="Playground" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_is3ju")
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.989256, 0)
