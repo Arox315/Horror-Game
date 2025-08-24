@@ -1,0 +1,64 @@
+[gd_scene load_steps=7 format=3 uid="uid://c7ksecespxm2u"]
+
+[ext_resource type="Script" uid="uid://cktonvsvavro3" path="res://entities/character/character.gd" id="1_glpr6"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_glpr6"]
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_0c2ax"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:rotation")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_6i0tm"]
+properties/0/path = NodePath("WorldModel/BodyModel:color")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+
+[sub_resource type="BoxMesh" id="BoxMesh_vu45j"]
+
+[sub_resource type="GDScript" id="GDScript_0c2ax"]
+script/source = "extends MeshInstance3D
+
+var is_ready: bool = false
+
+@export var color: Color = Color.WHITE:
+	set(value):
+		color = value
+		if is_ready:
+			get_active_material(0).albedo_color = color
+	get:
+		return color
+
+
+func _ready() -> void:
+	if not get_active_material(0):
+		material_override = StandardMaterial3D.new()
+	get_active_material(0).albedo_color = color
+	is_ready = true
+"
+
+[node name="Character" type="CharacterBody3D"]
+script = ExtResource("1_glpr6")
+
+[node name="Hitbox" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_glpr6")
+
+[node name="Neck" type="Node3D" parent="."]
+
+[node name="Camera3D" type="Camera3D" parent="Neck"]
+
+[node name="PositionSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_0c2ax")
+
+[node name="ModelSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_6i0tm")
+
+[node name="WorldModel" type="Node3D" parent="."]
+
+[node name="BodyModel" type="MeshInstance3D" parent="WorldModel"]
+mesh = SubResource("BoxMesh_vu45j")
+skeleton = NodePath("../..")
+script = SubResource("GDScript_0c2ax")

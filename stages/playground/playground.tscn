@@ -1,0 +1,110 @@
+[gd_scene load_steps=8 format=3 uid="uid://dvi7lqoafi1cl"]
+
+[ext_resource type="PackedScene" uid="uid://352pm4hcxqtx" path="res://stages/playground/block.tscn" id="1_qchbg"]
+[ext_resource type="Script" uid="uid://cnglits2m8u6w" path="res://scripts/multiplayer_menu.gd" id="2_elqxi"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_edjgo"]
+size = Vector3(15, 0.5, 15)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_rupst"]
+size = Vector3(15, 0.5, 15)
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_wt17y"]
+sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
+ground_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
+
+[sub_resource type="Sky" id="Sky_m8u5f"]
+sky_material = SubResource("ProceduralSkyMaterial_wt17y")
+
+[sub_resource type="Environment" id="Environment_is3ju"]
+background_mode = 2
+sky = SubResource("Sky_m8u5f")
+tonemap_mode = 2
+glow_enabled = true
+
+[node name="Playground" type="Node3D"]
+
+[node name="floor" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.179533, -0.431361, -0.0125275)
+metadata/_edit_group_ = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="floor"]
+mesh = SubResource("BoxMesh_edjgo")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="floor"]
+shape = SubResource("BoxShape3D_rupst")
+
+[node name="blocks" type="Node3D" parent="."]
+
+[node name="Block1" parent="blocks" instance=ExtResource("1_qchbg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.68614, 2, -3)
+
+[node name="Block2" parent="blocks" instance=ExtResource("1_qchbg")]
+transform = Transform3D(0.727114, 0.326387, -0.603967, -0.686517, 0.345688, -0.639683, 0, 0.879756, 0.475425, -0.843957, 3.43399, -2.99328)
+
+[node name="Block3" parent="blocks" instance=ExtResource("1_qchbg")]
+transform = Transform3D(0.944026, -0.156829, 0.290207, 0.329872, 0.448813, -0.830513, 1.19209e-07, 0.879756, 0.475425, 0.714679, 4.48829, -2.99328)
+
+[node name="Env" type="Node" parent="."]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="Env"]
+environment = SubResource("Environment_is3ju")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Env"]
+transform = Transform3D(0.764359, 0.423645, 0.486087, -0.594107, 0.755703, 0.275591, -0.250584, -0.499438, 0.829319, 7.43818, 2.70805, 2.9176)
+shadow_enabled = true
+
+[node name="MultiplayerMenu" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("2_elqxi")
+
+[node name="Panel" type="Panel" parent="MultiplayerMenu"]
+custom_minimum_size = Vector2(400, 150)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MultiplayerMenu/Panel"]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -33.0
+offset_bottom = 33.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HostButton" type="Button" parent="MultiplayerMenu/Panel/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Host game"
+
+[node name="JoinButton" type="Button" parent="MultiplayerMenu/Panel/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Join game"
+
+[node name="PlayersSpawnPoint" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 3)
+
+[node name="PlayerMultiplayerSpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("uid://c7ksecespxm2u")
+spawn_path = NodePath("..")
+
+[connection signal="pressed" from="MultiplayerMenu/Panel/VBoxContainer/HostButton" to="MultiplayerMenu" method="_on_host_button_pressed"]
+[connection signal="pressed" from="MultiplayerMenu/Panel/VBoxContainer/JoinButton" to="MultiplayerMenu" method="_on_join_button_pressed"]
