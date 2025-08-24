@@ -14,6 +14,11 @@ config/name="Horror Game"
 config/features=PackedStringArray("4.4", "Forward Plus")
 config/icon="res://icon.svg"
 
+[autoload]
+
+MultiplayerManager="*res://globals/multiplayer_manager.gd"
+RandomColorGenerator="*res://globals/random_color_generator.gd"
+
 [display]
 
 window/size/viewport_width=3840
@@ -22,6 +27,15 @@ window/size/window_width_override=1280
 window/size/window_height_override=720
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
+
+[file_customization]
+
+folder_colors={
+"res://assets/": "gray",
+"res://entities/": "blue",
+"res://scripts/": "teal",
+"res://stages/": "purple"
+}
 
 [input]
 
