@@ -18,6 +18,17 @@ func _ready() -> void:
 		interactable_trigger.interactable_popup.set_content(interactable_trigger.get_prompt())
 
 
+func update_prompt_message(new_prompt: String) -> void:
+	prompt_message = new_prompt
+	interactable_trigger.prompt_message = prompt_message
+	interactable_trigger.interactable_popup.set_content(interactable_trigger.get_prompt())
+
+
+func update_prompt_input(new_input: String) -> void:
+	prompt_input = new_input
+	interactable_trigger.prompt_input = prompt_input
+
+
 func _on_interacted(body:Variant) -> void:
 	var mess:String = "Body: {body}, Interacted with object: {obj}"
 	print_debug(mess.format({"body":body,"obj":self}))

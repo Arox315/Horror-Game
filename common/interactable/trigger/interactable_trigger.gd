@@ -9,6 +9,7 @@ signal interacted(body: Variant)
 
 var prompt_message: String = "Press [{str}] to interact"
 var prompt_input: String = "interact"
+var is_locked: bool = false
 
 @onready var trigger_area: CollisionShape3D = $TriggerArea
 @onready var interactable_popup: InteractablePopup = $InteractablePopup
@@ -42,6 +43,13 @@ func enable() -> void:
 	visible = true
 	trigger_area.disabled = false
 
+
+func lock() -> void:
+	is_locked = true
+
+
+func unlock() -> void:
+	is_locked = false
 
 func get_prompt():
 	var key_name = ""

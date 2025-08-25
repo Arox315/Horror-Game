@@ -15,7 +15,7 @@ func _ready() -> void:
 	set_collision_mask_value(2,true)
 
 
-func _physics_process(delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	if !is_colliding():
 		hide_previous_popup_on_stop_colliding()
 		return
@@ -30,6 +30,9 @@ func _physics_process(delta: float) -> void:
 	if owner.is_multiplayer_authority():
 		collider.show_popup()
 	current_interactable = collider
+	
+	if collider.is_locked:
+		return
 	
 	if Input.is_action_just_pressed(collider.prompt_input):
 		collider.interact(owner)

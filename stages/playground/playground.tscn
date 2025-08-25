@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://dvi7lqoafi1cl"]
+[gd_scene load_steps=23 format=3 uid="uid://dvi7lqoafi1cl"]
 
 [ext_resource type="PackedScene" uid="uid://352pm4hcxqtx" path="res://stages/playground/block.tscn" id="1_qchbg"]
 [ext_resource type="Script" uid="uid://cnglits2m8u6w" path="res://scripts/multiplayer_menu.gd" id="2_elqxi"]
@@ -48,6 +48,71 @@ func _on_interacted(body: Variant) -> void:
 height = 2.1
 radius = 0.55
 
+[sub_resource type="GDScript" id="GDScript_o6tti"]
+script/source = "extends InteractableObject
+
+@onready var teleporter_trigger: Area3D = $TeleporterTrigger
+@onready var teleporter_target: Marker3D = $TeleporterTarget
+
+var initial_prompt: String = \"Press [{str}] to activate teleporter\"
+
+func _ready() -> void:
+	prompt_message = initial_prompt
+	disable_teleporter_trigger()
+	super()
+
+
+func enable_teleporter_trigger() -> void:
+	teleporter_trigger.get_child(0).disabled = false
+
+
+func disable_teleporter_trigger() -> void:
+	teleporter_trigger.get_child(0).disabled = true
+
+
+func _on_interacted(body: Variant) -> void:
+	print_debug(\"Teleporter interacted by: \", body)
+	interactable_trigger.lock()
+	for i in 5:
+		update_prompt_message(\"Teleporting in: %d\" % (5 - i))
+		await get_tree().create_timer(1.0).timeout
+	enable_teleporter_trigger()
+	update_prompt_message(\"Teleporting...\")
+	await get_tree().create_timer(0.5).timeout
+	update_prompt_message(initial_prompt)
+	disable_teleporter_trigger()
+	interactable_trigger.unlock()
+
+
+func _on_teleporter_trigger_body_entered(body: Node3D) -> void:
+	body.global_position = teleporter_target.global_position
+"
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_o6tti"]
+albedo_color = Color(0.577008, 0.577008, 0.577008, 1)
+metallic = 0.5
+roughness = 0.6
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bkhp6"]
+albedo_color = Color(0.577008, 0.577008, 0.577008, 1)
+metallic = 0.5
+roughness = 0.6
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ilnn3"]
+albedo_color = Color(0.770188, 0.146692, 2.88785e-07, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ruau5"]
+albedo_color = Color(0.577008, 0.577008, 0.577008, 1)
+metallic = 0.5
+roughness = 0.6
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_5wu1j"]
+height = 1.0
+radius = 0.8
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ac2je"]
+size = Vector3(0.237435, 0.136426, 0.237817)
+
 [node name="Playground" type="Node3D"]
 
 [node name="floor" type="StaticBody3D" parent="."]
@@ -58,6 +123,16 @@ metadata/_edit_group_ = true
 mesh = SubResource("BoxMesh_edjgo")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="floor"]
+shape = SubResource("BoxShape3D_rupst")
+
+[node name="floor2" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.5, -15)
+metadata/_edit_group_ = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="floor2"]
+mesh = SubResource("BoxMesh_edjgo")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="floor2"]
 shape = SubResource("BoxShape3D_rupst")
 
 [node name="blocks" type="Node3D" parent="."]
@@ -145,7 +220,7 @@ mesh = SubResource("BoxMesh_sx8fd")
 [node name="InteractableTrigger" parent="ColorChanger" instance=ExtResource("4_ruau5")]
 
 [node name="TestInteractable" type="StaticBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.36354, 1, 0.636051)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.31665, 1, -0.354247)
 script = ExtResource("3_sx8fd")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="TestInteractable"]
@@ -159,8 +234,57 @@ shape = SubResource("CylinderShape3D_ruau5")
 [node name="TriggerArea" parent="TestInteractable/InteractableTrigger" index="0"]
 shape = SubResource("CylinderShape3D_bkhp6")
 
+[node name="Teleporter" type="Node3D" parent="."]
+script = SubResource("GDScript_o6tti")
+
+[node name="TeleporterButtonStand" type="CSGBox3D" parent="Teleporter"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.5, 0.18075, 4.9)
+use_collision = true
+size = Vector3(0.2, 0.5, 0.2)
+material = SubResource("StandardMaterial3D_o6tti")
+
+[node name="TeleporterButton" type="CSGPolygon3D" parent="Teleporter/TeleporterButtonStand"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.125, 0.244796, 0.125)
+use_collision = true
+polygon = PackedVector2Array(0, 0, 0.00139093, 0.11215, 0.237803, 0.00553712)
+depth = 0.25
+material = SubResource("StandardMaterial3D_bkhp6")
+
+[node name="CSGSphere3D" type="CSGSphere3D" parent="Teleporter/TeleporterButtonStand/TeleporterButton"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.113099, 0.0368578, -0.12145)
+radius = 0.08
+radial_segments = 32
+rings = 32
+material = SubResource("StandardMaterial3D_ilnn3")
+
+[node name="TeleporterFloor" type="CSGCylinder3D" parent="Teleporter"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0.1, 6)
+use_collision = true
+radius = 1.0
+height = 0.2
+sides = 32
+material = SubResource("StandardMaterial3D_ruau5")
+
+[node name="TeleporterTrigger" type="Area3D" parent="Teleporter"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0.7, 6)
+
+[node name="TeleporterArea" type="CollisionShape3D" parent="Teleporter/TeleporterTrigger"]
+shape = SubResource("CylinderShape3D_5wu1j")
+
+[node name="InteractableTrigger" parent="Teleporter" instance=ExtResource("4_ruau5")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.51503, 0.564762, 4.90053)
+
+[node name="TriggerArea" parent="Teleporter/InteractableTrigger" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00933981, -0.0758355, -0.00226212)
+shape = SubResource("BoxShape3D_ac2je")
+
+[node name="TeleporterTarget" type="Marker3D" parent="Teleporter"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.5, -9)
+
 [connection signal="pressed" from="MultiplayerMenu/Panel/VBoxContainer/HostButton" to="MultiplayerMenu" method="_on_host_button_pressed"]
 [connection signal="pressed" from="MultiplayerMenu/Panel/VBoxContainer/JoinButton" to="MultiplayerMenu" method="_on_join_button_pressed"]
+[connection signal="body_entered" from="Teleporter/TeleporterTrigger" to="Teleporter" method="_on_teleporter_trigger_body_entered"]
 
 [editable path="ColorChanger/InteractableTrigger"]
 [editable path="TestInteractable/InteractableTrigger"]
+[editable path="Teleporter/InteractableTrigger"]
