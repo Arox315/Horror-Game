@@ -1,6 +1,7 @@
-[gd_scene load_steps=7 format=3 uid="uid://c7ksecespxm2u"]
+[gd_scene load_steps=8 format=3 uid="uid://c7ksecespxm2u"]
 
 [ext_resource type="Script" uid="uid://cktonvsvavro3" path="res://entities/character/character.gd" id="1_glpr6"]
+[ext_resource type="PackedScene" uid="uid://shh7ov5oet2b" path="res://entities/character/interact-ray/interact_ray.tscn" id="2_6i0tm"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_glpr6"]
 
@@ -38,6 +39,10 @@ func _ready() -> void:
 		material_override = StandardMaterial3D.new()
 	get_active_material(0).albedo_color = color
 	is_ready = true
+
+
+func generate_new_color() -> void:
+	color = Color(RandomColorGenerator.rand_hex())
 "
 
 [node name="Character" type="CharacterBody3D"]
@@ -49,6 +54,8 @@ shape = SubResource("BoxShape3D_glpr6")
 [node name="Neck" type="Node3D" parent="."]
 
 [node name="Camera3D" type="Camera3D" parent="Neck"]
+
+[node name="InteractRay" parent="Neck" instance=ExtResource("2_6i0tm")]
 
 [node name="PositionSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_0c2ax")

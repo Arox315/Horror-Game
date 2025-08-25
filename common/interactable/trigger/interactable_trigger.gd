@@ -1,0 +1,61 @@
+class_name InteractableTrigger
+extends CollisionObject3D
+
+signal interacted(body: Variant)
+
+@export_group("Flags")
+@export var can_interact: bool = true
+@export var hidden_interacable: bool = false
+
+var prompt_message: String = "Press [{str}] to interact"
+var prompt_input: String = "interact"
+
+@onready var trigger_area: CollisionShape3D = $TriggerArea
+@onready var interactable_popup: InteractablePopup = $InteractablePopup
+
+
+func _ready() -> void:
+	# set collisions to 2nd layer
+	set_collision_layer_value(1, false)
+	set_collision_mask_value(1, false)
+	set_collision_layer_value(2, true)
+	set_collision_mask_value(2, true)
+	
+	if not can_interact:
+		disable()
+	else:
+		enable()
+	
+	hide_popup()
+
+
+func interact(body: Variant) -> void:
+	interacted.emit(body)
+
+
+func disable() -> void:
+	visible = false
+	trigger_area.disabled = true
+
+
+func enable() -> void:
+	visible = true
+	trigger_area.disabled = false
+
+
+func get_prompt():
+	var key_name = ""
+	for action in InputMap.action_get_events(prompt_input):
+		if action is InputEventKey:
+			key_name = action.as_text_physical_keycode()
+			break
+	return prompt_message.format({"str":key_name})
+
+
+func show_popup() -> void:
+	if not hidden_interacable:
+		interactable_popup.visible = true
+
+
+func hide_popup() -> void:
+	interactable_popup.visible = false

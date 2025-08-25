@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://pyqgun4aom8y"]
+
+[ext_resource type="Script" uid="uid://cxtri71ma5ap5" path="res://common/interactable/popup/interactable_popup.gd" id="1_0qw7g"]
+
+[node name="InteractablePopup" type="Label3D"]
+pixel_size = 0.001
+billboard = 1
+no_depth_test = true
+texture_filter = 5
+font_size = 64
+script = ExtResource("1_0qw7g")

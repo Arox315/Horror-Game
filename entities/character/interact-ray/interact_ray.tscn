@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://shh7ov5oet2b"]
+
+[ext_resource type="Script" uid="uid://mriex8ufwkwm" path="res://entities/character/interact-ray/interact_ray.gd" id="1_ngixa"]
+
+[node name="InteractRay" type="RayCast3D"]
+target_position = Vector3(0, 0, -1.5)
+script = ExtResource("1_ngixa")

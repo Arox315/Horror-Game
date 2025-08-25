@@ -44,3 +44,20 @@ func _delete_player(id: int) -> void:
 		return
 	
 	current_scene.get_node(str(id)).queue_free()
+
+
+#@rpc("any_peer","reliable")
+#func request_hide_interactable_popup(peer_id: int):
+	#if not multiplayer.is_server():
+		#return
+	##var peer_id := multiplayer.get_remote_sender_id()
+	#rpc_id(peer_id,"hide_popup")
+#
+#
+#@rpc("any_peer","reliable")
+#func request_show_interactable_popup(peer_id: int):
+	#if not multiplayer.is_server():
+		#return
+	##var peer_id := multiplayer.get_remote_sender_id()
+	#print(peer_id)
+	#rpc_id(peer_id,"show_popup")

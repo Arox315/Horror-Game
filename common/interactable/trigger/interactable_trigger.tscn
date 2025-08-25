@@ -1,0 +1,16 @@
+[gd_scene load_steps=4 format=3 uid="uid://dbwe4mpgrbf1o"]
+
+[ext_resource type="Script" uid="uid://dmwx4icen0n4q" path="res://common/interactable/trigger/interactable_trigger.gd" id="1_c2qss"]
+[ext_resource type="PackedScene" uid="uid://pyqgun4aom8y" path="res://common/interactable/popup/interactable_popup.tscn" id="2_mxfnr"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_mxfnr"]
+
+[node name="InteractableTrigger" type="StaticBody3D"]
+collision_layer = 2
+collision_mask = 2
+script = ExtResource("1_c2qss")
+
+[node name="TriggerArea" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_mxfnr")
+
+[node name="InteractablePopup" parent="." instance=ExtResource("2_mxfnr")]
