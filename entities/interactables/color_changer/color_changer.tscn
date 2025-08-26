@@ -1,0 +1,32 @@
+[gd_scene load_steps=5 format=3 uid="uid://dmgtd4kr3b0wd"]
+
+[ext_resource type="PackedScene" uid="uid://dbwe4mpgrbf1o" path="res://common/interactable/trigger/interactable_trigger.tscn" id="1_hsor0"]
+
+[sub_resource type="GDScript" id="GDScript_sx8fd"]
+script/source = "extends InteractableObject
+
+func _ready() -> void:
+	prompt_message = \"Press [{str}] to change color!\"
+	super()
+
+
+func _on_interacted(body: Variant, _sender:InteractableTrigger) -> void:
+	body.body_model.generate_new_color()
+"
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_elqxi"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_sx8fd"]
+
+[node name="ColorChanger" type="RigidBody3D"]
+script = SubResource("GDScript_sx8fd")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_elqxi")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_sx8fd")
+
+[node name="InteractableTrigger" parent="." instance=ExtResource("1_hsor0")]
+
+[editable path="InteractableTrigger"]

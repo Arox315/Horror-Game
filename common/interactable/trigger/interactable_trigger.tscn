@@ -1,0 +1,30 @@
+[gd_scene load_steps=5 format=3 uid="uid://dbwe4mpgrbf1o"]
+
+[ext_resource type="Script" uid="uid://dmwx4icen0n4q" path="res://common/interactable/trigger/interactable_trigger.gd" id="1_c2qss"]
+[ext_resource type="PackedScene" uid="uid://pyqgun4aom8y" path="res://common/interactable/popup/interactable_popup.tscn" id="2_mxfnr"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_mxfnr"]
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_mxfnr"]
+properties/0/path = NodePath(".:is_locked")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:can_interact")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+properties/2/path = NodePath(".:hidden_interacable")
+properties/2/spawn = true
+properties/2/replication_mode = 1
+
+[node name="InteractableTrigger" type="StaticBody3D"]
+collision_layer = 2
+collision_mask = 2
+script = ExtResource("1_c2qss")
+
+[node name="TriggerArea" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_mxfnr")
+
+[node name="InteractablePopup" parent="." instance=ExtResource("2_mxfnr")]
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_mxfnr")
