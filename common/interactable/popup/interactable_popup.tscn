@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://pyqgun4aom8y"]
+[gd_scene load_steps=7 format=3 uid="uid://pyqgun4aom8y"]
 
 [ext_resource type="Script" uid="uid://cxtri71ma5ap5" path="res://common/interactable/popup/interactable_popup.gd" id="1_0qw7g"]
 
@@ -94,6 +94,11 @@ _data = {
 &"open": SubResource("Animation_0qw7g")
 }
 
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_0qw7g"]
+properties/0/path = NodePath(".:text")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+
 [node name="InteractablePopup" type="Label3D"]
 transform = Transform3D(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 pixel_size = 0.001
@@ -107,3 +112,6 @@ script = ExtResource("1_0qw7g")
 libraries = {
 &"": SubResource("AnimationLibrary_t22bw")
 }
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_0qw7g")

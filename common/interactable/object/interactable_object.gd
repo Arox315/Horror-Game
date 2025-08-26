@@ -6,6 +6,7 @@ extends Node3D
 
 var interactable_triggers: Dictionary[String,InteractableTrigger]
 
+
 func _ready() -> void:
 	assign_triggers()
 	
@@ -19,6 +20,7 @@ func _ready() -> void:
 			interactable_trigger.interactable_popup.set_content(interactable_trigger.get_prompt())
 
 
+@rpc("any_peer", "call_local", "unreliable")
 func update_prompt_message(new_prompt_message: String) -> void:
 	prompt_message = new_prompt_message
 	for interactable_trigger in interactable_triggers.values():
@@ -26,6 +28,7 @@ func update_prompt_message(new_prompt_message: String) -> void:
 		interactable_trigger.interactable_popup.set_content(interactable_trigger.get_prompt())
 
 
+@rpc("any_peer", "call_local", "unreliable")
 func update_prompt_input(new_prompt_input: String) -> void:
 	prompt_input = new_prompt_input
 	for interactable_trigger in interactable_triggers.values():
@@ -38,21 +41,25 @@ func assign_triggers() -> void:
 			interactable_triggers[child.name] = child
 
 
+@rpc("any_peer", "call_local", "unreliable")
 func lock_all_triggers() -> void:
 	for interactable_trigger in interactable_triggers.values():
 		interactable_trigger.lock()
 
 
+@rpc("any_peer", "call_local", "unreliable")
 func unlock_all_triggers() -> void:
 	for interactable_trigger in interactable_triggers.values():
 		interactable_trigger.unlock()
 
 
+@rpc("any_peer", "call_local", "unreliable")
 func disable_all_triggers() -> void:
 	for interactable_trigger in interactable_triggers.values():
 		interactable_trigger.disable()
 
 
+@rpc("any_peer", "call_local", "unreliable")
 func enable_all_triggers() -> void:
 	for interactable_trigger in interactable_triggers.values():
 		interactable_trigger.enable()

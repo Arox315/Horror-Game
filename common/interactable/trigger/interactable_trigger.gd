@@ -9,7 +9,7 @@ signal interacted(body: Variant)
 
 var prompt_message: String = "Press [{str}] to interact"
 var prompt_input: String = "interact"
-var is_locked: bool = false
+@export var is_locked: bool = false
 
 @onready var trigger_area: CollisionShape3D = $TriggerArea
 @onready var interactable_popup: InteractablePopup = $InteractablePopup
@@ -33,31 +33,31 @@ func _ready() -> void:
 func interact(body: Variant) -> void:
 	interacted.emit(body)
 
-
+@rpc("any_peer", "call_local", "unreliable")
 func disable() -> void:
 	visible = false
 	trigger_area.disabled = true
 	can_interact = false
 
-
+@rpc("any_peer", "call_local", "unreliable")
 func enable() -> void:
 	visible = true
 	trigger_area.disabled = false
 	can_interact = true
 
-
+@rpc("any_peer", "call_local", "unreliable")
 func lock() -> void:
 	is_locked = true
 
-
+@rpc("any_peer", "call_local", "unreliable")
 func unlock() -> void:
 	is_locked = false
 
-
+@rpc("any_peer", "call_local", "unreliable")
 func make_hidden() -> void:
 	hidden_interacable = true
 
-
+@rpc("any_peer", "call_local", "unreliable")
 func make_visible() -> void:
 	hidden_interacable = false
 

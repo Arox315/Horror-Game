@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://dvi7lqoafi1cl"]
+[gd_scene load_steps=22 format=3 uid="uid://dvi7lqoafi1cl"]
 
 [ext_resource type="PackedScene" uid="uid://352pm4hcxqtx" path="res://stages/playground/block.tscn" id="1_qchbg"]
 [ext_resource type="Script" uid="uid://cnglits2m8u6w" path="res://scripts/multiplayer_menu.gd" id="2_elqxi"]
@@ -51,7 +51,7 @@ var door2_closed_position: Vector3
 var door1_opened_position: Vector3
 var door2_opened_position: Vector3
 
-var is_opened: bool = false
+@export var is_opened: bool = false
 
 
 func _ready() -> void:
@@ -70,23 +70,25 @@ func _ready() -> void:
 
 func _on_interacted(_body:Variant, _sender:InteractableTrigger) -> void:
 	if is_opened:
-		close_doors()
+		rpc(\"close_doors\")
 	else:
-		open_doors()
+		rpc(\"open_doors\")
 
 
+@rpc(\"any_peer\", \"call_local\", \"unreliable\")
 func open_doors() -> void:
 	create_tween().tween_property(door_1, \"global_position\", door1_opened_position, open_duration)
 	create_tween().tween_property(door_2, \"global_position\", door2_opened_position, open_duration)
 	is_opened = true
-	update_prompt_message(close_prompt_message)
+	rpc(\"update_prompt_message\",close_prompt_message)
 
 
+@rpc(\"any_peer\", \"call_local\", \"unreliable\")
 func close_doors() -> void:
 	create_tween().tween_property(door_1, \"global_position\", door1_closed_position, open_duration)
 	create_tween().tween_property(door_2, \"global_position\", door2_closed_position, open_duration)
 	is_opened = false
-	update_prompt_message(open_prompt_message)
+	rpc(\"update_prompt_message\",open_prompt_message)
 "
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bkhp6"]
@@ -107,6 +109,17 @@ size = Vector3(0.22, 0.28, 0.18)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_bkhp6"]
 size = Vector3(0.22, 0.28, 0.18)
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_bkhp6"]
+properties/0/path = NodePath("Door1:position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath("Door2:position")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+properties/2/path = NodePath(".:is_opened")
+properties/2/spawn = true
+properties/2/replication_mode = 1
 
 [node name="Playground" type="Node3D"]
 
@@ -287,6 +300,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.8, 1, -0.275)
 
 [node name="TriggerArea" parent="DoubleDoors/InteractableTrigger2" index="0"]
 shape = SubResource("BoxShape3D_bkhp6")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="DoubleDoors"]
+replication_config = SubResource("SceneReplicationConfig_bkhp6")
 
 [connection signal="pressed" from="MultiplayerMenu/Panel/VBoxContainer/HostButton" to="MultiplayerMenu" method="_on_host_button_pressed"]
 [connection signal="pressed" from="MultiplayerMenu/Panel/VBoxContainer/JoinButton" to="MultiplayerMenu" method="_on_join_button_pressed"]

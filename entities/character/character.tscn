@@ -5,19 +5,6 @@
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_glpr6"]
 
-[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_0c2ax"]
-properties/0/path = NodePath(".:position")
-properties/0/spawn = true
-properties/0/replication_mode = 1
-properties/1/path = NodePath(".:rotation")
-properties/1/spawn = true
-properties/1/replication_mode = 1
-
-[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_6i0tm"]
-properties/0/path = NodePath("WorldModel/BodyModel:color")
-properties/0/spawn = true
-properties/0/replication_mode = 1
-
 [sub_resource type="BoxMesh" id="BoxMesh_vu45j"]
 
 [sub_resource type="GDScript" id="GDScript_0c2ax"]
@@ -45,6 +32,19 @@ func generate_new_color() -> void:
 	color = Color(RandomColorGenerator.rand_hex())
 "
 
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_0c2ax"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:rotation")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_6i0tm"]
+properties/0/path = NodePath("WorldModel/BodyModel:color")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+
 [node name="Character" type="CharacterBody3D"]
 script = ExtResource("1_glpr6")
 
@@ -57,15 +57,23 @@ shape = SubResource("BoxShape3D_glpr6")
 
 [node name="InteractRay" parent="Neck/Camera3D" instance=ExtResource("2_6i0tm")]
 
-[node name="PositionSynchronizer" type="MultiplayerSynchronizer" parent="."]
-replication_config = SubResource("SceneReplicationConfig_0c2ax")
-
-[node name="ModelSynchronizer" type="MultiplayerSynchronizer" parent="."]
-replication_config = SubResource("SceneReplicationConfig_6i0tm")
-
 [node name="WorldModel" type="Node3D" parent="."]
 
 [node name="BodyModel" type="MeshInstance3D" parent="WorldModel"]
 mesh = SubResource("BoxMesh_vu45j")
 skeleton = NodePath("../..")
 script = SubResource("GDScript_0c2ax")
+
+[node name="PositionSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_0c2ax")
+
+[node name="ModelSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_6i0tm")
+
+[node name="Hud" type="CanvasLayer" parent="."]
+
+[node name="PlayerType" type="Control" parent="Hud"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0

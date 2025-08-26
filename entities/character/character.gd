@@ -12,6 +12,7 @@ const CAMERA_ROTATION_SPEED = 50.0 * deg_to_rad(0.022)
 @onready var camera: Camera3D = $Neck/Camera3D
 @onready var world_model: Node3D = $WorldModel
 @onready var body_model: MeshInstance3D = $WorldModel/BodyModel
+@onready var player_type: Control = $Hud/PlayerType
 
 var direction:Vector3 = Vector3.ZERO
 var is_third_person: bool = false
@@ -24,6 +25,12 @@ func _ready() -> void:
 	# Don't execute code if not authority
 	if not is_multiplayer_authority():
 		return
+	
+	# add palyer type to hud
+	var player_type_label = Label.new()
+	player_type_label.text = "Player" if name.to_int() != 1 else "Host"
+	player_type_label.add_theme_font_size_override("font_size",24)
+	player_type.add_child(player_type_label)
 	
 	# Set camera to authority
 	camera.position = first_person_camera_position
