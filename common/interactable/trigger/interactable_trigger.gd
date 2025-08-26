@@ -37,11 +37,13 @@ func interact(body: Variant) -> void:
 func disable() -> void:
 	visible = false
 	trigger_area.disabled = true
+	can_interact = false
 
 
 func enable() -> void:
 	visible = true
 	trigger_area.disabled = false
+	can_interact = true
 
 
 func lock() -> void:
@@ -50,6 +52,15 @@ func lock() -> void:
 
 func unlock() -> void:
 	is_locked = false
+
+
+func make_hidden() -> void:
+	hidden_interacable = true
+
+
+func make_visible() -> void:
+	hidden_interacable = false
+
 
 func get_prompt():
 	var key_name = ""
@@ -61,9 +72,11 @@ func get_prompt():
 
 
 func show_popup() -> void:
-	if not hidden_interacable:
-		interactable_popup.visible = true
+	if hidden_interacable: return
+	if interactable_popup.is_opened: return
+	interactable_popup.open()
 
 
 func hide_popup() -> void:
-	interactable_popup.visible = false
+	if not interactable_popup.is_opened: return
+	interactable_popup.close()

@@ -55,7 +55,7 @@ shape = SubResource("BoxShape3D_glpr6")
 
 [node name="Camera3D" type="Camera3D" parent="Neck"]
 
-[node name="InteractRay" parent="Neck" instance=ExtResource("2_6i0tm")]
+[node name="InteractRay" parent="Neck/Camera3D" instance=ExtResource("2_6i0tm")]
 
 [node name="PositionSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_0c2ax")

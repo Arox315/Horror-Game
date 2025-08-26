@@ -1,9 +1,11 @@
-[gd_scene load_steps=23 format=3 uid="uid://dvi7lqoafi1cl"]
+[gd_scene load_steps=21 format=3 uid="uid://dvi7lqoafi1cl"]
 
 [ext_resource type="PackedScene" uid="uid://352pm4hcxqtx" path="res://stages/playground/block.tscn" id="1_qchbg"]
 [ext_resource type="Script" uid="uid://cnglits2m8u6w" path="res://scripts/multiplayer_menu.gd" id="2_elqxi"]
+[ext_resource type="PackedScene" uid="uid://dmgtd4kr3b0wd" path="res://entities/interactables/color_changer/color_changer.tscn" id="3_bkhp6"]
 [ext_resource type="Script" uid="uid://soo14qrxfc6t" path="res://common/interactable/object/interactable_object.gd" id="3_sx8fd"]
 [ext_resource type="PackedScene" uid="uid://dbwe4mpgrbf1o" path="res://common/interactable/trigger/interactable_trigger.tscn" id="4_ruau5"]
+[ext_resource type="PackedScene" uid="uid://cj72bmdxu2h7b" path="res://entities/interactables/teleporter/teleporter.tscn" id="6_ilnn3"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_edjgo"]
 size = Vector3(15, 0.5, 15)
@@ -24,22 +26,6 @@ sky = SubResource("Sky_m8u5f")
 tonemap_mode = 2
 glow_enabled = true
 
-[sub_resource type="GDScript" id="GDScript_sx8fd"]
-script/source = "extends InteractableObject
-
-func _ready() -> void:
-	prompt_message = \"Press [{str}] to change color!\"
-	super()
-
-
-func _on_interacted(body: Variant) -> void:
-	body.body_model.generate_new_color()
-"
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_elqxi"]
-
-[sub_resource type="BoxMesh" id="BoxMesh_sx8fd"]
-
 [sub_resource type="CylinderMesh" id="CylinderMesh_o6tti"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_ruau5"]
@@ -48,70 +34,79 @@ func _on_interacted(body: Variant) -> void:
 height = 2.1
 radius = 0.55
 
-[sub_resource type="GDScript" id="GDScript_o6tti"]
+[sub_resource type="GDScript" id="GDScript_bkhp6"]
 script/source = "extends InteractableObject
 
-@onready var teleporter_trigger: Area3D = $TeleporterTrigger
-@onready var teleporter_target: Marker3D = $TeleporterTarget
+@export var open_duration: float = 0.5
 
-var initial_prompt: String = \"Press [{str}] to activate teleporter\"
+@onready var door_1: CSGBox3D = $Door1
+@onready var door_2: CSGBox3D = $Door2
+
+var open_prompt_message: String = \"Press [{str}] to open\"
+var close_prompt_message: String = \"Press [{str}] to close\"
+
+var door1_closed_position: Vector3
+var door2_closed_position: Vector3
+
+var door1_opened_position: Vector3
+var door2_opened_position: Vector3
+
+var is_opened: bool = false
+
 
 func _ready() -> void:
-	prompt_message = initial_prompt
-	disable_teleporter_trigger()
 	super()
+	update_prompt_message(open_prompt_message)
+	door1_closed_position = door_1.global_position
+	door2_closed_position = door_2.global_position
+	
+	door1_opened_position = door1_closed_position
+	door1_opened_position.x = door1_opened_position.x + door_1.size.x + 0.01
+	
+	door2_opened_position = door2_closed_position
+	door2_opened_position.x = door2_opened_position.x - door_2.size.x - 0.01
+	
+	print(interactable_triggers)
+
+func _on_interacted(_body:Variant, _sender:InteractableTrigger) -> void:
+	if is_opened:
+		close_doors()
+	else:
+		open_doors()
 
 
-func enable_teleporter_trigger() -> void:
-	teleporter_trigger.get_child(0).disabled = false
+func open_doors() -> void:
+	create_tween().tween_property(door_1, \"global_position\", door1_opened_position, open_duration)
+	create_tween().tween_property(door_2, \"global_position\", door2_opened_position, open_duration)
+	is_opened = true
+	update_prompt_message(close_prompt_message)
 
 
-func disable_teleporter_trigger() -> void:
-	teleporter_trigger.get_child(0).disabled = true
-
-
-func _on_interacted(body: Variant) -> void:
-	print_debug(\"Teleporter interacted by: \", body)
-	interactable_trigger.lock()
-	for i in 5:
-		update_prompt_message(\"Teleporting in: %d\" % (5 - i))
-		await get_tree().create_timer(1.0).timeout
-	enable_teleporter_trigger()
-	update_prompt_message(\"Teleporting...\")
-	await get_tree().create_timer(0.5).timeout
-	update_prompt_message(initial_prompt)
-	disable_teleporter_trigger()
-	interactable_trigger.unlock()
-
-
-func _on_teleporter_trigger_body_entered(body: Node3D) -> void:
-	body.global_position = teleporter_target.global_position
+func close_doors() -> void:
+	create_tween().tween_property(door_1, \"global_position\", door1_closed_position, open_duration)
+	create_tween().tween_property(door_2, \"global_position\", door2_closed_position, open_duration)
+	is_opened = false
+	update_prompt_message(open_prompt_message)
 "
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_o6tti"]
-albedo_color = Color(0.577008, 0.577008, 0.577008, 1)
-metallic = 0.5
-roughness = 0.6
-
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bkhp6"]
-albedo_color = Color(0.577008, 0.577008, 0.577008, 1)
-metallic = 0.5
-roughness = 0.6
+albedo_color = Color(0.650128, 0.650128, 0.650128, 1)
+metallic = 0.8
+roughness = 0.3
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ilnn3"]
-albedo_color = Color(0.770188, 0.146692, 2.88785e-07, 1)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ruau5"]
 albedo_color = Color(0.577008, 0.577008, 0.577008, 1)
 metallic = 0.5
 roughness = 0.6
 
-[sub_resource type="CylinderShape3D" id="CylinderShape3D_5wu1j"]
-height = 1.0
-radius = 0.8
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5wu1j"]
+albedo_color = Color(0.770188, 0.146692, 2.88785e-07, 1)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_ac2je"]
-size = Vector3(0.237435, 0.136426, 0.237817)
+[sub_resource type="BoxShape3D" id="BoxShape3D_ilnn3"]
+size = Vector3(0.22, 0.28, 0.18)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_bkhp6"]
+size = Vector3(0.22, 0.28, 0.18)
 
 [node name="Playground" type="Node3D"]
 
@@ -126,7 +121,7 @@ mesh = SubResource("BoxMesh_edjgo")
 shape = SubResource("BoxShape3D_rupst")
 
 [node name="floor2" type="StaticBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.5, -15)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, -15)
 metadata/_edit_group_ = true
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="floor2"]
@@ -207,17 +202,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 3)
 _spawnable_scenes = PackedStringArray("uid://c7ksecespxm2u")
 spawn_path = NodePath("..")
 
-[node name="ColorChanger" type="RigidBody3D" parent="."]
+[node name="ColorChanger" parent="." instance=ExtResource("3_bkhp6")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.24658, 1.04155, 0)
-script = SubResource("GDScript_sx8fd")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="ColorChanger"]
-shape = SubResource("BoxShape3D_elqxi")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="ColorChanger"]
-mesh = SubResource("BoxMesh_sx8fd")
-
-[node name="InteractableTrigger" parent="ColorChanger" instance=ExtResource("4_ruau5")]
 
 [node name="TestInteractable" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.31665, 1, -0.354247)
@@ -234,57 +220,79 @@ shape = SubResource("CylinderShape3D_ruau5")
 [node name="TriggerArea" parent="TestInteractable/InteractableTrigger" index="0"]
 shape = SubResource("CylinderShape3D_bkhp6")
 
-[node name="Teleporter" type="Node3D" parent="."]
-script = SubResource("GDScript_o6tti")
+[node name="Teleporter" parent="." instance=ExtResource("6_ilnn3")]
 
-[node name="TeleporterButtonStand" type="CSGBox3D" parent="Teleporter"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.5, 0.18075, 4.9)
-use_collision = true
-size = Vector3(0.2, 0.5, 0.2)
-material = SubResource("StandardMaterial3D_o6tti")
+[node name="TeleporterTarget" parent="Teleporter" index="4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00273311, 0.7, -14.9999)
 
-[node name="TeleporterButton" type="CSGPolygon3D" parent="Teleporter/TeleporterButtonStand"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.125, 0.244796, 0.125)
+[node name="Wall" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, -7.75)
 use_collision = true
-polygon = PackedVector2Array(0, 0, 0.00139093, 0.11215, 0.237803, 0.00553712)
-depth = 0.25
+size = Vector3(15, 5, 0.5)
+
+[node name="CSGBox3D" type="CSGBox3D" parent="Wall"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.5, 0)
+operation = 2
+size = Vector3(3, 2, 1)
+
+[node name="DoubleDoors" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -7.75)
+script = SubResource("GDScript_bkhp6")
+prompt_message = "Press [{str}] to open"
+
+[node name="Door1" type="CSGBox3D" parent="DoubleDoors"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.75, 1, 0)
+use_collision = true
+size = Vector3(1.5, 2, 0.2)
 material = SubResource("StandardMaterial3D_bkhp6")
 
-[node name="CSGSphere3D" type="CSGSphere3D" parent="Teleporter/TeleporterButtonStand/TeleporterButton"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.113099, 0.0368578, -0.12145)
-radius = 0.08
-radial_segments = 32
-rings = 32
+[node name="Door2" type="CSGBox3D" parent="DoubleDoors"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.75, 1, 0)
+use_collision = true
+size = Vector3(1.5, 2, 0.2)
+material = SubResource("StandardMaterial3D_bkhp6")
+
+[node name="DoorButtonStand" type="CSGBox3D" parent="DoubleDoors"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.8, 1, -0.275)
+use_collision = true
+size = Vector3(0.2, 0.25, 0.05)
 material = SubResource("StandardMaterial3D_ilnn3")
 
-[node name="TeleporterFloor" type="CSGCylinder3D" parent="Teleporter"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0.1, 6)
+[node name="DoorButton" type="CSGSphere3D" parent="DoubleDoors/DoorButtonStand"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.02)
+radius = 0.05
+rings = 12
+material = SubResource("StandardMaterial3D_5wu1j")
+
+[node name="DoorButtonStand2" type="CSGBox3D" parent="DoubleDoors"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.8, 1, 0.275)
 use_collision = true
-radius = 1.0
-height = 0.2
-sides = 32
-material = SubResource("StandardMaterial3D_ruau5")
+size = Vector3(0.2, 0.25, 0.05)
+material = SubResource("StandardMaterial3D_ilnn3")
 
-[node name="TeleporterTrigger" type="Area3D" parent="Teleporter"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0.7, 6)
+[node name="DoorButton" type="CSGSphere3D" parent="DoubleDoors/DoorButtonStand2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.02)
+radius = 0.05
+rings = 12
+material = SubResource("StandardMaterial3D_5wu1j")
 
-[node name="TeleporterArea" type="CollisionShape3D" parent="Teleporter/TeleporterTrigger"]
-shape = SubResource("CylinderShape3D_5wu1j")
+[node name="InteractableTrigger" parent="DoubleDoors" instance=ExtResource("4_ruau5")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.8, 1, 0.275)
 
-[node name="InteractableTrigger" parent="Teleporter" instance=ExtResource("4_ruau5")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.51503, 0.564762, 4.90053)
+[node name="TriggerArea" parent="DoubleDoors/InteractableTrigger" index="0"]
+shape = SubResource("BoxShape3D_ilnn3")
 
-[node name="TriggerArea" parent="Teleporter/InteractableTrigger" index="0"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00933981, -0.0758355, -0.00226212)
-shape = SubResource("BoxShape3D_ac2je")
+[node name="InteractableTrigger2" parent="DoubleDoors" instance=ExtResource("4_ruau5")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.8, 1, -0.275)
 
-[node name="TeleporterTarget" type="Marker3D" parent="Teleporter"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.5, -9)
+[node name="TriggerArea" parent="DoubleDoors/InteractableTrigger2" index="0"]
+shape = SubResource("BoxShape3D_bkhp6")
 
 [connection signal="pressed" from="MultiplayerMenu/Panel/VBoxContainer/HostButton" to="MultiplayerMenu" method="_on_host_button_pressed"]
 [connection signal="pressed" from="MultiplayerMenu/Panel/VBoxContainer/JoinButton" to="MultiplayerMenu" method="_on_join_button_pressed"]
-[connection signal="body_entered" from="Teleporter/TeleporterTrigger" to="Teleporter" method="_on_teleporter_trigger_body_entered"]
 
-[editable path="ColorChanger/InteractableTrigger"]
 [editable path="TestInteractable/InteractableTrigger"]
+[editable path="Teleporter"]
 [editable path="Teleporter/InteractableTrigger"]
+[editable path="DoubleDoors/InteractableTrigger"]
+[editable path="DoubleDoors/InteractableTrigger2"]

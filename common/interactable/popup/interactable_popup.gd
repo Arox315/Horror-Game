@@ -1,6 +1,9 @@
 class_name InteractablePopup
 extends Label3D
 
+@onready var popup_animation_player: AnimationPlayer = $PopupAnimationPlayer
+
+@export var is_opened: bool = false
 
 func _ready() -> void:
 	pass
@@ -9,3 +12,11 @@ func _ready() -> void:
 
 func set_content(content:String) -> void:
 	text = content
+
+
+func open() -> void:
+	popup_animation_player.play("open")
+
+
+func close() -> void:
+	popup_animation_player.play("close")
