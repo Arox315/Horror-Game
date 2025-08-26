@@ -1,8 +1,16 @@
-[gd_scene load_steps=3 format=3 uid="uid://352pm4hcxqtx"]
+[gd_scene load_steps=4 format=3 uid="uid://352pm4hcxqtx"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_qncar"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_im0tn"]
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_3w4es"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 2
+properties/1/path = NodePath(".:rotation")
+properties/1/spawn = true
+properties/1/replication_mode = 2
 
 [node name="Block" type="RigidBody3D"]
 
@@ -11,3 +19,6 @@ mesh = SubResource("BoxMesh_qncar")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("BoxShape3D_im0tn")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_3w4es")

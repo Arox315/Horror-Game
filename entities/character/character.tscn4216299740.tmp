@@ -82,9 +82,6 @@ mesh = SubResource("CapsuleMesh_7315l")
 skeleton = NodePath("../..")
 script = SubResource("GDScript_0c2ax")
 
-[node name="WorldModelAnchor" type="Marker3D" parent="WorldModel"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
-
 [node name="PositionSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_0c2ax")
 
