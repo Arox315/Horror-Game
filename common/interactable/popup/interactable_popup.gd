@@ -6,7 +6,7 @@ extends Label3D
 @export var is_opened: bool = false
 
 func _ready() -> void:
-	pass
+	popup_animation_player.callback_mode_process = AnimationMixer.ANIMATION_CALLBACK_MODE_PROCESS_PHYSICS
 	#popup_content.add_theme_font_size_override("font_size",popup_content.get_theme_default_font_size())
 
 
