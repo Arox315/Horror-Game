@@ -88,7 +88,7 @@ func _physics_process(delta: float) -> void:
 	# Don't execute code if not authority
 	if !is_multiplayer_authority():
 		return
-	print(current_speed)
+	#print(current_speed)
 	# toggle 3rd person
 	if Input.is_action_just_pressed("change_perspective"):
 		toggle_third_person()

@@ -3,6 +3,7 @@ class_name Effect
 extends Node
 
 signal finished
+signal to_be_deleted(effect: Effect)
 
 ##Max amount of stacks for the effect.
 @export var max_stacks: int = 1
@@ -88,6 +89,7 @@ func _delete_effect() -> void:
 	await get_tree().create_timer(cooldown_after_finished).timeout
 	queue_free()
 	print("Effect %s ready to be applied again" % name)
+	to_be_deleted.emit(self)
 
 
 @abstract
