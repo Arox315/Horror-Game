@@ -4,7 +4,10 @@ extends CharacterBody3D
 @export var first_person_camera_position: Vector3 = Vector3.ZERO
 @export var third_person_camera_position: Vector3 = Vector3(0, 0.8, 1.8)
 
-var SPEED = 5.0
+const BASE_SPEED: float = 5.0
+var _speed_multipliers: Dictionary = {}
+var current_speed: float
+
 var JUMP_VELOCITY = 4.5
 var CAMERA_ROTATION_SPEED = 50.0 * deg_to_rad(0.022)
 
@@ -55,6 +58,9 @@ func _ready() -> void:
 	
 	# Hide authority's world model
 	hide_world_model()
+	
+	# Set move speed
+	update_speed()
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -82,7 +88,7 @@ func _physics_process(delta: float) -> void:
 	# Don't execute code if not authority
 	if !is_multiplayer_authority():
 		return
-	
+	print(current_speed)
 	# toggle 3rd person
 	if Input.is_action_just_pressed("change_perspective"):
 		toggle_third_person()
@@ -98,11 +104,11 @@ func _physics_process(delta: float) -> void:
 	var input_dir := Input.get_vector("left", "right", "forward", "back").normalized()
 	direction = transform.basis * Vector3(input_dir.x, 0, input_dir.y)
 	if direction:
-		velocity.x = direction.x * SPEED
-		velocity.z = direction.z * SPEED 
+		velocity.x = direction.x * current_speed
+		velocity.z = direction.z * current_speed
 	else:
-		velocity.x = move_toward(velocity.x, 0, SPEED)
-		velocity.z = move_toward(velocity.z, 0, SPEED)
+		velocity.x = move_toward(velocity.x, 0, current_speed)
+		velocity.z = move_toward(velocity.z, 0, current_speed)
 	
 	move_and_slide()
 
@@ -140,3 +146,25 @@ func show_world_model() -> void:
 	for child in world_model.get_children():
 		if child is MeshInstance3D:
 			child.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
+
+
+func set_speed_multiplier(key: String, value: Variant) -> void:
+	_speed_multipliers[key] = value
+	update_speed()
+
+
+func get_speed_multiplier(key:String) -> Variant:
+	return _speed_multipliers.get(key)
+
+
+func remove_speed_multiplier(key:String) -> void:
+	_speed_multipliers.erase(key)
+	update_speed()
+
+
+func update_speed() -> void:
+	var gained_speed: float = 0.0
+	for value in _speed_multipliers.values():
+		gained_speed += value
+	
+	current_speed = BASE_SPEED + gained_speed

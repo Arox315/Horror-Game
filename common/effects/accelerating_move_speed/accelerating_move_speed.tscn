@@ -7,4 +7,3 @@ script = ExtResource("1_v0rko")
 stack_uptime = 10.0
 is_effect_overtime = true
 can_increment_while_active = false
-cooldown_after_diminished = 2.0
