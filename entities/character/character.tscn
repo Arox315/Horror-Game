@@ -1,7 +1,8 @@
-[gd_scene load_steps=8 format=3 uid="uid://c7ksecespxm2u"]
+[gd_scene load_steps=9 format=3 uid="uid://c7ksecespxm2u"]
 
 [ext_resource type="Script" uid="uid://cktonvsvavro3" path="res://entities/character/character.gd" id="1_glpr6"]
 [ext_resource type="PackedScene" uid="uid://shh7ov5oet2b" path="res://entities/character/interact-ray/interact_ray.tscn" id="2_6i0tm"]
+[ext_resource type="PackedScene" uid="uid://dbaufhsgu6cq1" path="res://common/components/effects_component/effects_component.tscn" id="2_7315l"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_6i0tm"]
 radius = 0.45
@@ -59,6 +60,8 @@ properties/2/replication_mode = 1
 
 [node name="Character" type="CharacterBody3D"]
 script = ExtResource("1_glpr6")
+
+[node name="EffectsComponent" parent="." instance=ExtResource("2_7315l")]
 
 [node name="Hitbox" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)

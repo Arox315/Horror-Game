@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://bwtwbvcujr4d8"]
+
+[ext_resource type="Script" uid="uid://b6geidhmvkkr1" path="res://common/effects/bonus_jump_height/bonus_jump_height.gd" id="1_ur5sn"]
+
+[node name="BonusJumpHeight" type="Node"]
+script = ExtResource("1_ur5sn")
+max_stacks = 5
+amount_per_stack = 5.0

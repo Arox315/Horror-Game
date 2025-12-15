@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://dvi7lqoafi1cl"]
+[gd_scene load_steps=25 format=3 uid="uid://dvi7lqoafi1cl"]
 
 [ext_resource type="PackedScene" uid="uid://352pm4hcxqtx" path="res://stages/playground/block.tscn" id="1_qchbg"]
 [ext_resource type="Script" uid="uid://cnglits2m8u6w" path="res://scripts/multiplayer_menu.gd" id="2_elqxi"]
@@ -121,6 +121,35 @@ properties/1/replication_mode = 1
 properties/2/path = NodePath(".:is_opened")
 properties/2/spawn = true
 properties/2/replication_mode = 1
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ac2je"]
+albedo_color = Color(1, 0.39607844, 1, 1)
+
+[sub_resource type="GDScript" id="GDScript_35kbn"]
+script/source = "extends Area3D
+
+@export var retrigger_cooldown: float = 1.0
+
+const effect = preload(\"uid://bwtwbvcujr4d8\")
+
+var elapsed: float = 0.0
+func _physics_process(delta: float) -> void:
+	elapsed += delta
+	if elapsed >= retrigger_cooldown:
+		for body in get_overlapping_bodies():
+			if body.has_node(\"EffectsComponent\"):
+				body.get_node(\"EffectsComponent\").add_effect(effect.instantiate())
+		elapsed = 0.0
+
+
+func _on_body_entered(body: Node3D) -> void:
+	if body.has_node(\"EffectsComponent\"):
+		elapsed = 0.0
+		body.get_node(\"EffectsComponent\").add_effect(effect.instantiate())
+"
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_4y8jm"]
+size = Vector3(2, 1, 2)
 
 [node name="Playground" type="Node3D"]
 
@@ -304,6 +333,18 @@ shape = SubResource("BoxShape3D_bkhp6")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="DoubleDoors"]
 replication_config = SubResource("SceneReplicationConfig_bkhp6")
+
+[node name="TestEffectTrigger" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0.025, -21)
+size = Vector3(2, 0.05, 2)
+material = SubResource("StandardMaterial3D_ac2je")
+
+[node name="Trigger" type="Area3D" parent="TestEffectTrigger"]
+script = SubResource("GDScript_35kbn")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TestEffectTrigger/Trigger"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+shape = SubResource("BoxShape3D_4y8jm")
 
 [connection signal="pressed" from="MultiplayerMenu/Panel/VBoxContainer/HostButton" to="MultiplayerMenu" method="_on_host_button_pressed"]
 [connection signal="pressed" from="MultiplayerMenu/Panel/VBoxContainer/JoinButton" to="MultiplayerMenu" method="_on_join_button_pressed"]

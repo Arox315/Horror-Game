@@ -4,9 +4,9 @@ extends CharacterBody3D
 @export var first_person_camera_position: Vector3 = Vector3.ZERO
 @export var third_person_camera_position: Vector3 = Vector3(0, 0.8, 1.8)
 
-const SPEED = 5.0
-const JUMP_VELOCITY = 4.5
-const CAMERA_ROTATION_SPEED = 50.0 * deg_to_rad(0.022)
+var SPEED = 5.0
+var JUMP_VELOCITY = 4.5
+var CAMERA_ROTATION_SPEED = 50.0 * deg_to_rad(0.022)
 
 @onready var camera_controller: Node3D = $CameraController
 @onready var camera: Camera3D = $CameraController/Camera3D
