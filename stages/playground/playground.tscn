@@ -130,22 +130,20 @@ script/source = "extends Area3D
 
 @export var retrigger_cooldown: float = 1.0
 
-const effect = preload(\"uid://bwtwbvcujr4d8\")
-
 var elapsed: float = 0.0
 func _physics_process(delta: float) -> void:
 	elapsed += delta
 	if elapsed >= retrigger_cooldown:
 		for body in get_overlapping_bodies():
 			if body.has_node(\"EffectsComponent\"):
-				body.get_node(\"EffectsComponent\").add_effect(effect.instantiate())
+				body.get_node(\"EffectsComponent\").add_effect.rpc(EffectsTable.Effects.BONUS_JUMP_HEIGHT)
 		elapsed = 0.0
 
 
-func _on_body_entered(body: Node3D) -> void:
-	if body.has_node(\"EffectsComponent\"):
-		elapsed = 0.0
-		body.get_node(\"EffectsComponent\").add_effect(effect.instantiate())
+#func _on_body_entered(body: Node3D) -> void:
+	#if body.has_node(\"EffectsComponent\"):
+		#elapsed = 0.0
+		#body.get_node(\"EffectsComponent\").add_effect.rpc(EffectsTable.Effects.BONUS_JUMP_HEIGHT)
 "
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_4y8jm"]

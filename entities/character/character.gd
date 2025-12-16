@@ -19,6 +19,7 @@ var CAMERA_ROTATION_SPEED = 50.0 * deg_to_rad(0.022)
 @onready var body_model: MeshInstance3D = $WorldModel/BodyModel
 @onready var world_model_anchor: Marker3D = $WorldModel/WorldModelAnchor
 @onready var player_type: Control = $Hud/PlayerType
+@onready var effects: HBoxContainer = $Hud/EffectsContainer/Effects
 
 var direction:Vector3 = Vector3.ZERO
 var is_third_person: bool = false

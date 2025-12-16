@@ -6,3 +6,5 @@
 script = ExtResource("1_ur5sn")
 max_stacks = 5
 amount_per_stack = 5.0
+active_color = Color(0, 0.59182435, 0, 1)
+diminished_color = Color(0, 0.2518736, 0, 1)

@@ -4,6 +4,8 @@ extends Node
 
 signal finished
 signal to_be_deleted(effect: Effect)
+signal stack_gained(stacks: int)
+signal stack_lost(stacks: int)
 
 ##Max amount of stacks for the effect.
 @export var max_stacks: int = 1
@@ -29,6 +31,9 @@ signal to_be_deleted(effect: Effect)
 @export var amount_per_stack: float = 1.0
 ##Delay between gaining the effect again after it has finished.
 @export var cooldown_after_finished: float = 0.0
+
+@export var active_color: Color
+@export var diminished_color: Color
 
 var default_value: float
 var target: Node3D
@@ -72,6 +77,7 @@ func increment_stack(amount: int = 1) -> void:
 	_stack_livetime = 0.0
 	current_stacks += amount
 	update_effect()
+	stack_gained.emit(current_stacks)
 	
 	if get_parent().owner.is_multiplayer_authority():
 		print("Effect %s incremented to: %d stacks" % [name, current_stacks])
@@ -82,6 +88,8 @@ func decrement_stack(amount: int = 1) -> void:
 	if _is_on_cooldown: return
 	current_stacks -= amount
 	update_effect()
+	stack_lost.emit(current_stacks)
+	
 	if current_stacks <= 0:
 		finished.emit()
 		_delete_effect()
