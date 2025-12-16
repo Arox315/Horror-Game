@@ -43,6 +43,7 @@ func _ready() -> void:
 
 var _stack_livetime: float = 0.0
 func _physics_process(delta: float) -> void:
+	if !get_parent().owner.is_multiplayer_authority(): return
 	if _is_on_cooldown: return
 	
 	if is_effect_overtime:
@@ -53,7 +54,7 @@ func _physics_process(delta: float) -> void:
 	_stack_livetime += delta
 	if _stack_livetime >= stack_uptime:
 		_stack_livetime = 0.0
-		decrement_stack()
+		decrement_stack.rpc()
 
 
 @abstract
@@ -64,15 +65,19 @@ func update_effect() -> void
 func apply_effect(delta: float) -> void
 
 
+@rpc("unreliable","any_peer","call_local")
 func increment_stack(amount: int = 1) -> void:
 	if _is_on_cooldown: return
 	if not can_increment_while_active: return
 	_stack_livetime = 0.0
 	current_stacks += amount
 	update_effect()
-	print("Effect %s incremented to: %d stacks" % [name, current_stacks])
+	
+	if get_parent().owner.is_multiplayer_authority():
+		print("Effect %s incremented to: %d stacks" % [name, current_stacks])
 
 
+@rpc("unreliable","any_peer","call_local")
 func decrement_stack(amount: int = 1) -> void:
 	if _is_on_cooldown: return
 	current_stacks -= amount
@@ -80,14 +85,18 @@ func decrement_stack(amount: int = 1) -> void:
 	if current_stacks <= 0:
 		finished.emit()
 		_delete_effect()
-	print("Effect %s decremented to: %d stacks" % [name, current_stacks])
+	
+	if get_parent().owner.is_multiplayer_authority():
+		print("Effect %s decremented to: %d stacks" % [name, current_stacks])
 
 
+#@rpc("reliable","any_peer","call_local")
 func _delete_effect() -> void:
+	if !get_parent().owner.is_multiplayer_authority(): return
 	#if cooldown_after_diminished > 0.0:
 	_is_on_cooldown = true
 	await get_tree().create_timer(cooldown_after_finished).timeout
-	queue_free()
+	
 	print("Effect %s ready to be applied again" % name)
 	to_be_deleted.emit(self)
 

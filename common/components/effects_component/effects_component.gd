@@ -13,23 +13,22 @@ func _ready() -> void:
 func _physics_process(_delta: float) -> void:
 	if !owner.is_multiplayer_authority(): return
 	if Input.is_action_just_pressed("debug_add_effect"):
-		var effect_to_add = EffectsTable.Effects.ACCELERATING_MOVE_SPEED
+		var effect_to_add = EffectsTable.Effects.BONUS_JUMP_HEIGHT
 		add_effect.rpc(effect_to_add)
 
 
 @rpc("reliable","any_peer","call_local")
-func add_effect(effect_scene: int) -> void:
+func add_effect(effect_id: int) -> void:
 	if !owner.is_multiplayer_authority(): return
 	
-	#TODO: Reimplement effects stacking so its multiplayer synched
-	#for child in get_children():
-		#if child is not Effect: continue
-		#if child.is_unique:
-			#if child.get_script().get_global_name() == effect_scene.get_script().get_global_name():
-				#child.increment_stack()
-				#return
+	for child in get_children():
+		if child is not Effect: continue
+		if child.is_unique:
+			if child.get_meta("id") == effect_id:
+				child.increment_stack.rpc()
+				return
 	
-	multiplayer_spawner.spawn(effect_scene)
+	multiplayer_spawner.spawn(effect_id)
 
 
 @rpc("reliable","any_peer","call_local")
@@ -38,9 +37,10 @@ func remove_custom(effect: Effect) -> void:
 	effect.queue_free()
 
 
-func _custom_spawn(effect_scene: int) -> Effect:
-	var effect = spawn_table[effect_scene].instantiate()
+func _custom_spawn(effect_id: int) -> Effect:
+	var effect: Effect = spawn_table[effect_id].instantiate()
 	effect.target = owner
+	effect.set_meta("id", effect_id)
 	if owner.is_multiplayer_authority():
 		print("Effect %s added with %d stacks" % [effect.name, effect.current_stacks])
 	effect.to_be_deleted.connect(remove_custom)
