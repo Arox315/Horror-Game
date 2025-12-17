@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://dga6hld40vbyn"]
+[gd_scene load_steps=3 format=3 uid="uid://dga6hld40vbyn"]
 
 [ext_resource type="Script" uid="uid://cfq2kndgqovt3" path="res://common/effects/accelerating_move_speed/accelerating_move_speed.gd" id="1_v0rko"]
+[ext_resource type="Texture2D" uid="uid://qxxd5w4w1tss" path="res://assets/icons/effects/accelerating_move_speed_icon.png" id="2_sumbf"]
 
 [node name="AcceleratingMoveSpeed" type="Node"]
 script = ExtResource("1_v0rko")
@@ -8,5 +9,4 @@ stack_uptime = 10.0
 is_effect_overtime = true
 can_increment_while_active = false
 cooldown_after_finished = 2.0
-active_color = Color(0.26670268, 0.4848597, 1, 1)
-diminished_color = Color(0.000226756, 0.03157175, 0.23734644, 1)
+effect_icon = ExtResource("2_sumbf")

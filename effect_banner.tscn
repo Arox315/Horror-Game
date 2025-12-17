@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://b3xismmir0wg6"]
+[gd_scene load_steps=3 format=3 uid="uid://b3xismmir0wg6"]
 
 [ext_resource type="Script" uid="uid://dtp8cmndps4xm" path="res://scripts/effect_banner.gd" id="1_rgfwr"]
+[ext_resource type="Texture2D" uid="uid://qxxd5w4w1tss" path="res://assets/icons/effects/accelerating_move_speed_icon.png" id="2_3gcmf"]
 
 [node name="EffectBanner" type="Control"]
 custom_minimum_size = Vector2(50, 50)
@@ -14,23 +15,25 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_rgfwr")
 
+[node name="BGActive" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_3gcmf")
+expand_mode = 1
+
 [node name="BGDiminished" type="ColorRect" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_bottom = -50.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0, 0, 0, 1)
-
-[node name="BGActive" type="ColorRect" parent="."]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0.646029, 0.64602906, 0.6460289, 1)
+color = Color(0, 0, 0, 0.39215687)
 
 [node name="Label" type="Label" parent="."]
 layout_mode = 1
@@ -39,8 +42,13 @@ anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -10.0
-offset_top = -23.0
+offset_left = -11.0
+offset_top = -22.0
+offset_bottom = 4.0
 grow_horizontal = 0
 grow_vertical = 0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 18
 text = "1"
+horizontal_alignment = 2

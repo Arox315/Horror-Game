@@ -2,7 +2,6 @@ class_name EffectsComponent
 extends Node
 
 @onready var multiplayer_spawner: MultiplayerSpawner = $MultiplayerSpawner
-const EFFECT_BANNER = preload("uid://b3xismmir0wg6")
 
 var spawn_table: Dictionary = {}
 
@@ -45,17 +44,5 @@ func _custom_spawn(effect_id: int) -> Effect:
 	if owner.is_multiplayer_authority():
 		print("Effect %s added with %d stacks" % [effect.name, effect.current_stacks])
 	effect.to_be_deleted.connect(remove_custom)
-	
-	if owner is CharacterBody3D and owner.is_multiplayer_authority():
-		var effect_banner: EffectBanner = EFFECT_BANNER.instantiate()
-		effect_banner.active_color = effect.active_color
-		effect_banner.diminished_color = effect.diminished_color
-		effect_banner.stacks = str(effect.current_stacks)
-		effect_banner.lifetime = effect.stack_uptime
-		effect_banner.is_endless = effect.is_endless
-		effect.stack_gained.connect(effect_banner.update_display)
-		effect.stack_lost.connect(effect_banner.update_display)
-		effect.finished.connect(effect_banner.delete)
-		owner.effects.add_child(effect_banner)
 	
 	return effect

@@ -135,7 +135,7 @@ func _physics_process(delta: float) -> void:
 	elapsed += delta
 	if elapsed >= retrigger_cooldown:
 		for body in get_overlapping_bodies():
-			if body.has_node(\"EffectsComponent\"):
+			if body.has_node(\"EffectsComponent\") and body.is_multiplayer_authority():
 				body.get_node(\"EffectsComponent\").add_effect.rpc(EffectsTable.Effects.BONUS_JUMP_HEIGHT)
 		elapsed = 0.0
 

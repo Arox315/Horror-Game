@@ -31,9 +31,10 @@ signal stack_lost(stacks: int)
 @export var amount_per_stack: float = 1.0
 ##Delay between gaining the effect again after it has finished.
 @export var cooldown_after_finished: float = 0.0
+##Icon for the effect
+@export var effect_icon: Texture2D
 
-@export var active_color: Color
-@export var diminished_color: Color
+const EFFECT_BANNER = preload("uid://b3xismmir0wg6")
 
 var default_value: float
 var target: Node3D
@@ -44,7 +45,17 @@ func _ready() -> void:
 	current_stacks = current_stacks
 	finished.connect(on_finished)
 	update_effect()
-
+	
+	if get_parent().owner is CharacterBody3D and get_parent().owner.is_multiplayer_authority():
+		var effect_banner: EffectBanner = EFFECT_BANNER.instantiate()
+		effect_banner.effect_icon = effect_icon
+		effect_banner.stacks = str(current_stacks)
+		effect_banner.lifetime = stack_uptime
+		effect_banner.is_endless = is_endless
+		stack_gained.connect(effect_banner.update_display)
+		stack_lost.connect(effect_banner.update_display)
+		finished.connect(effect_banner.delete)
+		get_parent().owner.effects.add_child(effect_banner)
 
 var _stack_livetime: float = 0.0
 func _physics_process(delta: float) -> void:

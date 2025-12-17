@@ -1,10 +1,10 @@
-[gd_scene load_steps=2 format=3 uid="uid://bwtwbvcujr4d8"]
+[gd_scene load_steps=3 format=3 uid="uid://bwtwbvcujr4d8"]
 
 [ext_resource type="Script" uid="uid://b6geidhmvkkr1" path="res://common/effects/bonus_jump_height/bonus_jump_height.gd" id="1_ur5sn"]
+[ext_resource type="Texture2D" uid="uid://chrtun12tc0j8" path="res://assets/icons/effects/bonus_jump_height_icon.png" id="2_mp33n"]
 
 [node name="BonusJumpHeight" type="Node"]
 script = ExtResource("1_ur5sn")
 max_stacks = 5
 amount_per_stack = 5.0
-active_color = Color(0, 0.59182435, 0, 1)
-diminished_color = Color(0, 0.2518736, 0, 1)
+effect_icon = ExtResource("2_mp33n")
