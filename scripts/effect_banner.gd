@@ -2,6 +2,15 @@ class_name EffectBanner
 extends Control
 
 @export var effect_icon: Texture2D
+@export var max_stacks: int:
+	set(value):
+		max_stacks = value
+		if not label: return
+		if value == 1:
+			label.visible = false
+		else:
+			label.visible = true
+
 @export var stacks: String
 @export var lifetime: float
 @export var is_endless: bool
@@ -16,6 +25,8 @@ func _ready() -> void:
 	bg_tween = create_tween()
 	label.text = stacks
 	bg_active.texture = effect_icon
+	max_stacks = max_stacks
+	
 	if not is_endless:
 		bg_tween.tween_property(bg_diminished,"size",Vector2(bg_diminished.size.x, bg_diminished.size.x), lifetime)
 

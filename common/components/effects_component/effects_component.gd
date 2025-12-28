@@ -31,8 +31,17 @@ func add_effect(effect_id: int) -> void:
 	multiplayer_spawner.spawn(effect_id)
 
 
+func remove_effect(effect_id: int) -> void:
+	if !owner.is_multiplayer_authority(): return
+	
+	for child in get_children():
+		if child is not Effect: continue
+		if child.get_meta("id") == effect_id:
+			child.force_finish_effect.rpc()
+
+
 @rpc("reliable","any_peer","call_local")
-func remove_custom(effect: Effect) -> void:
+func _remove_custom(effect: Effect) -> void:
 	if !owner.is_multiplayer_authority(): return
 	effect.queue_free()
 
@@ -43,6 +52,6 @@ func _custom_spawn(effect_id: int) -> Effect:
 	effect.set_meta("id", effect_id)
 	if owner.is_multiplayer_authority():
 		print("Effect %s added with %d stacks" % [effect.name, effect.current_stacks])
-	effect.to_be_deleted.connect(remove_custom)
+	effect.to_be_deleted.connect(_remove_custom)
 	
 	return effect

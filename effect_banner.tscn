@@ -29,7 +29,7 @@ anchor_bottom = 1.0
 offset_bottom = -64.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0, 0, 0, 0.39215687)
+color = Color(0, 0, 0, 0.49019608)
 
 [node name="Label" type="Label" parent="."]
 layout_mode = 1

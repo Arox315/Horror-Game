@@ -40,22 +40,26 @@ var default_value: float
 var target: Node3D
 var _is_on_cooldown: bool = false
 
+
 func _ready() -> void:
 	if not target: printerr("No target for effect: ", self)
-	current_stacks = current_stacks
+	current_stacks = current_stacks # makes sure the setter corrects invalid values
 	finished.connect(on_finished)
 	update_effect()
 	
-	if get_parent().owner is CharacterBody3D and get_parent().owner.is_multiplayer_authority():
+	# Setup effect banner
+	if get_parent().owner.is_in_group("Players") and get_parent().owner.is_multiplayer_authority():
 		var effect_banner: EffectBanner = EFFECT_BANNER.instantiate()
 		effect_banner.effect_icon = effect_icon
 		effect_banner.stacks = str(current_stacks)
+		effect_banner.max_stacks = max_stacks
 		effect_banner.lifetime = stack_uptime
 		effect_banner.is_endless = is_endless
 		stack_gained.connect(effect_banner.update_display)
 		stack_lost.connect(effect_banner.update_display)
 		finished.connect(effect_banner.delete)
 		get_parent().owner.effects.add_child(effect_banner)
+
 
 var _stack_livetime: float = 0.0
 func _physics_process(delta: float) -> void:
@@ -107,6 +111,15 @@ func decrement_stack(amount: int = 1) -> void:
 	
 	if get_parent().owner.is_multiplayer_authority():
 		print("Effect %s decremented to: %d stacks" % [name, current_stacks])
+
+
+@rpc("unreliable","any_peer","call_local")
+func force_finish_effect() -> void:
+	finished.emit()
+	_delete_effect()
+	
+	if get_parent().owner.is_multiplayer_authority():
+		print("Effect %s has been removed" % name)
 
 
 #@rpc("reliable","any_peer","call_local")

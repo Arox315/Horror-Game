@@ -38,6 +38,10 @@ folder_colors={
 "res://stages/": "purple"
 }
 
+[global_group]
+
+Players=""
+
 [input]
 
 forward={

@@ -58,7 +58,7 @@ properties/2/path = NodePath("CameraControllerAnchor/InteractRay:rotation")
 properties/2/spawn = true
 properties/2/replication_mode = 1
 
-[node name="Character" type="CharacterBody3D"]
+[node name="Character" type="CharacterBody3D" groups=["Players"]]
 script = ExtResource("1_glpr6")
 
 [node name="EffectsComponent" parent="." instance=ExtResource("2_7315l")]

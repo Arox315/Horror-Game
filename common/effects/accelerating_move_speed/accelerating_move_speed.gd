@@ -9,7 +9,7 @@ func update_effect() -> void:
 # (rather than after overtime interval)
 var elapsed: float = overtime_interval
 func apply_effect(delta: float) -> void:
-	# Tinearly go from base speed to base + uptime * amount - 1 (ends on reaching this value)
+	# Linearly go from base speed to base + uptime * amount - 1 (ends on reaching this value)
 	var current_amount = target.get_speed_multiplier(name) if target.get_speed_multiplier(name) else 0.0
 	target.set_speed_multiplier(name, lerp(current_amount, current_amount + amount_per_stack, delta))
 	
