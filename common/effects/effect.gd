@@ -31,6 +31,8 @@ signal stack_lost(stacks: int)
 @export var amount_per_stack: float = 1.0
 ##Delay between gaining the effect again after it has finished.
 @export var cooldown_after_finished: float = 0.0
+##Whether the effect has a display banner on Player's UI
+@export var has_icon: bool = true
 ##Icon for the effect
 @export var effect_icon: Texture2D
 
@@ -41,29 +43,28 @@ var target: Node3D
 var _is_on_cooldown: bool = false
 
 
+func _enter_tree() -> void:
+	set_multiplayer_authority(get_parent().owner.get_multiplayer_authority())
+	#var sync := MultiplayerSynchronizer.new()
+	#var config := SceneReplicationConfig.new()
+	#config.add_property(^":current_stacks")
+	#config.add_property(^":_stack_livetime")
+	#sync.name = "EffectSync"
+	#sync.replication_config = config
+	#sync.set_multiplayer_authority(get_multiplayer_authority())
+	#add_child(sync)
+
 func _ready() -> void:
 	if not target: printerr("No target for effect: ", self)
 	current_stacks = current_stacks # makes sure the setter corrects invalid values
 	finished.connect(on_finished)
 	update_effect()
-	
-	# Setup effect banner
-	if get_parent().owner.is_in_group("Players") and get_parent().owner.is_multiplayer_authority():
-		var effect_banner: EffectBanner = EFFECT_BANNER.instantiate()
-		effect_banner.effect_icon = effect_icon
-		effect_banner.stacks = str(current_stacks)
-		effect_banner.max_stacks = max_stacks
-		effect_banner.lifetime = stack_uptime
-		effect_banner.is_endless = is_endless
-		stack_gained.connect(effect_banner.update_display)
-		stack_lost.connect(effect_banner.update_display)
-		finished.connect(effect_banner.delete)
-		get_parent().owner.effects.add_child(effect_banner)
+	_setup_banner()
 
 
 var _stack_livetime: float = 0.0
 func _physics_process(delta: float) -> void:
-	if !get_parent().owner.is_multiplayer_authority(): return
+	if not is_multiplayer_authority(): return
 	if _is_on_cooldown: return
 	
 	if is_effect_overtime:
@@ -94,7 +95,7 @@ func increment_stack(amount: int = 1) -> void:
 	update_effect()
 	stack_gained.emit(current_stacks)
 	
-	if get_parent().owner.is_multiplayer_authority():
+	if is_multiplayer_authority():
 		print("Effect %s incremented to: %d stacks" % [name, current_stacks])
 
 
@@ -109,7 +110,7 @@ func decrement_stack(amount: int = 1) -> void:
 		finished.emit()
 		_delete_effect()
 	
-	if get_parent().owner.is_multiplayer_authority():
+	if is_multiplayer_authority():
 		print("Effect %s decremented to: %d stacks" % [name, current_stacks])
 
 
@@ -118,19 +119,35 @@ func force_finish_effect() -> void:
 	finished.emit()
 	_delete_effect()
 	
-	if get_parent().owner.is_multiplayer_authority():
+	if is_multiplayer_authority():
 		print("Effect %s has been removed" % name)
 
 
 #@rpc("reliable","any_peer","call_local")
 func _delete_effect() -> void:
-	if !get_parent().owner.is_multiplayer_authority(): return
+	if not is_multiplayer_authority(): return
 	#if cooldown_after_diminished > 0.0:
 	_is_on_cooldown = true
 	await get_tree().create_timer(cooldown_after_finished).timeout
 	
 	print("Effect %s ready to be applied again" % name)
 	to_be_deleted.emit(self)
+
+
+func _setup_banner() -> void:
+	if not has_icon: return
+	if not get_parent().owner.is_in_group("Players"): return
+	if not is_multiplayer_authority(): return
+	var effect_banner: EffectBanner = EFFECT_BANNER.instantiate()
+	effect_banner.effect_icon = effect_icon
+	effect_banner.stacks = str(current_stacks)
+	effect_banner.max_stacks = max_stacks
+	effect_banner.lifetime = stack_uptime
+	effect_banner.is_endless = is_endless
+	stack_gained.connect(effect_banner.update_display)
+	stack_lost.connect(effect_banner.update_display)
+	finished.connect(effect_banner.delete)
+	get_parent().owner.effects.add_child(effect_banner)
 
 
 @abstract
