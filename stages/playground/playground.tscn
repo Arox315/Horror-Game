@@ -3,7 +3,6 @@
 [ext_resource type="PackedScene" uid="uid://352pm4hcxqtx" path="res://stages/playground/block.tscn" id="1_qchbg"]
 [ext_resource type="Script" uid="uid://cnglits2m8u6w" path="res://scripts/multiplayer_menu.gd" id="2_elqxi"]
 [ext_resource type="PackedScene" uid="uid://dmgtd4kr3b0wd" path="res://entities/interactables/color_changer/color_changer.tscn" id="3_bkhp6"]
-[ext_resource type="Script" uid="uid://soo14qrxfc6t" path="res://common/interactable/object/interactable_object.gd" id="3_sx8fd"]
 [ext_resource type="PackedScene" uid="uid://dbwe4mpgrbf1o" path="res://common/interactable/trigger/interactable_trigger.tscn" id="4_ruau5"]
 [ext_resource type="PackedScene" uid="uid://cj72bmdxu2h7b" path="res://entities/interactables/teleporter/teleporter.tscn" id="6_ilnn3"]
 
@@ -25,6 +24,14 @@ background_mode = 2
 sky = SubResource("Sky_m8u5f")
 tonemap_mode = 2
 glow_enabled = true
+
+[sub_resource type="GDScript" id="GDScript_ruau5"]
+script/source = "extends InteractableObject
+
+func _on_interacted(body:Variant, _sender: InteractableTrigger) -> void:
+	EffectsSystem.send_add_effect_request(body,EffectsTable.Effects.BONUS_JUMP_HEIGHT)
+	ServerRequests.send_delete_request(self)
+"
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_o6tti"]
 
@@ -135,8 +142,9 @@ func _physics_process(delta: float) -> void:
 	elapsed += delta
 	if elapsed >= retrigger_cooldown:
 		for body in get_overlapping_bodies():
-			if body.has_node(\"EffectsComponent\") and body.is_multiplayer_authority():
-				body.get_node(\"EffectsComponent\").add_effect.rpc(EffectsTable.Effects.BONUS_JUMP_HEIGHT)
+			EffectsSystem.send_add_effect_request(body, EffectsTable.Effects.BONUS_JUMP_HEIGHT)
+			#if body.has_node(\"EffectsComponent\") and body.is_multiplayer_authority():
+				#body.get_node(\"EffectsComponent\").add_effect.rpc(EffectsTable.Effects.BONUS_JUMP_HEIGHT)
 		elapsed = 0.0
 
 
@@ -163,8 +171,9 @@ func _physics_process(delta: float) -> void:
 	elapsed += delta
 	if elapsed >= retrigger_cooldown:
 		for body in get_overlapping_bodies():
-			if body.has_node(\"EffectsComponent\") and body.is_multiplayer_authority():
-				body.get_node(\"EffectsComponent\").remove_effect(EffectsTable.Effects.ACCELERATING_MOVE_SPEED)
+			EffectsSystem.send_remove_effect_request(body, EffectsTable.Effects.ACCELERATING_MOVE_SPEED)
+			#if body.has_node(\"EffectsComponent\") and body.is_multiplayer_authority():
+				#body.get_node(\"EffectsComponent\").remove_effect(EffectsTable.Effects.ACCELERATING_MOVE_SPEED)
 		elapsed = 0.0
 "
 
@@ -270,7 +279,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.24658, 1.04155, 0)
 
 [node name="TestInteractable" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.31665, 1, -0.354247)
-script = ExtResource("3_sx8fd")
+script = SubResource("GDScript_ruau5")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="TestInteractable"]
 mesh = SubResource("CylinderMesh_o6tti")
@@ -301,7 +310,6 @@ size = Vector3(3, 2, 1)
 [node name="DoubleDoors" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -7.75)
 script = SubResource("GDScript_bkhp6")
-prompt_message = "Press [{str}] to open"
 
 [node name="Door1" type="CSGBox3D" parent="DoubleDoors"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.75, 1, 0)
@@ -354,27 +362,27 @@ shape = SubResource("BoxShape3D_bkhp6")
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="DoubleDoors"]
 replication_config = SubResource("SceneReplicationConfig_bkhp6")
 
-[node name="TestEffectTrigger" type="CSGBox3D" parent="."]
+[node name="TestEffectSetter" type="CSGBox3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0.025, -21)
 size = Vector3(2, 0.05, 2)
 material = SubResource("StandardMaterial3D_ac2je")
 
-[node name="Trigger" type="Area3D" parent="TestEffectTrigger"]
+[node name="Trigger" type="Area3D" parent="TestEffectSetter"]
 script = SubResource("GDScript_35kbn")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="TestEffectTrigger/Trigger"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TestEffectSetter/Trigger"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
 shape = SubResource("BoxShape3D_4y8jm")
 
-[node name="CSGBox3D" type="CSGBox3D" parent="."]
+[node name="TestEffectRemover" type="CSGBox3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0.025, -21)
 size = Vector3(2, 0.05, 2)
 material = SubResource("StandardMaterial3D_35kbn")
 
-[node name="Area3D" type="Area3D" parent="CSGBox3D"]
+[node name="Area3D" type="Area3D" parent="TestEffectRemover"]
 script = SubResource("GDScript_4y8jm")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="CSGBox3D/Area3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TestEffectRemover/Area3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 shape = SubResource("BoxShape3D_7h8id")
 

@@ -5,5 +5,5 @@
 [node name="EffectsComponent" type="Node"]
 script = ExtResource("1_7isc8")
 
-[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
+[node name="EffectSpawner" type="MultiplayerSpawner" parent="."]
 spawn_path = NodePath("..")

@@ -23,3 +23,7 @@ func apply_effect(delta: float) -> void:
 
 func on_finished() -> void:
 	target.remove_speed_multiplier(name)
+
+
+func on_deleted() -> void:
+	pass

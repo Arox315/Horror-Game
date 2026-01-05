@@ -3,7 +3,7 @@ class_name Effect
 extends Node
 
 signal finished
-signal to_be_deleted(effect: Effect)
+signal deleted
 signal stack_gained(stacks: int)
 signal stack_lost(stacks: int)
 
@@ -44,27 +44,30 @@ var _is_on_cooldown: bool = false
 
 
 func _enter_tree() -> void:
-	set_multiplayer_authority(get_parent().owner.get_multiplayer_authority())
+	#set_multiplayer_authority(get_parent().owner.get_multiplayer_authority())
 	#var sync := MultiplayerSynchronizer.new()
 	#var config := SceneReplicationConfig.new()
 	#config.add_property(^":current_stacks")
 	#config.add_property(^":_stack_livetime")
 	#sync.name = "EffectSync"
 	#sync.replication_config = config
-	#sync.set_multiplayer_authority(get_multiplayer_authority())
+	#sync.set_multiplayer_authority(1)
 	#add_child(sync)
+	pass
 
 func _ready() -> void:
 	if not target: printerr("No target for effect: ", self)
 	current_stacks = current_stacks # makes sure the setter corrects invalid values
 	finished.connect(on_finished)
+	deleted.connect(on_deleted)
 	update_effect()
 	_setup_banner()
 
 
 var _stack_livetime: float = 0.0
 func _physics_process(delta: float) -> void:
-	if not is_multiplayer_authority(): return
+	if not target.is_multiplayer_authority(): return
+	
 	if _is_on_cooldown: return
 	
 	if is_effect_overtime:
@@ -95,8 +98,8 @@ func increment_stack(amount: int = 1) -> void:
 	update_effect()
 	stack_gained.emit(current_stacks)
 	
-	if is_multiplayer_authority():
-		print("Effect %s incremented to: %d stacks" % [name, current_stacks])
+	if multiplayer.is_server():
+		print("[%s] Effect %s incremented to: %d stacks" % [target, name, current_stacks])
 
 
 @rpc("unreliable","any_peer","call_local")
@@ -110,34 +113,35 @@ func decrement_stack(amount: int = 1) -> void:
 		finished.emit()
 		_delete_effect()
 	
-	if is_multiplayer_authority():
-		print("Effect %s decremented to: %d stacks" % [name, current_stacks])
+	if multiplayer.is_server():
+		print("[%s] Effect %s decremented to: %d stacks" % [target, name, current_stacks])
 
 
 @rpc("unreliable","any_peer","call_local")
 func force_finish_effect() -> void:
+	if multiplayer.is_server():
+		print("[%s] Effect %s has been removed" % [target, name])
+	
 	finished.emit()
 	_delete_effect()
-	
-	if is_multiplayer_authority():
-		print("Effect %s has been removed" % name)
 
 
 #@rpc("reliable","any_peer","call_local")
 func _delete_effect() -> void:
-	if not is_multiplayer_authority(): return
+	if not multiplayer.is_server(): return
 	#if cooldown_after_diminished > 0.0:
 	_is_on_cooldown = true
 	await get_tree().create_timer(cooldown_after_finished).timeout
 	
-	print("Effect %s ready to be applied again" % name)
-	to_be_deleted.emit(self)
+	print("[%s] Effect %s ready to be applied again" % [target, name])
+	ServerRequests.send_delete_request(self)
+	deleted.emit()
 
 
 func _setup_banner() -> void:
 	if not has_icon: return
 	if not get_parent().owner.is_in_group("Players"): return
-	if not is_multiplayer_authority(): return
+	if not target.is_multiplayer_authority(): return
 	var effect_banner: EffectBanner = EFFECT_BANNER.instantiate()
 	effect_banner.effect_icon = effect_icon
 	effect_banner.stacks = str(current_stacks)
@@ -147,8 +151,12 @@ func _setup_banner() -> void:
 	stack_gained.connect(effect_banner.update_display)
 	stack_lost.connect(effect_banner.update_display)
 	finished.connect(effect_banner.delete)
-	get_parent().owner.effects.add_child(effect_banner)
+	target.effects.add_child(effect_banner)
 
 
 @abstract
 func on_finished() -> void
+
+
+@abstract
+func on_deleted() -> void

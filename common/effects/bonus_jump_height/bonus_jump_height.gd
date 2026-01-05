@@ -17,3 +17,7 @@ func update_effect() -> void:
 
 func on_finished() -> void:
 	pass
+
+
+func on_deleted() -> void:
+	pass

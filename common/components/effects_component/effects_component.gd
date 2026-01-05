@@ -1,25 +1,19 @@
 class_name EffectsComponent
 extends Node
 
-@onready var multiplayer_spawner: MultiplayerSpawner = $MultiplayerSpawner
+@onready var effect_spawner: MultiplayerSpawner = $EffectSpawner
 
 var spawn_table: Dictionary = {}
 
 func _ready() -> void:
-	multiplayer_spawner.spawn_function = Callable(_custom_spawn)
+	set_multiplayer_authority(1)
+	effect_spawner.spawn_function = Callable(_spawn_effect)
 	multiplayer.allow_object_decoding = true
 	spawn_table = EffectsTable.TABLE
 
-func _physics_process(_delta: float) -> void:
-	if not is_multiplayer_authority(): return
-	if Input.is_action_just_pressed("debug_add_effect"):
-		var effect_to_add = EffectsTable.Effects.ACCELERATING_MOVE_SPEED
-		add_effect.rpc(effect_to_add)
 
-
-@rpc("reliable","any_peer","call_local")
 func add_effect(effect_id: int) -> void:
-	if not is_multiplayer_authority(): return
+	if not multiplayer.is_server(): return
 	
 	for child in get_children():
 		if child is not Effect: continue
@@ -28,7 +22,7 @@ func add_effect(effect_id: int) -> void:
 				child.increment_stack.rpc()
 				return
 	
-	multiplayer_spawner.spawn(effect_id)
+	effect_spawner.spawn(effect_id)
 
 
 func remove_effect(effect_id: int) -> void:
@@ -40,18 +34,22 @@ func remove_effect(effect_id: int) -> void:
 			child.force_finish_effect.rpc()
 
 
-@rpc("reliable","any_peer","call_local")
-func _remove_custom(effect: Effect) -> void:
-	if not is_multiplayer_authority(): return
-	effect.queue_free()
+func remove_effect_server(effect_id: int) -> void:
+	if not multiplayer.is_server():
+		return
+	
+	for child in get_children():
+		if child is not Effect: continue
+		if child.get_meta("id") == effect_id:
+			child.force_finish_effect.rpc()
+			return
 
 
-func _custom_spawn(effect_id: int) -> Effect:
+func _spawn_effect(effect_id: int) -> Effect:
 	var effect: Effect = spawn_table[effect_id].instantiate()
 	effect.target = owner
 	effect.set_meta("id", effect_id)
-	if is_multiplayer_authority():
-		print("Effect %s added with %d stacks" % [effect.name, effect.current_stacks])
-	effect.to_be_deleted.connect(_remove_custom)
+	if multiplayer.is_server():
+		print("[%s] Effect %s added with %d stacks" % [effect.target, effect.name, effect.current_stacks])
 	
 	return effect

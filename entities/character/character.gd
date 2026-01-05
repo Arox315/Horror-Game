@@ -54,7 +54,7 @@ func _ready() -> void:
 	camera_controller.set_physics_interpolation_mode(Node.PHYSICS_INTERPOLATION_MODE_OFF)
 	
 	# Set random color for 3rd-person mesh
-	character_color = Color(RandomColorGenerator.rand_hex())
+	character_color = Color(Utilities.get_random_hex_color())
 	body_model.color = character_color
 	
 	# Hide authority's world model
@@ -89,7 +89,11 @@ func _physics_process(delta: float) -> void:
 	# Don't execute code if not authority
 	if !is_multiplayer_authority():
 		return
-	#print(current_speed)
+	
+	if Input.is_action_just_pressed("debug_add_effect"):
+		var effect_to_add = EffectsTable.Effects.ACCELERATING_MOVE_SPEED
+		EffectsSystem.send_add_effect_request(self, effect_to_add)
+	
 	# toggle 3rd person
 	if Input.is_action_just_pressed("change_perspective"):
 		toggle_third_person()

@@ -36,7 +36,7 @@ func _ready() -> void:
 
 
 func generate_new_color() -> void:
-	color = Color(RandomColorGenerator.rand_hex())
+	color = Color(Utilities.get_random_hex_color())
 "
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_0c2ax"]
