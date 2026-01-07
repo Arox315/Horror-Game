@@ -33,16 +33,16 @@ func _ready() -> void:
 
 
 func update_display(new_stacks: int) -> void:
-	if is_endless: return
 	if new_stacks <= 0: return
 	
 	label.text = str(new_stacks)
-
-	tween.kill()
-	tween = create_tween()
 	
-	diminished_overlay.size.y = 0.0
-	tween.tween_property(diminished_overlay,"size",Vector2(diminished_overlay.size.x, diminished_overlay.size.x), lifetime)
+	if not is_endless:
+		tween.kill()
+		tween = create_tween()
+		
+		diminished_overlay.size.y = 0.0
+		tween.tween_property(diminished_overlay,"size",Vector2(diminished_overlay.size.x, diminished_overlay.size.x), lifetime)
 
 
 func delete() -> void:
