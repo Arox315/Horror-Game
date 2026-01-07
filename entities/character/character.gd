@@ -1,6 +1,5 @@
 extends CharacterBody3D
 
-@export var character_color: Color = Color.WHITE
 @export var first_person_camera_position: Vector3 = Vector3.ZERO
 @export var third_person_camera_position: Vector3 = Vector3(0, 0.8, 1.8)
 
@@ -31,6 +30,9 @@ func _enter_tree() -> void:
 
 
 func _ready() -> void:
+	# Set move speed
+	update_speed()
+	
 	# Don't execute code if not authority
 	if not is_multiplayer_authority():
 		# disable camera if not authority
@@ -54,14 +56,10 @@ func _ready() -> void:
 	camera_controller.set_physics_interpolation_mode(Node.PHYSICS_INTERPOLATION_MODE_OFF)
 	
 	# Set random color for 3rd-person mesh
-	character_color = Color(Utilities.get_random_hex_color())
-	body_model.color = character_color
+	body_model.color = Color(Utilities.get_random_hex_color())
 	
 	# Hide authority's world model
 	hide_world_model()
-	
-	# Set move speed
-	update_speed()
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -92,7 +90,7 @@ func _physics_process(delta: float) -> void:
 	
 	if Input.is_action_just_pressed("debug_add_effect"):
 		var effect_to_add = EffectsTable.Effects.ACCELERATING_MOVE_SPEED
-		EffectsSystem.send_add_effect_request(self, effect_to_add)
+		ServerRequests.send_add_effect_request(self, effect_to_add)
 	
 	# toggle 3rd person
 	if Input.is_action_just_pressed("change_perspective"):

@@ -21,6 +21,7 @@ extends Control
 
 var bg_tween: Tween
 
+
 func _ready() -> void:
 	bg_tween = create_tween()
 	label.text = stacks
@@ -32,18 +33,15 @@ func _ready() -> void:
 
 
 func update_display(new_stacks: int) -> void:
+	if is_endless: return
 	if new_stacks <= 0: return
 	
 	label.text = str(new_stacks)
 
-	if is_endless: return
-	
 	bg_tween.kill()
-	
 	bg_tween = create_tween()
 	
 	bg_diminished.size.y = 0.0
-	
 	bg_tween.tween_property(bg_diminished,"size",Vector2(bg_diminished.size.x, bg_diminished.size.x), lifetime)
 
 

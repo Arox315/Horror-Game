@@ -18,9 +18,8 @@ func get_player_by_peer_id(peer_id: int) -> Node:
 func get_random_hex_color() -> String:
 	var chars: String = "ABCDEF0123456789"
 	var value: String = "#"
-	var rng = RandomNumberGenerator.new()
 	
 	for i in 6:
-		value += chars[rng.randi_range(0,len(chars)-1)]
+		value += chars[randi_range(0,len(chars)-1)]
 		
 	return value

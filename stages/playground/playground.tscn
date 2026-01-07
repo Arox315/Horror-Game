@@ -1,9 +1,10 @@
-[gd_scene load_steps=28 format=3 uid="uid://dvi7lqoafi1cl"]
+[gd_scene load_steps=29 format=3 uid="uid://dvi7lqoafi1cl"]
 
 [ext_resource type="PackedScene" uid="uid://352pm4hcxqtx" path="res://stages/playground/block.tscn" id="1_qchbg"]
 [ext_resource type="Script" uid="uid://cnglits2m8u6w" path="res://scripts/multiplayer_menu.gd" id="2_elqxi"]
 [ext_resource type="PackedScene" uid="uid://dmgtd4kr3b0wd" path="res://entities/interactables/color_changer/color_changer.tscn" id="3_bkhp6"]
 [ext_resource type="PackedScene" uid="uid://dbwe4mpgrbf1o" path="res://common/interactable/trigger/interactable_trigger.tscn" id="4_ruau5"]
+[ext_resource type="PackedScene" uid="uid://c4upv6xtythq5" path="res://stages/test_enemy.tscn" id="6_bkhp6"]
 [ext_resource type="PackedScene" uid="uid://cj72bmdxu2h7b" path="res://entities/interactables/teleporter/teleporter.tscn" id="6_ilnn3"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_edjgo"]
@@ -29,8 +30,8 @@ glow_enabled = true
 script/source = "extends InteractableObject
 
 func _on_interacted(body:Variant, _sender: InteractableTrigger) -> void:
-	EffectsSystem.send_add_effect_request(body,EffectsTable.Effects.BONUS_JUMP_HEIGHT)
-	ServerRequests.send_delete_request(self)
+	ServerRequests.send_add_effect_request(body,EffectsTable.Effects.BONUS_JUMP_HEIGHT)
+	#ServerRequests.send_delete_request(self)
 "
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_o6tti"]
@@ -137,15 +138,17 @@ script/source = "extends Area3D
 
 @export var retrigger_cooldown: float = 1.0
 
-var elapsed: float = 0.0
+var c := true
+var elapsed: float = -5.0
 func _physics_process(delta: float) -> void:
+	if get_tree().get_nodes_in_group(\"Players\").is_empty(): return
+	if not c: return
 	elapsed += delta
 	if elapsed >= retrigger_cooldown:
 		for body in get_overlapping_bodies():
-			EffectsSystem.send_add_effect_request(body, EffectsTable.Effects.BONUS_JUMP_HEIGHT)
-			#if body.has_node(\"EffectsComponent\") and body.is_multiplayer_authority():
-				#body.get_node(\"EffectsComponent\").add_effect.rpc(EffectsTable.Effects.BONUS_JUMP_HEIGHT)
+			ServerRequests.send_add_effect_request(body, EffectsTable.Effects.BONUS_JUMP_HEIGHT)
 		elapsed = 0.0
+		c = false
 
 
 #func _on_body_entered(body: Node3D) -> void:
@@ -171,7 +174,7 @@ func _physics_process(delta: float) -> void:
 	elapsed += delta
 	if elapsed >= retrigger_cooldown:
 		for body in get_overlapping_bodies():
-			EffectsSystem.send_remove_effect_request(body, EffectsTable.Effects.ACCELERATING_MOVE_SPEED)
+			ServerRequests.send_remove_effect_request(body, EffectsTable.Effects.ACCELERATING_MOVE_SPEED)
 			#if body.has_node(\"EffectsComponent\") and body.is_multiplayer_authority():
 				#body.get_node(\"EffectsComponent\").remove_effect(EffectsTable.Effects.ACCELERATING_MOVE_SPEED)
 		elapsed = 0.0
@@ -385,6 +388,9 @@ script = SubResource("GDScript_4y8jm")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="TestEffectRemover/Area3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 shape = SubResource("BoxShape3D_7h8id")
+
+[node name="TestEnemy" parent="." instance=ExtResource("6_bkhp6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.910153, 19.73263, -20.560532)
 
 [connection signal="pressed" from="MultiplayerMenu/Panel/VBoxContainer/HostButton" to="MultiplayerMenu" method="_on_host_button_pressed"]
 [connection signal="pressed" from="MultiplayerMenu/Panel/VBoxContainer/JoinButton" to="MultiplayerMenu" method="_on_join_button_pressed"]

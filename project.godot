@@ -16,11 +16,10 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-MultiplayerManager="*res://globals/multiplayer_manager.gd"
-EffectsTable="*res://globals/effects_table.gd"
-EffectsSystem="*res://globals/effects_system.gd"
-ServerRequests="*res://globals/server_requests.gd"
-Utilities="*res://globals/utilities.gd"
+MultiplayerManager="*res://globals/autoloads/multiplayer_manager.gd"
+EffectsTable="*res://globals/autoloads/effects_table.gd"
+ServerRequests="*res://globals/autoloads/server_requests.gd"
+Utilities="*res://globals/autoloads/utilities.gd"
 
 [display]
 

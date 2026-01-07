@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://b3xismmir0wg6"]
 
-[ext_resource type="Script" uid="uid://dtp8cmndps4xm" path="res://scripts/effect_banner.gd" id="1_rgfwr"]
-[ext_resource type="Texture2D" uid="uid://qxxd5w4w1tss" path="res://assets/icons/effects/accelerating_move_speed_icon.png" id="2_3gcmf"]
+[ext_resource type="Script" uid="uid://dtp8cmndps4xm" path="res://common/components/effects_component/effect_banner/effect_banner.gd" id="1_4qtbp"]
+[ext_resource type="Texture2D" uid="uid://qxxd5w4w1tss" path="res://assets/icons/effects/accelerating_move_speed_icon.png" id="2_ivpa3"]
 
 [node name="EffectBanner" type="Control"]
 custom_minimum_size = Vector2(64, 64)
@@ -9,7 +9,7 @@ layout_mode = 3
 anchors_preset = 0
 offset_right = 64.0
 offset_bottom = 64.0
-script = ExtResource("1_rgfwr")
+script = ExtResource("1_4qtbp")
 
 [node name="BGActive" type="TextureRect" parent="."]
 layout_mode = 1
@@ -18,7 +18,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("2_3gcmf")
+texture = ExtResource("2_ivpa3")
 expand_mode = 1
 
 [node name="BGDiminished" type="ColorRect" parent="."]
