@@ -15,21 +15,21 @@ extends Control
 @export var lifetime: float
 @export var is_endless: bool
 
-@onready var bg_active: TextureRect = $BGActive
-@onready var bg_diminished: ColorRect = $BGDiminished
-@onready var label: Label = $Label
+@onready var icon: TextureRect = $InnerPanelWrapper/InnerPanel/Icon
+@onready var diminished_overlay: ColorRect = $InnerPanelWrapper/InnerPanel/DiminishedOverlay
+@onready var label: Label = $InnerPanelWrapper/InnerPanel/Label
 
-var bg_tween: Tween
+var tween: Tween
 
 
 func _ready() -> void:
-	bg_tween = create_tween()
+	tween = create_tween()
 	label.text = stacks
-	bg_active.texture = effect_icon
+	icon.texture = effect_icon
 	max_stacks = max_stacks
 	
 	if not is_endless:
-		bg_tween.tween_property(bg_diminished,"size",Vector2(bg_diminished.size.x, bg_diminished.size.x), lifetime)
+		tween.tween_property(diminished_overlay,"size",Vector2(diminished_overlay.size.x, diminished_overlay.size.x), lifetime)
 
 
 func update_display(new_stacks: int) -> void:
@@ -38,13 +38,13 @@ func update_display(new_stacks: int) -> void:
 	
 	label.text = str(new_stacks)
 
-	bg_tween.kill()
-	bg_tween = create_tween()
+	tween.kill()
+	tween = create_tween()
 	
-	bg_diminished.size.y = 0.0
-	bg_tween.tween_property(bg_diminished,"size",Vector2(bg_diminished.size.x, bg_diminished.size.x), lifetime)
+	diminished_overlay.size.y = 0.0
+	tween.tween_property(diminished_overlay,"size",Vector2(diminished_overlay.size.x, diminished_overlay.size.x), lifetime)
 
 
 func delete() -> void:
-	bg_tween.kill()
+	tween.kill()
 	queue_free()

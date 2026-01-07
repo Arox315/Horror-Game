@@ -1,13 +1,15 @@
 extends Node
+## The ServerRequests provide methods that send requests from clients to the server to perform actions
 
-
-# ----- Node deletion -----
+# ----- Scene Node deletion -----
 
 ## Sends a request to the server to delete the [param node].
+## [br][b]Important[/b]: This request can delete scene nodes.
+## It is recomended to use [method Node.queue_free] for deleting spawned nodes instead of this request.
 func send_delete_request(node: Node) -> void:
 	var node_path: NodePath = node.get_path()
 	if node_path.is_empty(): return
-	
+
 	if multiplayer.is_server():
 		_request_delete_server.rpc(1, node_path)
 	else:

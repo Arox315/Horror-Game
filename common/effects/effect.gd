@@ -12,19 +12,7 @@ signal stack_lost(stacks: int)
 ##Current amount of stacks of the effect. Effect will start with this amount.
 @export var current_stacks: int = 1:
 	set(value):
-		#var old := current_stacks
 		current_stacks = clamp(value, 0, max_stacks)
-		#if not is_inside_tree(): return
-		#
-		#if current_stacks > old:
-			#stack_gained.emit(current_stacks)
-			#
-		#if current_stacks < old:
-			#stack_lost.emit(current_stacks)
-			#
-		#if old > 0 and current_stacks <= 0:
-			#finished.emit()
-
 ##How long each stack lasts.
 @export var stack_uptime: float = 5.0
 ##If effect is not unique gaining it again while active will not increase a stack but create another instance of the effect.
@@ -72,7 +60,6 @@ func _ready() -> void:
 	deleted.connect(on_deleted)
 	update_effect()
 	_setup_banner()
-	#print(target, multiplayer.get_remote_sender_id(), finished.get_connections())
 
 
 var _stack_livetime: float = 0.0
@@ -138,15 +125,6 @@ func _emit_stack_lost_global(stacks: int) -> void:
 	stack_lost.emit(stacks)
 
 
-#@rpc("unreliable","any_peer","call_local")
-#func force_finish_effect() -> void:
-	#if multiplayer.is_server():
-		#print("[%s] Effect %s has been removed" % [target, name])
-	#
-	#_emit_finish_global.rpc()
-	#delete_effect()
-
-
 func delete_effect() -> void:
 	_emit_finished_global.rpc()
 	
@@ -157,16 +135,6 @@ func delete_effect() -> void:
 	
 	queue_free()
 	_emit_deleted_global.rpc()
-
-
-#func _disable_sync() -> void:
-	#var sync = get_node_or_null("EffectSync") as MultiplayerSynchronizer
-	#if not sync: return
-	#
-	#sync.set_visibility_for(0, false)
-	#sync.set_multiplayer_authority(1)
-	#sync.process_mode = Node.PROCESS_MODE_DISABLED
-	#ServerRequests.send_delete_request(sync)
 
 
 func _setup_banner() -> void:
