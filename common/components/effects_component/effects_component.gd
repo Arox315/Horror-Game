@@ -34,7 +34,7 @@ func remove_effect(effect_id: int) -> void:
 	for child in get_children():
 		if child is not Effect: continue
 		if child.get_meta("id") == effect_id:
-			child.delete_effect()
+			child.end_effect()
 			return
 
 

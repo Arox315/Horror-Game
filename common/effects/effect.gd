@@ -79,7 +79,7 @@ func _physics_process(delta: float) -> void:
 		decrement_stack()
 	
 	if current_stacks <= 0:
-		delete_effect()
+		_delete_effect()
 
 
 func increment_stack(amount: int = 1) -> void:
@@ -125,7 +125,12 @@ func _emit_stack_lost_global(stacks: int) -> void:
 	stack_lost.emit(stacks)
 
 
-func delete_effect() -> void:
+func end_effect() -> void:
+	print("[%s] Effect %s has been removed" % [target, name])
+	_delete_effect()
+
+
+func _delete_effect() -> void:
 	_emit_finished_global.rpc()
 	
 	_is_on_cooldown = true

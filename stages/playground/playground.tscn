@@ -141,6 +141,7 @@ script/source = "extends Area3D
 var c := true
 var elapsed: float = -5.0
 func _physics_process(delta: float) -> void:
+	if not multiplayer.is_server(): return
 	if get_tree().get_nodes_in_group(\"Players\").is_empty(): return
 	if not c: return
 	elapsed += delta
@@ -171,6 +172,7 @@ script/source = "extends Area3D
 
 var elapsed: float = 0.0
 func _physics_process(delta: float) -> void:
+	if not multiplayer.is_server(): return
 	elapsed += delta
 	if elapsed >= retrigger_cooldown:
 		for body in get_overlapping_bodies():
@@ -390,7 +392,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 shape = SubResource("BoxShape3D_7h8id")
 
 [node name="TestEnemy" parent="." instance=ExtResource("6_bkhp6")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.638906, 19.73263, -20.560532)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.9557676, 19.73263, -20.560532)
 
 [connection signal="pressed" from="MultiplayerMenu/Panel/VBoxContainer/HostButton" to="MultiplayerMenu" method="_on_host_button_pressed"]
 [connection signal="pressed" from="MultiplayerMenu/Panel/VBoxContainer/JoinButton" to="MultiplayerMenu" method="_on_join_button_pressed"]
