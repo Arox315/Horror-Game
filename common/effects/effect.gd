@@ -79,6 +79,7 @@ func _physics_process(delta: float) -> void:
 		decrement_stack()
 	
 	if current_stacks <= 0:
+		print("[%s] Effect %s has finished" % [target, name])
 		_delete_effect()
 
 
