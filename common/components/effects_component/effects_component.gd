@@ -44,6 +44,6 @@ func _spawn_effect(effect_id: int) -> Effect:
 	effect.set_meta("id", effect_id)
 	
 	if multiplayer.is_server():
-		print("[%s] Effect %s added with %d stacks" % [effect.target, effect.name, effect.current_stacks])
+		print("[%s] Effect %s added with %d stacks" % [effect.target, effect.name, effect.initial_stacks])
 	
 	return effect

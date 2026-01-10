@@ -58,23 +58,22 @@ func delete() -> void:
 
 func set_is_update_locked(value: bool) -> void:
 	is_update_locked = value
-	if is_update_locked:
-		if tween: tween.stop()
+	if is_update_locked and not is_reversed:
+		if tween.is_valid(): tween.stop()
 	else:
-		if tween: tween.play()
+		if tween.is_valid(): tween.play()
 
 
 func set_is_update_reversed_locked(value: bool) -> void:
 	is_update_reversed_locked = value
-	if is_update_reversed_locked:
-		if tween: tween.stop()
+	if is_update_reversed_locked and is_reversed:
+		if tween.is_valid(): tween.stop()
 	else:
-		if tween: tween.play()
+		if tween.is_valid(): tween.play()
 
 
 func _update_display(new_stacks: int) -> void:
 	if new_stacks <= 0: return
-	print("lol")
 	label.text = str(new_stacks)
 	current_stacks = new_stacks
 	
@@ -98,7 +97,7 @@ func _update_display_reversed(new_stacks: int) -> void:
 	if regenerates_stacks and not is_update_reversed_locked:
 		if tween: tween.kill()
 		tween = create_tween()
-			
+		
 		diminished_overlay.size.y = diminished_overlay.size.x
 		tween.tween_property(diminished_overlay,"size",Vector2(diminished_overlay.size.x, 0.0), stack_duration)
 
