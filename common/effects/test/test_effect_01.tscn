@@ -8,5 +8,7 @@ max_stacks = 8
 initial_stacks = 8
 max_stack_loss_per_window = 2
 stack_loss_window = 4.0
+gain_delay_after_loss = 2.0
+loss_delay_after_gain = 2.0
 is_reversed = true
 regenerates_stacks = true

@@ -153,6 +153,7 @@ func _physics_process(delta: float) -> void:
 func _process_regular(delta: float) -> void:
 	if is_endless: return
 	if _is_decrement_locked: return
+	if _is_increment_locked: return
 	
 	_stack_livetime += delta
 	if _stack_livetime >= stack_duration:
@@ -166,7 +167,9 @@ func _process_regular(delta: float) -> void:
 func _process_reversed(delta: float) -> void:
 	if not regenerates_stacks: return
 	if current_stacks == max_stacks: return
+	if _is_decrement_locked: return
 	if _is_increment_locked: return
+	
 	
 	_stack_livetime += delta
 	if _stack_livetime >= stack_duration:

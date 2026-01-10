@@ -58,7 +58,7 @@ func delete() -> void:
 
 func set_is_update_locked(value: bool) -> void:
 	is_update_locked = value
-	if is_update_locked and not is_reversed:
+	if is_update_locked:
 		if tween.is_valid(): tween.stop()
 	else:
 		if tween.is_valid(): tween.play()
@@ -66,7 +66,7 @@ func set_is_update_locked(value: bool) -> void:
 
 func set_is_update_reversed_locked(value: bool) -> void:
 	is_update_reversed_locked = value
-	if is_update_reversed_locked and is_reversed:
+	if is_update_reversed_locked:
 		if tween.is_valid(): tween.stop()
 	else:
 		if tween.is_valid(): tween.play()
