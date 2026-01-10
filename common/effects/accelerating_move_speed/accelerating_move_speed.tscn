@@ -5,8 +5,9 @@
 
 [node name="AcceleratingMoveSpeed" type="Node"]
 script = ExtResource("1_v0rko")
-stack_uptime = 10.0
-is_effect_overtime = true
-can_increment_while_active = false
-cooldown_after_finished = 2.0
-effect_icon = ExtResource("2_sumbf")
+stack_duration = 10.0
+is_ticking = true
+can_gain_while_active = false
+can_gain_from_source_reapply = false
+reapply_cooldown = 2.0
+icon = ExtResource("2_sumbf")

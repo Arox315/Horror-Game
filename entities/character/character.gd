@@ -1,5 +1,7 @@
 extends CharacterBody3D
 
+signal test
+
 @export var first_person_camera_position: Vector3 = Vector3.ZERO
 @export var third_person_camera_position: Vector3 = Vector3(0, 0.8, 1.8)
 
@@ -89,8 +91,12 @@ func _physics_process(delta: float) -> void:
 		return
 	
 	if Input.is_action_just_pressed("debug_add_effect"):
-		var effect_to_add = EffectsTable.Effects.ACCELERATING_MOVE_SPEED
+		var effect_to_add = EffectsTable.Effects.BONUS_JUMP_HEIGHT
 		ServerRequests.send_add_effect_request(self, effect_to_add)
+	
+	if Input.is_action_just_pressed("debug_effect"):
+		#test.emit()
+		ServerRequests.send_emit_signal_request(self, test)
 	
 	# toggle 3rd person
 	if Input.is_action_just_pressed("change_perspective"):

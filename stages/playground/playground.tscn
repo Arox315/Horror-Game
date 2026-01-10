@@ -30,7 +30,7 @@ glow_enabled = true
 script/source = "extends InteractableObject
 
 func _on_interacted(body:Variant, _sender: InteractableTrigger) -> void:
-	ServerRequests.send_add_effect_request(body,EffectsTable.Effects.BONUS_JUMP_HEIGHT)
+	ServerRequests.send_add_effect_request(body,EffectsTable.Effects.TEST01)
 	#ServerRequests.send_delete_request(self)
 "
 

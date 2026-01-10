@@ -34,9 +34,70 @@ func _request_delete_server(sender_id: int, node_path: NodePath) -> void:
 	if node: node.queue_free()
 
 
+
+
+# ----- Signal emit -----
+
+## Sends a request to the server to emit a [param signal] from the [param target].
+## [br][color=yellow]This request emits the specified signal only if the sender is the target[/color].
+## @experimental
+func send_emit_signal_request(target: Node, signal_to_emit: Signal, ...signal_args: Array) -> void:
+	var target_path: NodePath = target.get_path()
+	if target_path.is_empty(): return
+	
+	if multiplayer.is_server():
+		_request_emit_signal_server(1, target_path, signal_to_emit.get_name(), signal_args)
+	else:
+		_request_emit_signal.rpc_id(1, target_path, signal_to_emit.get_name(), signal_args)
+
+
+@rpc("reliable","any_peer","call_local")
+func _request_emit_signal(target_path: NodePath, signal_name: StringName, signal_args: Array) -> void:
+	if not multiplayer.is_server(): return
+	var sender_id: int = multiplayer.get_remote_sender_id()
+	_request_emit_signal_server(sender_id, target_path, signal_name, signal_args)
+
+
+func _request_emit_signal_server(sender_id: int, target_path: NodePath, signal_name: StringName, signal_args: Array) -> void:
+	if not multiplayer.is_server(): return
+	var target = get_node_or_null(target_path)
+	if not target: return
+	
+	if target.get_multiplayer_authority() != sender_id: return
+	
+	if signal_args.is_empty():
+		target.emit_signal(signal_name)
+	else:
+		target.emit_signal.callv([signal_name] + signal_args)
+
+
+
+
+## 
+func send_emit_signal_global_request(target: Node, signal_to_emit: Signal, ...signal_args: Array) -> void:
+	var target_path: NodePath = target.get_path()
+	if target_path.is_empty(): return
+	
+	_request_emit_signal_global.rpc(1, target_path, signal_to_emit.get_name(), signal_args)
+
+
+@rpc("reliable","any_peer","call_local")
+func _request_emit_signal_global(_sender_id: int, target_path: NodePath, signal_name: StringName, signal_args: Array) -> void:
+	var target = get_node_or_null(target_path)
+	if not target: return
+	
+	if signal_args.is_empty():
+		target.emit_signal(signal_name)
+	else:
+		target.emit_signal.callv([signal_name] + signal_args)
+
+
+
+
 # ----- Effect requests -----
 
-## Sends a request to the server to remove an effect from the [param target] 
+## Sends a request to the server to remove an effect from the [param target]
+## @experimental
 func send_remove_effect_request(target: Node3D, effect_id: int) -> void:
 	if not target: return
 	if multiplayer.is_server():
@@ -63,7 +124,8 @@ func _request_remove_effect_server(_sender_id: int, target_path: NodePath, effec
 	if ec: ec.remove_effect(effect_id)
 
 
-## Sends a request to the server to add an effect to the [param target] 
+## Sends a request to the server to add an effect to the [param target]
+## @experimental
 func send_add_effect_request(target: Node3D, effect_id: int) -> void:
 	if not target: return
 	if multiplayer.is_server():

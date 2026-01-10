@@ -7,4 +7,4 @@
 script = ExtResource("1_ur5sn")
 max_stacks = 5
 amount_per_stack = 5.0
-effect_icon = ExtResource("2_mp33n")
+icon = ExtResource("2_mp33n")

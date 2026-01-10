@@ -22,7 +22,7 @@ func add_effect(effect_id: int) -> void:
 		if child is not Effect: continue
 		if child.is_unique:
 			if child.get_meta("id") == effect_id:
-				child.increment_stack()
+				child.add_effect()
 				return
 	
 	effect_spawner.spawn(effect_id)

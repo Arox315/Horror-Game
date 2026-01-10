@@ -7,7 +7,7 @@ func update_effect() -> void:
 
 # This makes sure the first incrementation of speed happens at the time of getting this effect 
 # (rather than after overtime interval)
-var elapsed: float = overtime_interval
+var elapsed: float = tick_interval
 func apply_effect(delta: float) -> void:
 	# Linearly go from base speed to base + uptime * amount - 1 (ends on reaching this value)
 	var current_amount = target.get_speed_multiplier(name) if target.get_speed_multiplier(name) else 0.0
