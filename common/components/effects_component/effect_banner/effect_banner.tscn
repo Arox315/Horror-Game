@@ -1,0 +1,75 @@
+[gd_scene load_steps=3 format=3 uid="uid://b3xismmir0wg6"]
+
+[ext_resource type="Script" uid="uid://dtp8cmndps4xm" path="res://common/components/effects_component/effect_banner/effect_banner.gd" id="1_4qtbp"]
+[ext_resource type="Texture2D" uid="uid://qxxd5w4w1tss" path="res://assets/icons/effects/accelerating_move_speed_icon.png" id="2_ivpa3"]
+
+[node name="EffectBanner" type="Control"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 64.0
+offset_bottom = 64.0
+script = ExtResource("1_4qtbp")
+
+[node name="Border" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
+[node name="InnerPanelWrapper" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 2
+theme_override_constants/margin_top = 2
+theme_override_constants/margin_right = 2
+theme_override_constants/margin_bottom = 2
+
+[node name="InnerPanel" type="Control" parent="InnerPanelWrapper"]
+layout_mode = 2
+
+[node name="Icon" type="TextureRect" parent="InnerPanelWrapper/InnerPanel"]
+layout_mode = 0
+offset_right = 60.0
+offset_bottom = 60.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_ivpa3")
+expand_mode = 1
+
+[node name="DiminishedOverlay" type="ColorRect" parent="InnerPanelWrapper/InnerPanel"]
+layout_mode = 0
+offset_right = 60.0
+size_flags_vertical = 0
+color = Color(0, 0, 0, 0.49019608)
+
+[node name="Label" type="Label" parent="InnerPanelWrapper/InnerPanel"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -36.0
+offset_right = -3.0
+offset_bottom = 3.0
+grow_horizontal = 2
+grow_vertical = 0
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme_override_colors/font_color = Color(1, 1, 0.9607843, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 0
+theme_override_constants/outline_size = 8
+theme_override_font_sizes/font_size = 28
+text = "1"
+horizontal_alignment = 2
+clip_text = true

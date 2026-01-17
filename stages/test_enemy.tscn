@@ -1,0 +1,46 @@
+[gd_scene load_steps=7 format=3 uid="uid://c4upv6xtythq5"]
+
+[ext_resource type="PackedScene" uid="uid://dbaufhsgu6cq1" path="res://common/components/effects_component/effects_component.tscn" id="1_pw7xr"]
+
+[sub_resource type="GDScript" id="GDScript_pw7xr"]
+script/source = "extends CharacterBody3D
+
+
+var SPEED = 5.0
+var JUMP_VELOCITY = 4.5
+
+
+func _physics_process(delta: float) -> void:
+	# Add the gravity.
+	if not is_on_floor():
+		velocity += get_gravity() * delta
+
+	move_and_slide()
+"
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ilnn3"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4y8jm"]
+albedo_color = Color(1, 0, 0, 1)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_7h8id"]
+material = SubResource("StandardMaterial3D_4y8jm")
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_pw7xr"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+
+[node name="TestEnemy" type="CharacterBody3D"]
+script = SubResource("GDScript_pw7xr")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_ilnn3")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("CapsuleMesh_7h8id")
+
+[node name="EffectsComponent" parent="." instance=ExtResource("1_pw7xr")]
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_pw7xr")

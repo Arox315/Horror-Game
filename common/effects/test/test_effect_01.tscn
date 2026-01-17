@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=3 uid="uid://dgjqlisdvkwyi"]
+
+[ext_resource type="Script" uid="uid://dp0jx8vmjuv4a" path="res://common/effects/test/test_effect_01.gd" id="1_htxvw"]
+
+[node name="TestEffect01" type="Node"]
+script = ExtResource("1_htxvw")
+max_stacks = 8
+initial_stacks = 8
+max_stack_loss_per_window = 2
+stack_loss_window = 4.0
+gain_delay_after_loss = 2.0
+loss_delay_after_gain = 2.0
+can_gain_from_source_reapply = false
+is_reversed = true
+regenerates_stacks = true
