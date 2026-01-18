@@ -1,17 +1,36 @@
-[gd_scene load_steps=29 format=3 uid="uid://dvi7lqoafi1cl"]
+[gd_scene load_steps=37 format=3 uid="uid://dvi7lqoafi1cl"]
 
 [ext_resource type="PackedScene" uid="uid://352pm4hcxqtx" path="res://stages/playground/block.tscn" id="1_qchbg"]
+[ext_resource type="Texture2D" uid="uid://00bjogdgqtt4" path="res://assets/textures/prototype/dev_tiles-orange.png" id="2_5wu1j"]
+[ext_resource type="Texture2D" uid="uid://b86nqm7fi6hb0" path="res://assets/textures/prototype/dev_tiles-gray.png" id="2_ac2je"]
 [ext_resource type="Script" uid="uid://cnglits2m8u6w" path="res://scripts/multiplayer_menu.gd" id="2_elqxi"]
 [ext_resource type="PackedScene" uid="uid://dmgtd4kr3b0wd" path="res://entities/interactables/color_changer/color_changer.tscn" id="3_bkhp6"]
 [ext_resource type="PackedScene" uid="uid://dbwe4mpgrbf1o" path="res://common/interactable/trigger/interactable_trigger.tscn" id="4_ruau5"]
 [ext_resource type="PackedScene" uid="uid://c4upv6xtythq5" path="res://stages/test_enemy.tscn" id="6_bkhp6"]
 [ext_resource type="PackedScene" uid="uid://cj72bmdxu2h7b" path="res://entities/interactables/teleporter/teleporter.tscn" id="6_ilnn3"]
+[ext_resource type="Texture2D" uid="uid://c6l4gm0v03vwf" path="res://assets/textures/prototype/dev_texture-gray.png" id="8_ac2je"]
 
-[sub_resource type="BoxMesh" id="BoxMesh_edjgo"]
-size = Vector3(15, 0.5, 15)
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4y8jm"]
+albedo_texture = ExtResource("2_ac2je")
+uv1_scale = Vector3(15, 15, 15)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_7h8id"]
+material = SubResource("StandardMaterial3D_4y8jm")
+size = Vector2(15, 15)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_nfegs"]
+size = Vector3(15, 0, 15)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7h8id"]
+albedo_texture = ExtResource("2_5wu1j")
+uv1_scale = Vector3(15, 15, 15)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_nfegs"]
+material = SubResource("StandardMaterial3D_7h8id")
+size = Vector2(15, 15)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_rupst"]
-size = Vector3(15, 0.5, 15)
+size = Vector3(15, 0, 15)
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_wt17y"]
 sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
@@ -41,6 +60,11 @@ func _on_interacted(body:Variant, _sender: InteractableTrigger) -> void:
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_bkhp6"]
 height = 2.1
 radius = 0.55
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nfegs"]
+albedo_texture = ExtResource("8_ac2je")
+uv1_offset = Vector3(0.5, 0.5, 0)
+uv1_triplanar = true
 
 [sub_resource type="GDScript" id="GDScript_bkhp6"]
 script/source = "extends InteractableObject
@@ -188,21 +212,20 @@ size = Vector3(2, 2, 2)
 [node name="Playground" type="Node3D"]
 
 [node name="floor" type="StaticBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
 metadata/_edit_group_ = true
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="floor"]
-mesh = SubResource("BoxMesh_edjgo")
+mesh = SubResource("PlaneMesh_7h8id")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="floor"]
-shape = SubResource("BoxShape3D_rupst")
+shape = SubResource("BoxShape3D_nfegs")
 
 [node name="floor2" type="StaticBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, -15)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -15)
 metadata/_edit_group_ = true
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="floor2"]
-mesh = SubResource("BoxMesh_edjgo")
+mesh = SubResource("PlaneMesh_nfegs")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="floor2"]
 shape = SubResource("BoxShape3D_rupst")
@@ -306,6 +329,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00273311, 0.7, -14.9999)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, -7.75)
 use_collision = true
 size = Vector3(15, 5, 0.5)
+material = SubResource("StandardMaterial3D_nfegs")
 
 [node name="CSGBox3D" type="CSGBox3D" parent="Wall"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.5, 0)
