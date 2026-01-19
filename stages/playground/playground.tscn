@@ -1,6 +1,7 @@
-[gd_scene load_steps=37 format=3 uid="uid://dvi7lqoafi1cl"]
+[gd_scene load_steps=54 format=3 uid="uid://dvi7lqoafi1cl"]
 
 [ext_resource type="PackedScene" uid="uid://352pm4hcxqtx" path="res://stages/playground/block.tscn" id="1_qchbg"]
+[ext_resource type="Texture2D" uid="uid://b0nhpggoqkyc3" path="res://assets/textures/prototype/dev_tiles-white.png" id="2_4y8jm"]
 [ext_resource type="Texture2D" uid="uid://00bjogdgqtt4" path="res://assets/textures/prototype/dev_tiles-orange.png" id="2_5wu1j"]
 [ext_resource type="Texture2D" uid="uid://b86nqm7fi6hb0" path="res://assets/textures/prototype/dev_tiles-gray.png" id="2_ac2je"]
 [ext_resource type="Script" uid="uid://cnglits2m8u6w" path="res://scripts/multiplayer_menu.gd" id="2_elqxi"]
@@ -9,6 +10,29 @@
 [ext_resource type="PackedScene" uid="uid://c4upv6xtythq5" path="res://stages/test_enemy.tscn" id="6_bkhp6"]
 [ext_resource type="PackedScene" uid="uid://cj72bmdxu2h7b" path="res://entities/interactables/teleporter/teleporter.tscn" id="6_ilnn3"]
 [ext_resource type="Texture2D" uid="uid://c6l4gm0v03vwf" path="res://assets/textures/prototype/dev_texture-gray.png" id="8_ac2je"]
+[ext_resource type="Texture2D" uid="uid://cpu5muw1x3aky" path="res://assets/textures/prototype/dev_texture-white.png" id="11_7h8id"]
+[ext_resource type="Texture2D" uid="uid://bt344d7gai5pw" path="res://assets/textures/prototype/dev_texture-green.png" id="12_nfegs"]
+[ext_resource type="Texture2D" uid="uid://dg42n3sb1hvoy" path="res://assets/textures/prototype/dev_texture-red.png" id="13_iapem"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7h8id"]
+resource_local_to_scene = true
+albedo_texture = ExtResource("2_5wu1j")
+uv1_scale = Vector3(15, 15, 15)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_nfegs"]
+material = SubResource("StandardMaterial3D_7h8id")
+size = Vector2(15, 15)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_rupst"]
+size = Vector3(15, 0, 15)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_iapem"]
+albedo_texture = ExtResource("2_4y8jm")
+uv1_scale = Vector3(15, 15, 1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_rwvch"]
+material = SubResource("StandardMaterial3D_iapem")
+size = Vector2(15, 15)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4y8jm"]
 albedo_texture = ExtResource("2_ac2je")
@@ -19,17 +43,6 @@ material = SubResource("StandardMaterial3D_4y8jm")
 size = Vector2(15, 15)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_nfegs"]
-size = Vector3(15, 0, 15)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7h8id"]
-albedo_texture = ExtResource("2_5wu1j")
-uv1_scale = Vector3(15, 15, 15)
-
-[sub_resource type="PlaneMesh" id="PlaneMesh_nfegs"]
-material = SubResource("StandardMaterial3D_7h8id")
-size = Vector2(15, 15)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_rupst"]
 size = Vector3(15, 0, 15)
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_wt17y"]
@@ -49,8 +62,7 @@ glow_enabled = true
 script/source = "extends InteractableObject
 
 func _on_interacted(body:Variant, _sender: InteractableTrigger) -> void:
-	#ServerRequests.send_add_effect_request(body,EffectsTable.Effects.TEST01)
-	ServerRequests.send_damage_request(body, 2)
+	ServerRequests.send_add_effect_request(body,EffectsTable.Effects.TEST01)
 	#ServerRequests.send_delete_request(self)
 "
 
@@ -210,16 +222,61 @@ func _physics_process(delta: float) -> void:
 [sub_resource type="BoxShape3D" id="BoxShape3D_7h8id"]
 size = Vector3(2, 2, 2)
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pir2p"]
+albedo_texture = ExtResource("11_7h8id")
+uv1_offset = Vector3(0.5, 0.5, 0)
+uv1_triplanar = true
+
+[sub_resource type="QuadMesh" id="QuadMesh_k3nho"]
+material = SubResource("StandardMaterial3D_pir2p")
+size = Vector2(15, 5)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ndv58"]
+size = Vector3(15, 5, 0)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rwvch"]
+albedo_texture = ExtResource("12_nfegs")
+uv1_offset = Vector3(0.25, 0.75, 0)
+uv1_triplanar = true
+
+[sub_resource type="GDScript" id="GDScript_pir2p"]
+script/source = "extends InteractableObject
+
+
+func _on_interacted(body:Variant, _sender: InteractableTrigger) -> void:
+	ServerRequests.send_heal_request(body, 2)
+"
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_iapem"]
+size = Vector3(0.55, 0.55, 0.3)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_k3nho"]
+albedo_texture = ExtResource("13_iapem")
+uv1_offset = Vector3(0.25, 0.75, 0)
+uv1_triplanar = true
+
+[sub_resource type="GDScript" id="GDScript_nfegs"]
+script/source = "extends InteractableObject
+
+
+func _on_interacted(body:Variant, _sender: InteractableTrigger) -> void:
+	ServerRequests.send_damage_request(body, 2)
+"
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_rwvch"]
+size = Vector3(0.55, 0.55, 0.3)
+
+[sub_resource type="GDScript" id="GDScript_iapem"]
+script/source = "extends Area3D
+
+
+func _on_body_entered(body: Node3D) -> void:
+	ServerRequests.send_damage_request(body, 999999)
+"
+
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_rwvch"]
+
 [node name="Playground" type="Node3D"]
-
-[node name="floor" type="StaticBody3D" parent="."]
-metadata/_edit_group_ = true
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="floor"]
-mesh = SubResource("PlaneMesh_7h8id")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="floor"]
-shape = SubResource("BoxShape3D_nfegs")
 
 [node name="floor2" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -15)
@@ -230,6 +287,25 @@ mesh = SubResource("PlaneMesh_nfegs")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="floor2"]
 shape = SubResource("BoxShape3D_rupst")
+
+[node name="floor3" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 15)
+metadata/_edit_group_ = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="floor3"]
+mesh = SubResource("PlaneMesh_rwvch")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="floor3"]
+shape = SubResource("BoxShape3D_rupst")
+
+[node name="floor" type="StaticBody3D" parent="."]
+metadata/_edit_group_ = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="floor"]
+mesh = SubResource("PlaneMesh_7h8id")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="floor"]
+shape = SubResource("BoxShape3D_nfegs")
 
 [node name="blocks" type="Node3D" parent="."]
 
@@ -419,11 +495,79 @@ shape = SubResource("BoxShape3D_7h8id")
 [node name="TestEnemy" parent="." instance=ExtResource("6_bkhp6")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.31309605, 19.73263, -20.560532)
 
+[node name="Wall2" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 22.5)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Wall2"]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, 0)
+mesh = SubResource("QuadMesh_k3nho")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Wall2"]
+shape = SubResource("BoxShape3D_ndv58")
+
+[node name="Wall3" type="StaticBody3D" parent="."]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 7.5, 2.5, 15)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Wall3"]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, 0)
+mesh = SubResource("QuadMesh_k3nho")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Wall3"]
+shape = SubResource("BoxShape3D_ndv58")
+
+[node name="Wall4" type="StaticBody3D" parent="."]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -7.5, 2.5, 15)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Wall4"]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, 0)
+mesh = SubResource("QuadMesh_k3nho")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Wall4"]
+shape = SubResource("BoxShape3D_ndv58")
+
+[node name="TestHealInteractable" type="CSGBox3D" parent="."]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 7.375, 1.5, 7.75)
+cast_shadow = 0
+size = Vector3(0.5, 0.5, 0.25)
+material = SubResource("StandardMaterial3D_rwvch")
+script = SubResource("GDScript_pir2p")
+prompt_message = "Press [{str}] to heal"
+
+[node name="InteractableTrigger" parent="TestHealInteractable" instance=ExtResource("4_ruau5")]
+
+[node name="TriggerArea" parent="TestHealInteractable/InteractableTrigger" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.025)
+shape = SubResource("BoxShape3D_iapem")
+
+[node name="TestDamageInteractable" type="CSGBox3D" parent="."]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 7.375, 1.5, 8.75)
+cast_shadow = 0
+size = Vector3(0.5, 0.5, 0.25)
+material = SubResource("StandardMaterial3D_k3nho")
+script = SubResource("GDScript_nfegs")
+prompt_message = "Press [{str}] to take damage"
+
+[node name="InteractableTrigger" parent="TestDamageInteractable" instance=ExtResource("4_ruau5")]
+
+[node name="TriggerArea" parent="TestDamageInteractable/InteractableTrigger" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.025)
+shape = SubResource("BoxShape3D_rwvch")
+
+[node name="OutOfBoundsTriggerKill" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -25, 0)
+script = SubResource("GDScript_iapem")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="OutOfBoundsTriggerKill"]
+shape = SubResource("WorldBoundaryShape3D_rwvch")
+
 [connection signal="pressed" from="MultiplayerMenu/Panel/VBoxContainer/HostButton" to="MultiplayerMenu" method="_on_host_button_pressed"]
 [connection signal="pressed" from="MultiplayerMenu/Panel/VBoxContainer/JoinButton" to="MultiplayerMenu" method="_on_join_button_pressed"]
+[connection signal="body_entered" from="OutOfBoundsTriggerKill" to="OutOfBoundsTriggerKill" method="_on_body_entered"]
 
 [editable path="TestInteractable/InteractableTrigger"]
 [editable path="Teleporter"]
 [editable path="Teleporter/InteractableTrigger"]
 [editable path="DoubleDoors/InteractableTrigger"]
 [editable path="DoubleDoors/InteractableTrigger2"]
+[editable path="TestHealInteractable/InteractableTrigger"]
+[editable path="TestDamageInteractable/InteractableTrigger"]
