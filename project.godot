@@ -36,7 +36,8 @@ folder_colors={
 "res://assets/": "gray",
 "res://entities/": "blue",
 "res://scripts/": "teal",
-"res://stages/": "purple"
+"res://stages/": "purple",
+"res://ui/": "green"
 }
 
 [global_group]

@@ -11,13 +11,14 @@ func _ready() -> void:
 	assign_triggers()
 	
 	if not interactable_triggers:
-		printerr("No InteractableTrigger set for interactable object: ", self)
-	else:
-		for interactable_trigger in interactable_triggers.values():
-			interactable_trigger.interacted.connect(_on_interacted.bind(interactable_trigger))
-			interactable_trigger.prompt_message = prompt_message
-			interactable_trigger.prompt_input = prompt_input
-			interactable_trigger.interactable_popup.set_content(interactable_trigger.get_prompt())
+		push_error("No InteractableTrigger set for interactable object: ", self)
+		return
+	
+	for interactable_trigger in interactable_triggers.values():
+		interactable_trigger.interacted.connect(_on_interacted.bind(interactable_trigger))
+		interactable_trigger.prompt_message = prompt_message
+		interactable_trigger.prompt_input = prompt_input
+		interactable_trigger.interactable_popup.set_content(interactable_trigger.get_prompt())
 
 
 @rpc("any_peer", "call_local", "unreliable")

@@ -30,6 +30,9 @@ func _enter_tree() -> void:
 	set_multiplayer_authority(name.to_int())
 	if get_tree().current_scene.get_node("PlayersSpawnPoint"):
 		position = get_tree().current_scene.get_node("PlayersSpawnPoint").global_position
+	
+	var hc := $HealthComponent
+	hc.died.connect(_on_died)
 
 
 func _ready() -> void:
@@ -63,8 +66,6 @@ func _ready() -> void:
 	
 	# Hide authority's world model
 	hide_world_model()
-	
-	health_component.died.connect(_on_died)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -98,8 +99,8 @@ func _physics_process(delta: float) -> void:
 		ServerRequests.send_add_effect_request(self, effect_to_add)
 	
 	if Input.is_action_just_pressed("debug_effect"):
-		#test.emit()
 		ServerRequests.send_emit_signal_request(self, test)
+		ServerRequests.send_damage_request(interact_ray.get_collider(), 1)
 	
 	# toggle 3rd person
 	if Input.is_action_just_pressed("change_perspective"):
@@ -182,7 +183,19 @@ func update_speed() -> void:
 	current_speed = BASE_SPEED + gained_speed
 
 
-func _on_died() -> void:
-	print("[%s] Died. Respawning..." % self)
-	ServerRequests.send_reset_current_health_request(self)
+@rpc("reliable", "any_peer", "call_local")
+func respawn() -> void:
+	if multiplayer.get_remote_sender_id() != 1:
+		return
+	
+	if self is CharacterBody3D: velocity = Vector3.ZERO
+	
 	position = get_tree().current_scene.get_node("PlayersSpawnPoint").global_position
+
+
+func _on_died() -> void:
+	await get_tree().physics_frame # makes sure this function is executed after the damage has been dealt
+	ServerRequests.send_reset_current_health_request(self)
+	respawn.rpc_id(get_multiplayer_authority())
+	
+	if multiplayer.is_server(): print("[%s] Died. Respawning..." % self)

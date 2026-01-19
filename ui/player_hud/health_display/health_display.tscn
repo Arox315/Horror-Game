@@ -1,0 +1,77 @@
+[gd_scene load_steps=3 format=3 uid="uid://p5q0jtydp1wl"]
+
+[ext_resource type="Script" uid="uid://ccf0e8vtmolat" path="res://ui/player_hud/health_display/health_display.gd" id="1_g3g16"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xn0r5"]
+bg_color = Color(0.16565639, 0.16565642, 0.1656563, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.014275214, 0.014275223, 0.014275194, 1)
+expand_margin_left = 4.0
+expand_margin_top = 4.0
+expand_margin_right = 4.0
+expand_margin_bottom = 4.0
+
+[node name="HealthDisplay" type="MarginContainer" node_paths=PackedStringArray("health_component")]
+custom_minimum_size = Vector2(0, 128)
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/margin_bottom = 50
+script = ExtResource("1_g3g16")
+health_component = NodePath("")
+fillbar_color = Color(0.011764706, 0.70980394, 0, 1)
+
+[node name="Wrapper" type="Control" parent="."]
+layout_mode = 2
+
+[node name="Healthbar" type="Panel" parent="Wrapper"]
+custom_minimum_size = Vector2(512, 32)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -256.0
+offset_top = -20.0
+offset_right = 256.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_xn0r5")
+
+[node name="Fillbar" type="ColorRect" parent="Wrapper/Healthbar"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -256.0
+offset_top = -20.0
+offset_right = 256.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.011833321, 0.71, 0, 1)
+
+[node name="Label" type="Label" parent="Wrapper/Healthbar"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/outline_size = 8
+theme_override_font_sizes/font_size = 24
+text = "1/1"
+horizontal_alignment = 1
+vertical_alignment = 1
+clip_text = true

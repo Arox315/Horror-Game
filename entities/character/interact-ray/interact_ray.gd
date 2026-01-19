@@ -16,6 +16,8 @@ func _ready() -> void:
 
 
 func _physics_process(_delta: float) -> void:
+	if not owner.is_multiplayer_authority(): return
+	
 	if !is_colliding():
 		hide_previous_popup_on_stop_colliding()
 		return
@@ -26,9 +28,8 @@ func _physics_process(_delta: float) -> void:
 		hide_previous_popup_on_stop_colliding()
 		return
 	
-	# show the popup only for the player that is looking at the interactable object
-	if owner.is_multiplayer_authority():
-		collider.show_popup()
+	collider.show_popup()
+	
 	current_interactable = collider
 	
 	if collider.is_locked:
