@@ -21,6 +21,7 @@ var CAMERA_ROTATION_SPEED = 50.0 * deg_to_rad(0.022)
 @onready var world_model_anchor: Marker3D = $WorldModel/WorldModelAnchor
 @onready var player_type: Control = $Hud/PlayerType
 @onready var effects: HBoxContainer = $Hud/EffectsContainer/Effects
+@onready var health_component: HealthComponent = $HealthComponent
 
 var direction:Vector3 = Vector3.ZERO
 var is_third_person: bool = false
@@ -62,6 +63,8 @@ func _ready() -> void:
 	
 	# Hide authority's world model
 	hide_world_model()
+	
+	health_component.died.connect(_on_died)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -177,3 +180,9 @@ func update_speed() -> void:
 		gained_speed += value
 	
 	current_speed = BASE_SPEED + gained_speed
+
+
+func _on_died() -> void:
+	print("[%s] Died. Respawning..." % self)
+	ServerRequests.send_reset_current_health_request(self)
+	position = get_tree().current_scene.get_node("PlayersSpawnPoint").global_position

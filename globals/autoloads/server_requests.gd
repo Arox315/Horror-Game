@@ -34,8 +34,6 @@ func _request_delete_server(sender_id: int, node_path: NodePath) -> void:
 	if node: node.queue_free()
 
 
-
-
 # ----- Signal emit -----
 
 ## Sends a request to the server to emit a [param signal] from the [param target].
@@ -90,8 +88,6 @@ func _request_emit_signal_global(_sender_id: int, target_path: NodePath, signal_
 		target.emit_signal(signal_name)
 	else:
 		target.emit_signal.callv([signal_name] + signal_args)
-
-
 
 
 # ----- Effect requests -----
@@ -152,3 +148,98 @@ func _request_add_effect_server(_sender_id: int, target_path: NodePath, effect_i
 	
 	var ec = target.get_node_or_null("EffectsComponent") as EffectsComponent
 	if ec: ec.add_effect(effect_id)
+
+
+# ----- Health requests -----
+
+##Sends a request to the server to damaga the [param target] for [amount]
+func send_damage_request(target: Node, amount: int) -> void:
+	if not target: return
+	
+	var target_path: NodePath = target.get_path()
+	if target_path.is_empty(): return
+	
+	if multiplayer.is_server():
+		_request_damage_server(1, target_path, amount)
+	else:
+		_request_damage.rpc_id(1, target_path, amount)
+
+
+@rpc("reliable","any_peer","call_local")
+func _request_damage(target_path: NodePath, amount: int) -> void:
+	if not multiplayer.is_server(): return
+	var sender_id: int = multiplayer.get_remote_sender_id()
+	_request_damage_server(sender_id, target_path, amount)
+
+
+func _request_damage_server(sender_id: int, target_path: NodePath, amount: int) -> void:
+	var target = get_node_or_null(target_path)
+	if not target: return
+	
+	if target.get_multiplayer_authority() != sender_id:
+		return
+	
+	var hc = target.get_node_or_null("HealthComponent") as HealthComponent
+	if hc: hc.damage(amount)
+
+
+##Sends a request to the server to heal the [param target] for [amount]
+func send_heal_request(target: Node, amount: int) -> void:
+	if not target: return
+	
+	var target_path: NodePath = target.get_path()
+	if target_path.is_empty(): return
+	
+	if multiplayer.is_server():
+		_request_heal_server(1, target_path, amount)
+	else:
+		_request_heal.rpc_id(1, target_path, amount)
+
+
+@rpc("reliable","any_peer","call_local")
+func _request_heal(target_path: NodePath, amount: int) -> void:
+	if not multiplayer.is_server(): return
+	var sender_id: int = multiplayer.get_remote_sender_id()
+	_request_heal_server(sender_id, target_path, amount)
+
+
+func _request_heal_server(sender_id: int, target_path: NodePath, amount: int) -> void:
+	var target = get_node_or_null(target_path)
+	if not target: return
+	
+	if target.get_multiplayer_authority() != sender_id:
+		return
+	
+	var hc = target.get_node_or_null("HealthComponent") as HealthComponent
+	if hc: hc.heal(amount)
+
+
+##Sends a request to the server to reset current health of the [param target]
+func send_reset_current_health_request(target: Node) -> void:
+	if not target: return
+	
+	var target_path: NodePath = target.get_path()
+	if target_path.is_empty(): return
+	
+	if multiplayer.is_server():
+		_request_reset_current_health_server(1, target_path)
+	else:
+		_request_reset_current_health.rpc_id(1, target_path)
+
+
+@rpc("reliable","any_peer","call_local")
+func _request_reset_current_health(target_path: NodePath) -> void:
+	if not multiplayer.is_server(): return
+	var sender_id: int = multiplayer.get_remote_sender_id()
+	_request_reset_current_health_server(sender_id, target_path)
+
+
+func _request_reset_current_health_server(sender_id: int, target_path: NodePath) -> void:
+	var target = get_node_or_null(target_path)
+	if not target: return
+	
+	if target.get_multiplayer_authority() != sender_id:
+		return
+	
+	var hc = target.get_node_or_null("HealthComponent") as HealthComponent
+	if hc: hc.reset_current_health()

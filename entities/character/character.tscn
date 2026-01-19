@@ -1,9 +1,10 @@
-[gd_scene load_steps=10 format=3 uid="uid://c7ksecespxm2u"]
+[gd_scene load_steps=11 format=3 uid="uid://c7ksecespxm2u"]
 
 [ext_resource type="Script" uid="uid://cktonvsvavro3" path="res://entities/character/character.gd" id="1_glpr6"]
 [ext_resource type="PackedScene" uid="uid://shh7ov5oet2b" path="res://entities/character/interact-ray/interact_ray.tscn" id="2_6i0tm"]
 [ext_resource type="PackedScene" uid="uid://dbaufhsgu6cq1" path="res://common/components/effects_component/effects_component.tscn" id="2_7315l"]
 [ext_resource type="Script" uid="uid://b1qyat76yia2y" path="res://entities/character/player_stats_synchronizer.gd" id="3_2ltml"]
+[ext_resource type="PackedScene" uid="uid://dnbdbyvhguoy4" path="res://common/components/health_component/health_component.tscn" id="3_xn0r5"]
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_0c2ax"]
 properties/0/path = NodePath(".:position")
@@ -63,6 +64,8 @@ func generate_new_color() -> void:
 script = ExtResource("1_glpr6")
 
 [node name="EffectsComponent" parent="." instance=ExtResource("2_7315l")]
+
+[node name="HealthComponent" parent="." instance=ExtResource("3_xn0r5")]
 
 [node name="PositionSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_0c2ax")
