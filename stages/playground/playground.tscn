@@ -1,4 +1,4 @@
-[gd_scene load_steps=54 format=3 uid="uid://dvi7lqoafi1cl"]
+[gd_scene load_steps=63 format=3 uid="uid://dvi7lqoafi1cl"]
 
 [ext_resource type="PackedScene" uid="uid://352pm4hcxqtx" path="res://stages/playground/block.tscn" id="1_qchbg"]
 [ext_resource type="Texture2D" uid="uid://b0nhpggoqkyc3" path="res://assets/textures/prototype/dev_tiles-white.png" id="2_4y8jm"]
@@ -213,6 +213,56 @@ func _physics_process(delta: float) -> void:
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_7h8id"]
 size = Vector3(2, 2, 2)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ndv58"]
+albedo_color = Color(0.36078432, 0.49019608, 0.8784314, 1)
+albedo_texture = ExtResource("11_7h8id")
+uv1_offset = Vector3(0.5, 0.5, 0)
+uv1_triplanar = true
+
+[sub_resource type="GDScript" id="GDScript_o71dx"]
+script/source = "extends InteractableObject
+
+
+func _on_interacted(body:Variant, _sender: InteractableTrigger) -> void:
+	ServerRequests.send_add_effect_request(body, EffectsTable.Effects.ACCELERATING_MOVE_SPEED)
+"
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_x0fsn"]
+size = Vector3(1.1, 1.1, 1.1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_o71dx"]
+albedo_color = Color(0.32156864, 0.64705884, 0.3764706, 1)
+albedo_texture = ExtResource("11_7h8id")
+uv1_offset = Vector3(0.5, 0.5, 0)
+uv1_triplanar = true
+
+[sub_resource type="GDScript" id="GDScript_x0fsn"]
+script/source = "extends InteractableObject
+
+
+func _on_interacted(body:Variant, _sender: InteractableTrigger) -> void:
+	ServerRequests.send_add_effect_request(body, EffectsTable.Effects.BONUS_JUMP_HEIGHT)
+"
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_eyhu8"]
+size = Vector3(1.1, 1.1, 1.1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_x0fsn"]
+albedo_color = Color(0.27450982, 0.88235295, 0.56078434, 1)
+albedo_texture = ExtResource("11_7h8id")
+uv1_offset = Vector3(0.5, 0.5, 0)
+uv1_triplanar = true
+
+[sub_resource type="GDScript" id="GDScript_eyhu8"]
+script/source = "extends InteractableObject
+
+func _on_interacted(body:Variant, _sender: InteractableTrigger) -> void:
+	ServerRequests.send_add_effect_request(body, EffectsTable.Effects.PASSIVE_HEALTH_REGENERATION)
+"
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_4vqsl"]
+size = Vector3(1.1, 1.1, 1.1)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_iapem"]
 albedo_texture = ExtResource("2_4y8jm")
@@ -483,6 +533,39 @@ script = SubResource("GDScript_4y8jm")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 shape = SubResource("BoxShape3D_7h8id")
 
+[node name="AccMoveSpeedEffectSetter" type="CSGBox3D" parent="Room2"]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 7, 0.5, 6)
+material = SubResource("StandardMaterial3D_ndv58")
+script = SubResource("GDScript_o71dx")
+prompt_message = "Press [{str}] to gain Accelerating Move Speed effect"
+
+[node name="InteractableTrigger" parent="Room2/AccMoveSpeedEffectSetter" instance=ExtResource("4_ruau5")]
+
+[node name="TriggerArea" parent="Room2/AccMoveSpeedEffectSetter/InteractableTrigger" index="0"]
+shape = SubResource("BoxShape3D_x0fsn")
+
+[node name="BonusJumoHeightEffectSetter" type="CSGBox3D" parent="Room2"]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 7, 0.5, 4)
+material = SubResource("StandardMaterial3D_o71dx")
+script = SubResource("GDScript_x0fsn")
+prompt_message = "Press [{str}] to gain Bonus Jump Height effect"
+
+[node name="InteractableTrigger" parent="Room2/BonusJumoHeightEffectSetter" instance=ExtResource("4_ruau5")]
+
+[node name="TriggerArea" parent="Room2/BonusJumoHeightEffectSetter/InteractableTrigger" index="0"]
+shape = SubResource("BoxShape3D_eyhu8")
+
+[node name="PassiveHealthRegenerationEffectSetter" type="CSGBox3D" parent="Room2"]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 7, 0.5, 2)
+material = SubResource("StandardMaterial3D_x0fsn")
+script = SubResource("GDScript_eyhu8")
+prompt_message = "Press [{str}] to gain Passive Health Regeneration effect"
+
+[node name="InteractableTrigger" parent="Room2/PassiveHealthRegenerationEffectSetter" instance=ExtResource("4_ruau5")]
+
+[node name="TriggerArea" parent="Room2/PassiveHealthRegenerationEffectSetter/InteractableTrigger" index="0"]
+shape = SubResource("BoxShape3D_4vqsl")
+
 [node name="Room3" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 15)
 
@@ -575,5 +658,8 @@ shape = SubResource("WorldBoundaryShape3D_rwvch")
 [editable path="Room1/Teleporter/InteractableTrigger"]
 [editable path="Room2/DoubleDoors/InteractableTrigger"]
 [editable path="Room2/DoubleDoors/InteractableTrigger2"]
+[editable path="Room2/AccMoveSpeedEffectSetter/InteractableTrigger"]
+[editable path="Room2/BonusJumoHeightEffectSetter/InteractableTrigger"]
+[editable path="Room2/PassiveHealthRegenerationEffectSetter/InteractableTrigger"]
 [editable path="Room3/TestHealInteractable/InteractableTrigger"]
 [editable path="Room3/TestDamageInteractable/InteractableTrigger"]

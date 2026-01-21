@@ -41,6 +41,7 @@ func damage(amount: int) -> void:
 ## Adds [param amount] to [member current_health]
 func heal(amount: int) -> void:
 	if amount <= 0: return
+	if current_health >= max_health: return
 	current_health += amount
 	ServerRequests.send_emit_signal_global_request(self, healed, amount)
 	print("[%s] Healed for: %d" % [owner, amount])

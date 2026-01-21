@@ -26,6 +26,9 @@ signal locked_reversed(value: bool)
 ## If true, when the timer reaches 0 the entire effect ends immediately.
 ## If false, stacks expire one-by-one (each expiration removes a stack).
 @export var expire_all_at_once: bool = false
+## If true, the effect is not lost on reaching 0 stacks. Instead it goes on cooldown specified by 
+## [member reapply_cooldown] after which new stacks can be gained again.
+@export var is_permanent: bool = false
 
 @export_group("Stack Rate Limits")
 ## Maximum stacks that can be lost within a given time window.
@@ -81,6 +84,7 @@ var current_stacks: int = 1:
 var default_value: float
 var target: Node3D
 var _is_on_cooldown: bool = false
+var _cooldown_timer: Timer = Timer.new()
 
 var _recent_stacks_lost_count: int = 0: 
 	set(value): _recent_stacks_lost_count= clampi(value, 0, max_stack_loss_per_window)
@@ -116,6 +120,13 @@ func _enter_tree() -> void:
 	
 	add_child(_increment_timer)
 	add_child(_decrement_timer)
+	
+	_cooldown_timer.autostart = false
+	_cooldown_timer.one_shot = true
+	_cooldown_timer.name = "CooldownTimer"
+	_cooldown_timer.timeout.connect(set_off_cooldown)
+	
+	add_child(_cooldown_timer)
 
 
 func _ready() -> void:
@@ -160,8 +171,11 @@ func _process_regular(delta: float) -> void:
 		decrement_stack()
 	
 	if current_stacks <= 0:
-		print("[%s] Effect %s has finished" % [target, name])
-		_delete_effect()
+		if is_permanent: 
+			toggle_cooldown()
+		else:
+			print("[%s] Effect %s has finished" % [target, name])
+			_delete_effect()
 
 
 func _process_reversed(delta: float) -> void:
@@ -177,7 +191,6 @@ func _process_reversed(delta: float) -> void:
 
 
 func increment_stack(amount: int = 1) -> void:
-	if _is_on_cooldown: return
 	if not can_gain_while_active: return
 	if _is_increment_locked: return
 	
@@ -197,7 +210,6 @@ func increment_stack(amount: int = 1) -> void:
 
 
 func decrement_stack(amount: int = 1) -> void:
-	if _is_on_cooldown: return
 	if _is_decrement_locked: return
 	if _decrement_timer.time_left != 0.0: return
 	
@@ -217,11 +229,15 @@ func decrement_stack(amount: int = 1) -> void:
 
 
 func end_effect() -> void:
-	print("[%s] Effect %s has been removed" % [target, name])
-	_delete_effect()
+	if is_permanent:
+		decrement_stack()
+	else:
+		print("[%s] Effect %s has been removed" % [target, name])
+		_delete_effect()
 
 
 func add_effect(stack_amount: int = 1) -> void:
+	if _is_on_cooldown: return
 	if not can_gain_from_source_reapply: return
 	increment_stack(stack_amount)
 
@@ -234,6 +250,20 @@ func set_increment_lock(value: bool) -> void:
 func set_decrement_lock(value: bool) -> void:
 	ServerRequests.send_emit_signal_global_request(self, locked, value)
 	_is_decrement_locked = value
+
+
+func set_on_cooldown() -> void:
+	_is_on_cooldown = true
+
+
+func set_off_cooldown() -> void:
+	_is_on_cooldown = false
+	if is_permanent: increment_stack()
+
+
+func toggle_cooldown() -> void:
+	set_on_cooldown()
+	_cooldown_timer.start(reapply_cooldown)
 
 
 func _delete_effect() -> void:
@@ -261,6 +291,7 @@ func _setup_banner() -> void:
 	effect_banner.is_endless = is_endless
 	effect_banner.is_reversed = is_reversed
 	effect_banner.regenerates_stacks = regenerates_stacks
+	effect_banner.is_permanent = is_permanent
 	stack_gained.connect(effect_banner.update_display)
 	stack_lost.connect(effect_banner.update_display)
 	finished.connect(effect_banner.delete)

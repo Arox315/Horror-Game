@@ -1,7 +1,8 @@
 [gd_scene load_steps=3 format=3 uid="uid://b3xismmir0wg6"]
 
 [ext_resource type="Script" uid="uid://dtp8cmndps4xm" path="res://common/components/effects_component/effect_banner/effect_banner.gd" id="1_4qtbp"]
-[ext_resource type="Texture2D" uid="uid://qxxd5w4w1tss" path="res://assets/icons/effects/accelerating_move_speed_icon.png" id="2_ivpa3"]
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_4b8cn"]
 
 [node name="EffectBanner" type="Control"]
 custom_minimum_size = Vector2(64, 64)
@@ -41,7 +42,7 @@ offset_right = 60.0
 offset_bottom = 60.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("2_ivpa3")
+texture = SubResource("PlaceholderTexture2D_4b8cn")
 expand_mode = 1
 
 [node name="DiminishedOverlay" type="ColorRect" parent="InnerPanelWrapper/InnerPanel"]
