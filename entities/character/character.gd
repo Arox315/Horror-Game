@@ -94,11 +94,7 @@ func _physics_process(delta: float) -> void:
 	if !is_multiplayer_authority():
 		return
 	
-	if Input.is_action_just_pressed("debug_add_effect"):
-		var effect_to_add = EffectsTable.Effects.BONUS_JUMP_HEIGHT
-		ServerRequests.send_add_effect_request(self, effect_to_add)
-	
-	if Input.is_action_just_pressed("debug_effect"):
+	if Input.is_action_just_pressed("debug_key"):
 		ServerRequests.send_emit_signal_request(self, test)
 		ServerRequests.send_damage_request(interact_ray.get_collider(), 1)
 	

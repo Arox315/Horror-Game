@@ -1,4 +1,4 @@
-[gd_scene load_steps=63 format=3 uid="uid://dvi7lqoafi1cl"]
+[gd_scene load_steps=67 format=3 uid="uid://dvi7lqoafi1cl"]
 
 [ext_resource type="PackedScene" uid="uid://352pm4hcxqtx" path="res://stages/playground/block.tscn" id="1_qchbg"]
 [ext_resource type="Texture2D" uid="uid://b0nhpggoqkyc3" path="res://assets/textures/prototype/dev_tiles-white.png" id="2_4y8jm"]
@@ -10,6 +10,7 @@
 [ext_resource type="PackedScene" uid="uid://c4upv6xtythq5" path="res://stages/test_enemy.tscn" id="6_bkhp6"]
 [ext_resource type="PackedScene" uid="uid://cj72bmdxu2h7b" path="res://entities/interactables/teleporter/teleporter.tscn" id="6_ilnn3"]
 [ext_resource type="Texture2D" uid="uid://c6l4gm0v03vwf" path="res://assets/textures/prototype/dev_texture-gray.png" id="8_ac2je"]
+[ext_resource type="Texture2D" uid="uid://1jdonkbwwchk" path="res://assets/textures/prototype/dev_texture-orange.png" id="10_iapem"]
 [ext_resource type="Texture2D" uid="uid://cpu5muw1x3aky" path="res://assets/textures/prototype/dev_texture-white.png" id="11_7h8id"]
 [ext_resource type="Texture2D" uid="uid://bt344d7gai5pw" path="res://assets/textures/prototype/dev_texture-green.png" id="12_nfegs"]
 [ext_resource type="Texture2D" uid="uid://dg42n3sb1hvoy" path="res://assets/textures/prototype/dev_texture-red.png" id="13_iapem"]
@@ -25,6 +26,8 @@ sky_material = SubResource("ProceduralSkyMaterial_wt17y")
 background_mode = 2
 sky = SubResource("Sky_m8u5f")
 tonemap_mode = 2
+ssr_enabled = true
+sdfgi_use_occlusion = true
 glow_enabled = true
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4y8jm"]
@@ -263,6 +266,18 @@ func _on_interacted(body:Variant, _sender: InteractableTrigger) -> void:
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_4vqsl"]
 size = Vector3(1.1, 1.1, 1.1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_eyhu8"]
+albedo_texture = ExtResource("10_iapem")
+uv1_offset = Vector3(0.5, 0.5, 0)
+uv1_triplanar = true
+
+[sub_resource type="QuadMesh" id="QuadMesh_4vqsl"]
+material = SubResource("StandardMaterial3D_eyhu8")
+size = Vector2(15, 5)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_p2lxx"]
+size = Vector3(15, 5, 0)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_iapem"]
 albedo_texture = ExtResource("2_4y8jm")
@@ -544,6 +559,9 @@ prompt_message = "Press [{str}] to gain Accelerating Move Speed effect"
 [node name="TriggerArea" parent="Room2/AccMoveSpeedEffectSetter/InteractableTrigger" index="0"]
 shape = SubResource("BoxShape3D_x0fsn")
 
+[node name="InteractablePopup" parent="Room2/AccMoveSpeedEffectSetter/InteractableTrigger" index="1"]
+transform = Transform3D(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.5, 0)
+
 [node name="BonusJumoHeightEffectSetter" type="CSGBox3D" parent="Room2"]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 7, 0.5, 4)
 material = SubResource("StandardMaterial3D_o71dx")
@@ -555,6 +573,9 @@ prompt_message = "Press [{str}] to gain Bonus Jump Height effect"
 [node name="TriggerArea" parent="Room2/BonusJumoHeightEffectSetter/InteractableTrigger" index="0"]
 shape = SubResource("BoxShape3D_eyhu8")
 
+[node name="InteractablePopup" parent="Room2/BonusJumoHeightEffectSetter/InteractableTrigger" index="1"]
+transform = Transform3D(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.5, 0)
+
 [node name="PassiveHealthRegenerationEffectSetter" type="CSGBox3D" parent="Room2"]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 7, 0.5, 2)
 material = SubResource("StandardMaterial3D_x0fsn")
@@ -565,6 +586,36 @@ prompt_message = "Press [{str}] to gain Passive Health Regeneration effect"
 
 [node name="TriggerArea" parent="Room2/PassiveHealthRegenerationEffectSetter/InteractableTrigger" index="0"]
 shape = SubResource("BoxShape3D_4vqsl")
+
+[node name="InteractablePopup" parent="Room2/PassiveHealthRegenerationEffectSetter/InteractableTrigger" index="1"]
+transform = Transform3D(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.5, 0)
+
+[node name="Wall2" type="StaticBody3D" parent="Room2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, -7.5)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Room2/Wall2"]
+mesh = SubResource("QuadMesh_4vqsl")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Room2/Wall2"]
+shape = SubResource("BoxShape3D_p2lxx")
+
+[node name="Wall3" type="StaticBody3D" parent="Room2"]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 7.5, 2.5, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Room2/Wall3"]
+mesh = SubResource("QuadMesh_4vqsl")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Room2/Wall3"]
+shape = SubResource("BoxShape3D_p2lxx")
+
+[node name="Wall4" type="StaticBody3D" parent="Room2"]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -7.5, 2.5, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Room2/Wall4"]
+mesh = SubResource("QuadMesh_4vqsl")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Room2/Wall4"]
+shape = SubResource("BoxShape3D_p2lxx")
 
 [node name="Room3" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 15)

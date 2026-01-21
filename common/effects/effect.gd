@@ -232,8 +232,12 @@ func end_effect() -> void:
 	if is_permanent:
 		decrement_stack()
 	else:
-		print("[%s] Effect %s has been removed" % [target, name])
-		_delete_effect()
+		remove_effect()
+
+
+func remove_effect() -> void:
+	print("[%s] Effect %s has been removed" % [target, name])
+	_delete_effect()
 
 
 func add_effect(stack_amount: int = 1) -> void:

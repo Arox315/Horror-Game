@@ -28,13 +28,16 @@ func add_effect(effect_id: int) -> void:
 	effect_spawner.spawn(effect_id)
 
 
-func remove_effect(effect_id: int) -> void:
+func remove_effect(effect_id: int, force_remove: bool = false) -> void:
 	if not multiplayer.is_server(): return
 	
 	for child in get_children():
 		if child is not Effect: continue
 		if child.get_meta("id") == effect_id:
-			child.end_effect()
+			if force_remove:
+				child.remove_effect()
+			else:
+				child.end_effect()
 			return
 
 
