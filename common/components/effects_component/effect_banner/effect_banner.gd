@@ -16,6 +16,7 @@ extends Control
 @export var is_endless: bool
 @export var is_reversed: bool
 @export var regenerates_stacks: bool
+@export var is_permanent: bool
 
 @onready var icon: TextureRect = $InnerPanelWrapper/InnerPanel/Icon
 @onready var diminished_overlay: ColorRect = $InnerPanelWrapper/InnerPanel/DiminishedOverlay
@@ -73,7 +74,12 @@ func set_is_update_reversed_locked(value: bool) -> void:
 
 
 func _update_display(new_stacks: int) -> void:
-	if new_stacks <= 0: return
+	if new_stacks <= 0:
+		if is_permanent: visible = false
+		return
+	
+	if not visible: visible = true
+	
 	label.text = str(new_stacks)
 	current_stacks = new_stacks
 	

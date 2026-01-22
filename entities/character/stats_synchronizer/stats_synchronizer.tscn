@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://6t61x1sq0h34"]
+
+[ext_resource type="Script" uid="uid://b1qyat76yia2y" path="res://entities/character/stats_synchronizer/player_stats_synchronizer.gd" id="1_8xwkk"]
+
+[node name="StatsSynchronizer" type="Node"]
+script = ExtResource("1_8xwkk")

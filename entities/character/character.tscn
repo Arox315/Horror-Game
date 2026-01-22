@@ -1,9 +1,11 @@
-[gd_scene load_steps=10 format=3 uid="uid://c7ksecespxm2u"]
+[gd_scene load_steps=12 format=3 uid="uid://c7ksecespxm2u"]
 
 [ext_resource type="Script" uid="uid://cktonvsvavro3" path="res://entities/character/character.gd" id="1_glpr6"]
 [ext_resource type="PackedScene" uid="uid://shh7ov5oet2b" path="res://entities/character/interact-ray/interact_ray.tscn" id="2_6i0tm"]
 [ext_resource type="PackedScene" uid="uid://dbaufhsgu6cq1" path="res://common/components/effects_component/effects_component.tscn" id="2_7315l"]
-[ext_resource type="Script" uid="uid://b1qyat76yia2y" path="res://entities/character/player_stats_synchronizer.gd" id="3_2ltml"]
+[ext_resource type="PackedScene" uid="uid://dnbdbyvhguoy4" path="res://common/components/health_component/health_component.tscn" id="3_xn0r5"]
+[ext_resource type="PackedScene" uid="uid://6t61x1sq0h34" path="res://entities/character/stats_synchronizer/stats_synchronizer.tscn" id="4_l75fg"]
+[ext_resource type="PackedScene" uid="uid://p5q0jtydp1wl" path="res://ui/player_hud/health_display/health_display.tscn" id="6_l75fg"]
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_0c2ax"]
 properties/0/path = NodePath(".:position")
@@ -64,14 +66,15 @@ script = ExtResource("1_glpr6")
 
 [node name="EffectsComponent" parent="." instance=ExtResource("2_7315l")]
 
+[node name="HealthComponent" parent="." instance=ExtResource("3_xn0r5")]
+
+[node name="StatsSynchronizer" parent="." instance=ExtResource("4_l75fg")]
+
 [node name="PositionSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_0c2ax")
 
 [node name="ModelSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_6i0tm")
-
-[node name="StatsSynchronizer" type="Node" parent="."]
-script = ExtResource("3_2ltml")
 
 [node name="Hitbox" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
@@ -121,3 +124,6 @@ theme_override_constants/margin_bottom = 10
 
 [node name="Effects" type="HBoxContainer" parent="Hud/EffectsContainer"]
 layout_mode = 2
+
+[node name="HealthDisplay" parent="Hud" node_paths=PackedStringArray("health_component") instance=ExtResource("6_l75fg")]
+health_component = NodePath("../../HealthComponent")
