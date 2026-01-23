@@ -1,6 +1,14 @@
 extends Node
 ## Utilities provide useful methods for common use
 
+enum stage_id {
+	PLAYGROUND
+}
+
+const STAGES: Dictionary = {
+	stage_id.PLAYGROUND: preload("uid://dvi7lqoafi1cl")
+}
+
 # ----- Utilities -----
 
 ## Returns a player [Node] from [param peer_id]. 

@@ -35,6 +35,7 @@ window/stretch/aspect="expand"
 folder_colors={
 "res://assets/": "gray",
 "res://entities/": "blue",
+"res://multiplayer/": "yellow",
 "res://scripts/": "teal",
 "res://stages/": "purple",
 "res://ui/": "green"

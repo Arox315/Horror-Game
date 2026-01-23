@@ -1,0 +1,81 @@
+[gd_scene load_steps=3 format=3 uid="uid://c5kb3tpbfje51"]
+
+[ext_resource type="Script" uid="uid://byhtcg2ejfpwr" path="res://stages/main_menu/main_menu.gd" id="1_phs36"]
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_phs36"]
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_phs36")
+
+[node name="Background" type="TextureRect" parent="."]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("PlaceholderTexture2D_phs36")
+
+[node name="Wrapper" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 25
+theme_override_constants/margin_top = 25
+theme_override_constants/margin_right = 25
+theme_override_constants/margin_bottom = 25
+
+[node name="MainPanel" type="Panel" parent="Wrapper"]
+custom_minimum_size = Vector2(256, 256)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+
+[node name="Buttons" type="VBoxContainer" parent="Wrapper/MainPanel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -102.0
+offset_top = -55.0
+offset_right = 102.0
+offset_bottom = 55.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+
+[node name="HostBtn" type="Button" parent="Wrapper/MainPanel/Buttons"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Create lobby"
+
+[node name="JoinBtn" type="Button" parent="Wrapper/MainPanel/Buttons"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Join lobby"
+
+[node name="NicknamePanel" type="LineEdit" parent="Wrapper"]
+custom_minimum_size = Vector2(512, 64)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 32
+placeholder_text = "Name"
+max_length = 50
+clear_button_enabled = true
+
+[connection signal="pressed" from="Wrapper/MainPanel/Buttons/HostBtn" to="." method="_on_host_btn_pressed"]
+[connection signal="pressed" from="Wrapper/MainPanel/Buttons/JoinBtn" to="." method="_on_join_btn_pressed"]

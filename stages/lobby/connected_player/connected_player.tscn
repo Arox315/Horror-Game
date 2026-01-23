@@ -1,0 +1,21 @@
+[gd_scene load_steps=3 format=3 uid="uid://csixnn6wfsgjd"]
+
+[ext_resource type="Script" uid="uid://5l4y1n5wqhcc" path="res://stages/lobby/connected_player/connected_player.gd" id="1_fxnbv"]
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_8mif4"]
+properties/0/path = NodePath(".:text")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+
+[node name="ConnectedPlayer" type="Label"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 32
+text = "Player"
+script = ExtResource("1_fxnbv")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_8mif4")

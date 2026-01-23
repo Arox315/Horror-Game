@@ -1,13 +1,12 @@
-[gd_scene load_steps=67 format=3 uid="uid://dvi7lqoafi1cl"]
+[gd_scene load_steps=66 format=3 uid="uid://dvi7lqoafi1cl"]
 
+[ext_resource type="Script" uid="uid://buw6ghtd823ix" path="res://stages/stage.gd" id="1_nfegs"]
 [ext_resource type="PackedScene" uid="uid://352pm4hcxqtx" path="res://stages/playground/block.tscn" id="1_qchbg"]
 [ext_resource type="Texture2D" uid="uid://b0nhpggoqkyc3" path="res://assets/textures/prototype/dev_tiles-white.png" id="2_4y8jm"]
 [ext_resource type="Texture2D" uid="uid://00bjogdgqtt4" path="res://assets/textures/prototype/dev_tiles-orange.png" id="2_5wu1j"]
 [ext_resource type="Texture2D" uid="uid://b86nqm7fi6hb0" path="res://assets/textures/prototype/dev_tiles-gray.png" id="2_ac2je"]
-[ext_resource type="Script" uid="uid://cnglits2m8u6w" path="res://scripts/multiplayer_menu.gd" id="2_elqxi"]
 [ext_resource type="PackedScene" uid="uid://dmgtd4kr3b0wd" path="res://entities/interactables/color_changer/color_changer.tscn" id="3_bkhp6"]
 [ext_resource type="PackedScene" uid="uid://dbwe4mpgrbf1o" path="res://common/interactable/trigger/interactable_trigger.tscn" id="4_ruau5"]
-[ext_resource type="PackedScene" uid="uid://c4upv6xtythq5" path="res://stages/test_enemy.tscn" id="6_bkhp6"]
 [ext_resource type="PackedScene" uid="uid://cj72bmdxu2h7b" path="res://entities/interactables/teleporter/teleporter.tscn" id="6_ilnn3"]
 [ext_resource type="Texture2D" uid="uid://c6l4gm0v03vwf" path="res://assets/textures/prototype/dev_texture-gray.png" id="8_ac2je"]
 [ext_resource type="Texture2D" uid="uid://1jdonkbwwchk" path="res://assets/textures/prototype/dev_texture-orange.png" id="10_iapem"]
@@ -47,6 +46,7 @@ script/source = "extends InteractableObject
 func _on_interacted(body:Variant, _sender: InteractableTrigger) -> void:
 	ServerRequests.send_add_effect_request(body,EffectsTable.Effects.TEST01)
 	#ServerRequests.send_delete_request(self)
+	pass
 "
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_o6tti"]
@@ -229,6 +229,7 @@ script/source = "extends InteractableObject
 
 func _on_interacted(body:Variant, _sender: InteractableTrigger) -> void:
 	ServerRequests.send_add_effect_request(body, EffectsTable.Effects.ACCELERATING_MOVE_SPEED)
+	pass
 "
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_x0fsn"]
@@ -246,6 +247,7 @@ script/source = "extends InteractableObject
 
 func _on_interacted(body:Variant, _sender: InteractableTrigger) -> void:
 	ServerRequests.send_add_effect_request(body, EffectsTable.Effects.BONUS_JUMP_HEIGHT)
+	pass
 "
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_eyhu8"]
@@ -262,6 +264,7 @@ script/source = "extends InteractableObject
 
 func _on_interacted(body:Variant, _sender: InteractableTrigger) -> void:
 	ServerRequests.send_add_effect_request(body, EffectsTable.Effects.PASSIVE_HEALTH_REGENERATION)
+	pass
 "
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_4vqsl"]
@@ -342,6 +345,7 @@ func _on_body_entered(body: Node3D) -> void:
 [sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_rwvch"]
 
 [node name="Playground" type="Node3D"]
+script = ExtResource("1_nfegs")
 
 [node name="Env" type="Node" parent="."]
 
@@ -355,51 +359,6 @@ shadow_enabled = true
 [node name="PlayerMultiplayerSpawner" type="MultiplayerSpawner" parent="."]
 _spawnable_scenes = PackedStringArray("uid://c7ksecespxm2u")
 spawn_path = NodePath("..")
-
-[node name="MultiplayerMenu" type="Control" parent="."]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-script = ExtResource("2_elqxi")
-
-[node name="Panel" type="Panel" parent="MultiplayerMenu"]
-custom_minimum_size = Vector2(400, 150)
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -20.0
-offset_top = -20.0
-offset_right = 20.0
-offset_bottom = 20.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="VBoxContainer" type="VBoxContainer" parent="MultiplayerMenu/Panel"]
-layout_mode = 1
-anchors_preset = 14
-anchor_top = 0.5
-anchor_right = 1.0
-anchor_bottom = 0.5
-offset_top = -33.0
-offset_bottom = 33.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="HostButton" type="Button" parent="MultiplayerMenu/Panel/VBoxContainer"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 32
-text = "Host game"
-
-[node name="JoinButton" type="Button" parent="MultiplayerMenu/Panel/VBoxContainer"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 32
-text = "Join game"
 
 [node name="Room1" type="Node3D" parent="."]
 
@@ -690,9 +649,6 @@ shape = SubResource("BoxShape3D_rwvch")
 [node name="PlayersSpawnPoint" type="Marker3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 3)
 
-[node name="TestEnemy" parent="." instance=ExtResource("6_bkhp6")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.31309605, 19.73263, -20.560532)
-
 [node name="OutOfBoundsTriggerKill" type="Area3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -25, 0)
 script = SubResource("GDScript_iapem")
@@ -700,8 +656,6 @@ script = SubResource("GDScript_iapem")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="OutOfBoundsTriggerKill"]
 shape = SubResource("WorldBoundaryShape3D_rwvch")
 
-[connection signal="pressed" from="MultiplayerMenu/Panel/VBoxContainer/HostButton" to="MultiplayerMenu" method="_on_host_button_pressed"]
-[connection signal="pressed" from="MultiplayerMenu/Panel/VBoxContainer/JoinButton" to="MultiplayerMenu" method="_on_join_button_pressed"]
 [connection signal="body_entered" from="OutOfBoundsTriggerKill" to="OutOfBoundsTriggerKill" method="_on_body_entered"]
 
 [editable path="Room1/TestInteractable/InteractableTrigger"]

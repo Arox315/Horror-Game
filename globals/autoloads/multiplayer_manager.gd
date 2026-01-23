@@ -1,47 +1,93 @@
 extends Node
 
+signal client_connected(peer_id: int)
+
+const LOBBY = preload("uid://bwpiufd8m8gmh")
+const MAIN_MENU = preload("uid://c5kb3tpbfje51")
+
 const SERVER_PORT: int = 42069
 const SERVER_IP: String = "localhost"
 
-var multiplayer_player_scene: PackedScene = preload("res://entities/character/character.tscn")
-var players_spawn_point: Marker3D
-var current_scene : Node
+#var player_name: String
+var player_names: Dictionary = {}
 
-var peer: ENetMultiplayerPeer = ENetMultiplayerPeer.new()
+func _ready() -> void:
+	multiplayer.allow_object_decoding = true
+	var sync := MultiplayerSynchronizer.new()
+	var config := SceneReplicationConfig.new()
+	config.add_property(^":player_names")
+	sync.name = "PlayerDataSync"
+	sync.replication_config = config
+	add_child(sync)
 
 
-func host_game() -> void:
-	players_spawn_point = get_tree().current_scene.get_node("PlayersSpawnPoint")
-	current_scene = get_tree().current_scene
-	
+func create_lobby(nickname: String) -> void:
+	var peer: ENetMultiplayerPeer = ENetMultiplayerPeer.new()
 	peer.create_server(SERVER_PORT)
 	multiplayer.multiplayer_peer = peer
 	
-	multiplayer.peer_connected.connect(_spawn_player)
-	multiplayer.peer_disconnected.connect(_delete_player)
+	#_connect_signals()
+	#multiplayer.peer_connected.connect(_spawn_player)
+	#multiplayer.peer_disconnected.connect(_delete_player)
+	player_names[1] = nickname
 	
-	_spawn_player()
-	print_debug("Joined as host! ID: %d" % peer.get_unique_id())
+	print("Lobby created!")
 
 
-func join_game() -> void:
+func join_lobby(nickname: String) -> void:
+	var peer: ENetMultiplayerPeer = ENetMultiplayerPeer.new()
+	if not multiplayer.server_disconnected.is_connected(_on_server_disconnected):
+		multiplayer.server_disconnected.connect(_on_server_disconnected)
+	
 	peer.create_client(SERVER_IP,SERVER_PORT)
 	multiplayer.multiplayer_peer = peer
-	print_debug("Joined as player! ID: %d" % peer.get_unique_id())
-
-
-func _spawn_player(id: int = 1) -> void:
-	if not multiplayer.is_server():
-		return
 	
-	var player_to_spawn = multiplayer_player_scene.instantiate()
-	player_to_spawn.name = str(id)
-	player_to_spawn.transform.origin = players_spawn_point.transform.origin
-	current_scene.call_deferred("add_child", player_to_spawn)
-
-
-func _delete_player(id: int) -> void:
-	if not current_scene.has_node(str(id)):
-		return
+	multiplayer.connected_to_server.connect(_on_connected.bind(peer.get_unique_id(), nickname))
 	
-	current_scene.get_node(str(id)).queue_free()
+	print("Joined lobby!")
+
+
+func _on_server_disconnected() -> void:
+	print("Lobby has been disbanded.")
+	terminate_connection()
+
+
+func _on_connected(peer_id: int, nickname: String):
+	_register_player_name.rpc(peer_id, nickname)
+	
+
+@rpc("any_peer","call_local")
+func _register_player_name(peer_id: int, nickname: String) -> void:
+	player_names[peer_id] = nickname
+	
+	#call_deferred("emit_signal","client_connected", peer_id)
+	await  get_tree().physics_frame
+	client_connected.emit(peer_id)
+
+
+func load_lobby() -> void:
+	print("Loading lobby...")
+	load_new_scene(LOBBY)
+
+
+func terminate_connection() -> void:
+	print("Connection terminated. Loading main menu...")
+	load_new_scene(MAIN_MENU)
+	multiplayer.multiplayer_peer = null
+	_disconnect_signals()
+
+func load_new_scene(scene: PackedScene) -> void:
+	get_tree().call_deferred("change_scene_to_packed", scene)
+
+
+#@rpc("reliable", "any_peer", "call_local")
+#func load_new_scene_from_id(id: int) -> void:
+	#get_tree().call_deferred("change_scene_to_packed", Utilities.STAGES[id])
+
+@rpc("reliable", "authority", "call_local")
+func load_new_scene_from_id(id: int) -> void:
+	get_tree().call_deferred("change_scene_to_packed", Utilities.STAGES[id])
+
+func _disconnect_signals() -> void:
+	if multiplayer.server_disconnected.has_connections():
+		multiplayer.server_disconnected.disconnect(_on_server_disconnected)
