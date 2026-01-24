@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://c5kb3tpbfje51"]
 
-[ext_resource type="Script" uid="uid://byhtcg2ejfpwr" path="res://stages/main_menu/main_menu.gd" id="1_phs36"]
+[ext_resource type="Script" uid="uid://byhtcg2ejfpwr" path="res://ui/menu/main_menu/main_menu.gd" id="1_phs36"]
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_phs36"]
 

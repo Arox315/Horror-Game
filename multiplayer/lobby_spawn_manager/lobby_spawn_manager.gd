@@ -4,6 +4,7 @@ extends Node
 var connected_player_banner_scene: PackedScene = preload("uid://csixnn6wfsgjd")
 var connected_players: VBoxContainer
 
+var connected_peers: Array[int]
 
 func _ready() -> void:
 	multiplayer.peer_connected.connect(_on_peer_connected)
@@ -16,8 +17,17 @@ func _ready() -> void:
 	_add_connected_player_banner()
 
 
+#func _process(_delta: float) -> void:
+	#if connected_peers.is_empty(): return
+	#for peer in connected_peers:
+		#if MultiplayerManager.ready_clients.get(peer, false):
+			#_add_connected_player_banner(peer)
+			#connected_peers.pop_at(connected_peers.find(peer))
+
+
 func _on_peer_connected(peer_id: int) -> void:
 	print("Player: %s connected!" % peer_id)
+	#connected_peers.append(peer_id)
 	_add_connected_player_banner(peer_id)
 
 

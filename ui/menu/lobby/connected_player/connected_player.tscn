@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://csixnn6wfsgjd"]
 
-[ext_resource type="Script" uid="uid://5l4y1n5wqhcc" path="res://stages/lobby/connected_player/connected_player.gd" id="1_fxnbv"]
+[ext_resource type="Script" uid="uid://5l4y1n5wqhcc" path="res://ui/menu/lobby/connected_player/connected_player.gd" id="1_fxnbv"]
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_8mif4"]
 properties/0/path = NodePath(".:text")

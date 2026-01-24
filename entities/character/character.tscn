@@ -62,6 +62,7 @@ func generate_new_color() -> void:
 "
 
 [node name="Character" type="CharacterBody3D" groups=["Players"]]
+collision_layer = 4
 script = ExtResource("1_glpr6")
 
 [node name="EffectsComponent" parent="." instance=ExtResource("2_7315l")]

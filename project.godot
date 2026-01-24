@@ -20,6 +20,7 @@ MultiplayerManager="*res://globals/autoloads/multiplayer_manager.gd"
 EffectsTable="*res://globals/autoloads/effects_table.gd"
 ServerRequests="*res://globals/autoloads/server_requests.gd"
 Utilities="*res://globals/autoloads/utilities.gd"
+SceneManager="*res://globals/autoloads/scene_manager.gd"
 
 [display]
 

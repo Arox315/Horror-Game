@@ -2,14 +2,12 @@ extends Node
 
 signal client_connected(peer_id: int)
 
-const LOBBY = preload("uid://bwpiufd8m8gmh")
-const MAIN_MENU = preload("uid://c5kb3tpbfje51")
-
 const SERVER_PORT: int = 42069
 const SERVER_IP: String = "localhost"
 
-#var player_name: String
 var player_names: Dictionary = {}
+var ready_clients: Dictionary = {}
+
 
 func _ready() -> void:
 	multiplayer.allow_object_decoding = true
@@ -30,6 +28,7 @@ func create_lobby(nickname: String) -> void:
 	#multiplayer.peer_connected.connect(_spawn_player)
 	#multiplayer.peer_disconnected.connect(_delete_player)
 	player_names[1] = nickname
+	ready_clients[1] = true
 	
 	print("Lobby created!")
 
@@ -54,7 +53,26 @@ func _on_server_disconnected() -> void:
 
 func _on_connected(peer_id: int, nickname: String):
 	_register_player_name.rpc(peer_id, nickname)
-	
+	#set_client_ready.rpc(peer_id)
+
+
+@rpc("reliable", "any_peer", "call_local")
+func set_client_ready(peer_id) -> void:
+	ready_clients[peer_id] = true
+
+
+@rpc("reliable", "any_peer", "call_local")
+func set_client_not_ready(peer_id) -> void:
+	ready_clients[peer_id] = false
+
+
+func all_clients_ready() -> bool:
+	for value in ready_clients.values():
+		if not value:
+			return false
+	return true
+
+
 
 @rpc("any_peer","call_local")
 func _register_player_name(peer_id: int, nickname: String) -> void:
@@ -67,26 +85,21 @@ func _register_player_name(peer_id: int, nickname: String) -> void:
 
 func load_lobby() -> void:
 	print("Loading lobby...")
-	load_new_scene(LOBBY)
+	SceneManager.start_loading_scene(SceneManager.scene_id.LOBBY)
+	#SceneManager.load_scene()
 
 
 func terminate_connection() -> void:
 	print("Connection terminated. Loading main menu...")
-	load_new_scene(MAIN_MENU)
+	SceneManager.start_loading_scene(SceneManager.scene_id.MAIN_MENU)
 	multiplayer.multiplayer_peer = null
 	_disconnect_signals()
 
-func load_new_scene(scene: PackedScene) -> void:
-	get_tree().call_deferred("change_scene_to_packed", scene)
-
-
-#@rpc("reliable", "any_peer", "call_local")
-#func load_new_scene_from_id(id: int) -> void:
-	#get_tree().call_deferred("change_scene_to_packed", Utilities.STAGES[id])
 
 @rpc("reliable", "authority", "call_local")
 func load_new_scene_from_id(id: int) -> void:
 	get_tree().call_deferred("change_scene_to_packed", Utilities.STAGES[id])
+
 
 func _disconnect_signals() -> void:
 	if multiplayer.server_disconnected.has_connections():

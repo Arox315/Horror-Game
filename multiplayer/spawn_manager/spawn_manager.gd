@@ -8,9 +8,9 @@ var current_scene : Node
 var ready_peers: Dictionary = {1: false}
 
 
-func _enter_tree() -> void:
-	for peer in multiplayer.get_peers():
-		ready_peers[peer] = false
+#func _enter_tree() -> void:
+	#for peer in multiplayer.get_peers():
+		#ready_peers[peer] = false
 
 
 func _ready() -> void:
@@ -23,15 +23,12 @@ func _ready() -> void:
 	multiplayer.peer_connected.connect(_on_peer_connected)
 	multiplayer.peer_disconnected.connect(_on_peer_disconnected)
 	
-	ready_peers[1] = true
-	_spawn_player(1)
+	_spawn_player()
 	
-	#_spawn_player()
-	#
-	#await get_tree().physics_frame
-	#
-	#for peer in multiplayer.get_peers():
-		#_spawn_player(peer)
+	await get_tree().physics_frame
+	
+	for peer in multiplayer.get_peers():
+		_spawn_player(peer)
 
 
 @rpc("reliable", "any_peer")
