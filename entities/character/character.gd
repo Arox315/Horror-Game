@@ -28,8 +28,8 @@ var is_third_person: bool = false
 
 func _enter_tree() -> void:
 	set_multiplayer_authority(name.to_int())
-	if get_tree().current_scene.get_node("PlayersSpawnPoint"):
-		position = get_tree().current_scene.get_node("PlayersSpawnPoint").global_position
+	if get_tree().current_scene.current_scene.get_node("PlayersSpawnPoint"):
+		position = get_tree().current_scene.current_scene.get_node("PlayersSpawnPoint").global_position
 	
 	var hc := $HealthComponent
 	hc.died.connect(_on_died)

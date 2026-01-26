@@ -356,10 +356,6 @@ environment = SubResource("Environment_is3ju")
 transform = Transform3D(0.764359, 0.423645, 0.486087, -0.594107, 0.755703, 0.275591, -0.250584, -0.499438, 0.829319, 7.43818, 2.70805, 2.9176)
 shadow_enabled = true
 
-[node name="PlayerMultiplayerSpawner" type="MultiplayerSpawner" parent="."]
-_spawnable_scenes = PackedStringArray("uid://c7ksecespxm2u")
-spawn_path = NodePath("..")
-
 [node name="Room1" type="Node3D" parent="."]
 
 [node name="Floor" type="StaticBody3D" parent="Room1"]

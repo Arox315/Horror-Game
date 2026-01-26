@@ -2,6 +2,7 @@ extends Control
 
 @onready var stage_selector: OptionButton = $Wrapper/StageSelectPanel/StageSelectWrapper/StageSelector
 @onready var start_game_btn: Button = $Wrapper/StageSelectPanel/StageSelectWrapper/StartGameBtn
+@onready var connected_players: VBoxContainer = %ConnectedPlayers
 
 var stage_id_offset: int
 
@@ -24,6 +25,10 @@ func _ready() -> void:
 
 func _on_start_game_btn_pressed() -> void:
 	if not multiplayer.is_server(): return
+	
+	for child in connected_players.get_children():
+		child.queue_free()
+		
 	print("Loading %s..." % stage_selector.get_item_text(stage_selector.selected))
 	
 	var stage_id: int = stage_selector.selected + stage_id_offset

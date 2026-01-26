@@ -7,25 +7,19 @@ var current_scene : Node
 
 var ready_peers: Dictionary = {1: false}
 
-
-#func _enter_tree() -> void:
-	#for peer in multiplayer.get_peers():
-		#ready_peers[peer] = false
-
-
 func _ready() -> void:
 	if not multiplayer.is_server():
 		process_mode = Node.PROCESS_MODE_DISABLED
 		return
-		
-	current_scene = get_tree().current_scene
+	
+	await get_tree().physics_frame
+	
+	current_scene = get_tree().root.get_node("Game").current_scene
 	players_spawn_point = current_scene.get_node("PlayersSpawnPoint")
-	multiplayer.peer_connected.connect(_on_peer_connected)
+	#multiplayer.peer_connected.connect(_on_peer_connected)
 	multiplayer.peer_disconnected.connect(_on_peer_disconnected)
 	
 	_spawn_player()
-	
-	await get_tree().physics_frame
 	
 	for peer in multiplayer.get_peers():
 		_spawn_player(peer)
@@ -70,7 +64,9 @@ func _spawn_player(peer_id: int = 1) -> void:
 	var player_to_spawn = multiplayer_player_scene.instantiate()
 	player_to_spawn.name = str(peer_id)
 	player_to_spawn.transform.origin = players_spawn_point.transform.origin
-	current_scene.call_deferred("add_child", player_to_spawn)
+	#get_tree().root.get_node("Game").call_deferred("add_child", player_to_spawn)
+	get_tree().root.get_node("Game").add_child(player_to_spawn)
+	
 
 
 func _delete_player(peer_id: int) -> void:
