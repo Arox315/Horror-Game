@@ -17,7 +17,6 @@ func _ready() -> void:
 
 func _on_peer_connected(peer_id: int) -> void:
 	print("[%s] Player: %s connected!" % [self, peer_id])
-	#MultiplayerManager.load_lobby.rpc_id(peer_id)
 	lobby.add_connected_player(peer_id)
 
 

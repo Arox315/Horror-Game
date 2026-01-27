@@ -37,28 +37,17 @@ func _process(_delta: float) -> void:
 		#if multiplayer.multiplayer_peer.get_unique_id() != 1:
 			#await get_tree().create_timer(1).timeout
 		
-		if multiplayer.is_server():
-			MultiplayerManager.client_ready()
-		else:
-			print("[%s] Sending ready..." % self)
-			if multiplayer.multiplayer_peer.get_connection_status() == multiplayer.multiplayer_peer.CONNECTION_CONNECTED:
-				MultiplayerManager.client_ready.rpc_id(1)
-			else:
-				_disable()
-		
 		if not _wait_for_all_peers:
 			_disable()
+			return
+		
+		_send_status_ready()
 
 
 func start_loading_new_scene(scene_id: int, wait_for_all_peers: bool = true) -> void:
-	if multiplayer.multiplayer_peer:
-		if multiplayer.multiplayer_peer.get_connection_status() == multiplayer.multiplayer_peer.CONNECTION_CONNECTED:
-			if multiplayer.is_server():
-				MultiplayerManager.set_clinet_not_ready()
-			else:
-				MultiplayerManager.set_clinet_not_ready.rpc_id(1)
-			_wait_for_all_peers = wait_for_all_peers
-	
+	_send_status_not_ready()
+	_wait_for_all_peers = wait_for_all_peers
+
 	await get_tree().physics_frame
 	
 	_set_next_scene(scene_id)
@@ -95,3 +84,24 @@ func _enable() -> void:
 func _on_all_peers_ready() -> void:
 	if not _wait_for_all_peers: return
 	_disable()
+
+
+func _send_status_ready() -> void:
+	if not multiplayer.multiplayer_peer: return
+	if multiplayer.multiplayer_peer.get_connection_status() != multiplayer.multiplayer_peer.CONNECTION_CONNECTED: return
+		
+	if multiplayer.is_server():
+		MultiplayerManager.client_ready()
+	else:
+		print("[%s] Client %s sending ready..." % [self, multiplayer.multiplayer_peer.get_unique_id()])
+		MultiplayerManager.client_ready.rpc_id(1)
+
+
+func _send_status_not_ready() -> void:
+	if not multiplayer.multiplayer_peer: return
+	if multiplayer.multiplayer_peer.get_connection_status() != multiplayer.multiplayer_peer.CONNECTION_CONNECTED: return
+		
+	if multiplayer.is_server():
+		MultiplayerManager.set_clinet_not_ready()
+	else:
+		MultiplayerManager.set_clinet_not_ready.rpc_id(1)

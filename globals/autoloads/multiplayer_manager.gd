@@ -43,7 +43,6 @@ func join_lobby(nickname: String) -> void:
 	print("[%s] Joined lobby!" % self)
 
 
-@rpc("reliable", "any_peer", "call_remote")
 func load_lobby() -> void:
 	print("[%s] Loading lobby..." % self)
 	SceneManager.start_loading_scene(SceneManager.scene_id.LOBBY, false)
