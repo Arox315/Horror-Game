@@ -23,21 +23,38 @@ var CAMERA_ROTATION_SPEED = 50.0 * deg_to_rad(0.022)
 @onready var effects: HBoxContainer = $Hud/EffectsContainer/Effects
 @onready var health_component: HealthComponent = $HealthComponent
 
+@onready var position_synchronizer: MultiplayerSynchronizer = $PositionSynchronizer
+@onready var model_synchronizer: MultiplayerSynchronizer = $ModelSynchronizer
+	
+
 var direction:Vector3 = Vector3.ZERO
 var is_third_person: bool = false
 
 func _enter_tree() -> void:
-	set_multiplayer_authority(name.to_int())
-	if get_tree().current_scene.current_scene.get_node("PlayersSpawnPoint"):
-		position = get_tree().current_scene.current_scene.get_node("PlayersSpawnPoint").global_position
+	# Disable process
+	process_mode = Node.PROCESS_MODE_DISABLED
 	
+	set_multiplayer_authority(name.to_int())
 	var hc := $HealthComponent
 	hc.died.connect(_on_died)
 
 
 func _ready() -> void:
+	# Enable process
+	process_mode = Node.PROCESS_MODE_ALWAYS
+	
 	# Set move speed
 	update_speed()
+	
+	# Turn on synchronization visibility
+	position_synchronizer.set_visibility_for(0, true)
+	model_synchronizer.set_visibility_for(0, true)
+	
+	# Move to satege spawn point
+	var spawn_point = get_tree().current_scene.current_scene.get_node_or_null("PlayersSpawnPoint")
+	var spawn_point_position: Vector3 = Vector3.ZERO
+	if spawn_point: spawn_point_position = spawn_point.global_position
+	position = spawn_point_position
 	
 	# Don't execute code if not authority
 	if not is_multiplayer_authority():
@@ -186,7 +203,7 @@ func respawn() -> void:
 	
 	if self is CharacterBody3D: velocity = Vector3.ZERO
 	
-	position = get_tree().current_scene.get_node("PlayersSpawnPoint").global_position
+	position = get_tree().current_scene.current_scene.get_node("PlayersSpawnPoint").global_position
 
 
 func _on_died() -> void:

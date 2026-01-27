@@ -5,9 +5,13 @@
 [sub_resource type="GDScript" id="GDScript_pw7xr"]
 script/source = "extends CharacterBody3D
 
+@onready var multiplayer_synchronizer: MultiplayerSynchronizer = $MultiplayerSynchronizer
 
 var SPEED = 5.0
 var JUMP_VELOCITY = 4.5
+
+func _ready() -> void:
+	multiplayer_synchronizer.set_visibility_for(0, true)
 
 
 func _physics_process(delta: float) -> void:
@@ -44,3 +48,4 @@ mesh = SubResource("CapsuleMesh_7h8id")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_pw7xr")
+public_visibility = false

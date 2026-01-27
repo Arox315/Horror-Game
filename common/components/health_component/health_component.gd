@@ -26,6 +26,7 @@ func _enter_tree() -> void:
 
 func _ready() -> void:
 	current_health = current_health
+	multiplayer_synchronizer.set_visibility_for(0, true)
 
 
 ## Substracts [param amount] from [member current_health]

@@ -51,7 +51,6 @@ theme_override_constants/margin_bottom = 15
 [node name="ConnectedPlayers" type="VBoxContainer" parent="Wrapper/ConnectedPlayersPanel/ConnectedPlayersWrapper"]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_vertical = 0
 
 [node name="StageSelectPanel" type="Panel" parent="Wrapper"]
 custom_minimum_size = Vector2(256, 256)
@@ -88,10 +87,6 @@ size_flags_vertical = 0
 theme_override_font_sizes/font_size = 32
 text = "Leave
 "
-
-[node name="ConnectedPlayerSpawner" type="MultiplayerSpawner" parent="."]
-_spawnable_scenes = PackedStringArray("uid://csixnn6wfsgjd")
-spawn_path = NodePath("../Wrapper/ConnectedPlayersPanel/ConnectedPlayersWrapper/ConnectedPlayers")
 
 [connection signal="pressed" from="Wrapper/StageSelectPanel/StageSelectWrapper/StartGameBtn" to="." method="_on_start_game_btn_pressed"]
 [connection signal="pressed" from="Wrapper/LeaveLobbyBtn" to="." method="_on_leave_lobby_btn_pressed"]

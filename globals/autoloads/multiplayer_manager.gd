@@ -1,12 +1,13 @@
 extends Node
 
-signal client_connected(peer_id: int)
+signal client_joined(peer_id: int)
+signal all_peers_ready
 
 const SERVER_PORT: int = 42069
 const SERVER_IP: String = "localhost"
 
-var player_names: Dictionary = {}
-var ready_clients: Dictionary = {}
+var player_names: Dictionary[int, String] = {}
+var ready_peers: Dictionary[int,bool] = {}
 
 
 func _ready() -> void:
@@ -24,11 +25,7 @@ func create_lobby(nickname: String) -> void:
 	peer.create_server(SERVER_PORT)
 	multiplayer.multiplayer_peer = peer
 	
-	#_connect_signals()
-	#multiplayer.peer_connected.connect(_spawn_player)
-	#multiplayer.peer_disconnected.connect(_delete_player)
 	player_names[1] = nickname
-	ready_clients[1] = true
 	
 	print("Lobby created!")
 
@@ -41,9 +38,69 @@ func join_lobby(nickname: String) -> void:
 	peer.create_client(SERVER_IP,SERVER_PORT)
 	multiplayer.multiplayer_peer = peer
 	
-	multiplayer.connected_to_server.connect(_on_connected.bind(peer.get_unique_id(), nickname))
+	multiplayer.connected_to_server.connect(_on_connected_to_server.bind(peer.get_unique_id(), nickname))
 	
 	print("Joined lobby!")
+
+
+func load_lobby() -> void:
+	print("Loading lobby...")
+	SceneManager.start_loading_scene(SceneManager.scene_id.LOBBY, false)
+
+
+func terminate_connection() -> void:
+	print("Connection terminated. Loading main menu...")
+	if multiplayer.multiplayer_peer.get_connection_status() == multiplayer.multiplayer_peer.CONNECTION_CONNECTED:
+		_delete_ready_peer.rpc(multiplayer.multiplayer_peer.get_unique_id())
+		_delete_player_name.rpc(multiplayer.multiplayer_peer.get_unique_id())
+		
+	ready_peers.clear()
+	player_names.clear()
+	
+	SceneManager.start_loading_scene(SceneManager.scene_id.MAIN_MENU)
+	multiplayer.multiplayer_peer = null
+	_disconnect_signals()
+
+
+@rpc("reliable", "any_peer")
+func client_ready() -> void:
+	var sender_id: int = multiplayer.get_remote_sender_id()
+	
+	if sender_id == 0: #called outside rpc (host)
+		sender_id = 1
+	
+	ready_peers[sender_id] = true
+	
+	print("Client %s ready." % sender_id)
+	
+	if _all_clients_ready():
+		ServerRequests.send_emit_signal_global_request(self, all_peers_ready)
+
+
+@rpc("reliable", "any_peer")
+func set_clinet_not_ready() -> void:
+	var sender_id: int = multiplayer.get_remote_sender_id()
+	if sender_id == 0: #called outside rpc (host)
+		sender_id = 1
+	ready_peers[sender_id] = false
+
+
+func _all_clients_ready() -> bool:
+	for ready_peer_id in ready_peers.keys():
+		if not ready_peers[ready_peer_id]: 
+			return false
+	return true
+
+
+@rpc("reliable", "any_peer")
+func _delete_ready_peer(peer_id) -> void:
+	ready_peers.erase(peer_id)
+
+
+@rpc("reliable", "any_peer")
+func _delete_player_name(peer_id) -> void:
+	print("Deleting name for peer %s" % peer_id)
+	player_names.erase(peer_id)
 
 
 func _on_server_disconnected() -> void:
@@ -51,56 +108,22 @@ func _on_server_disconnected() -> void:
 	terminate_connection()
 
 
-func _on_connected(peer_id: int, nickname: String):
+func _on_connected_to_server(peer_id: int, nickname: String):
 	_register_player_name.rpc(peer_id, nickname)
-	#set_client_ready.rpc(peer_id)
 
 
 @rpc("reliable", "any_peer", "call_local")
-func set_client_ready(peer_id) -> void:
-	ready_clients[peer_id] = true
-
-
-@rpc("reliable", "any_peer", "call_local")
-func set_client_not_ready(peer_id) -> void:
-	ready_clients[peer_id] = false
-
-
-func all_clients_ready() -> bool:
-	for value in ready_clients.values():
-		if not value:
-			return false
-	return true
-
-
-
-@rpc("any_peer","call_local")
 func _register_player_name(peer_id: int, nickname: String) -> void:
+	print("Player name: %s registered." % nickname)
 	player_names[peer_id] = nickname
+	await get_tree().physics_frame
+	client_joined.emit(peer_id)
 	
-	#call_deferred("emit_signal","client_connected", peer_id)
-	await  get_tree().physics_frame
-	client_connected.emit(peer_id)
-
-
-func load_lobby() -> void:
-	print("Loading lobby...")
-	SceneManager.start_loading_scene(SceneManager.scene_id.LOBBY)
-	#SceneManager.load_scene()
-
-
-func terminate_connection() -> void:
-	print("Connection terminated. Loading main menu...")
-	SceneManager.start_loading_scene(SceneManager.scene_id.MAIN_MENU)
-	multiplayer.multiplayer_peer = null
-	_disconnect_signals()
-
-
-@rpc("reliable", "authority", "call_local")
-func load_new_scene_from_id(id: int) -> void:
-	get_tree().call_deferred("change_scene_to_packed", Utilities.STAGES[id])
 
 
 func _disconnect_signals() -> void:
 	if multiplayer.server_disconnected.has_connections():
 		multiplayer.server_disconnected.disconnect(_on_server_disconnected)
+	
+	if multiplayer.connected_to_server.has_connections():
+		multiplayer.connected_to_server.disconnect(_on_connected_to_server)

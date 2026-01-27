@@ -13,6 +13,7 @@ var prompt_input: String = "interact"
 
 @onready var trigger_area: CollisionShape3D = $TriggerArea
 @onready var interactable_popup: InteractablePopup = $InteractablePopup
+@onready var multiplayer_synchronizer: MultiplayerSynchronizer = $MultiplayerSynchronizer
 
 
 func _ready() -> void:
@@ -21,6 +22,8 @@ func _ready() -> void:
 	set_collision_mask_value(1, false)
 	set_collision_layer_value(2, true)
 	set_collision_mask_value(2, true)
+	
+	multiplayer_synchronizer.set_visibility_for(0, true)
 	
 	if not can_interact:
 		disable()

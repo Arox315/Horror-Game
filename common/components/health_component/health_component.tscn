@@ -15,3 +15,4 @@ script = ExtResource("1_0fb8i")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_dnk0i")
+public_visibility = false

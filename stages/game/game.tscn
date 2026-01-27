@@ -11,4 +11,3 @@ _spawnable_scenes = PackedStringArray("uid://c7ksecespxm2u")
 spawn_path = NodePath("..")
 
 [node name="LoadingScreen" parent="." instance=ExtResource("2_her1c")]
-z_index = 999

@@ -1,4 +1,4 @@
-[gd_scene load_steps=66 format=3 uid="uid://dvi7lqoafi1cl"]
+[gd_scene load_steps=67 format=3 uid="uid://dvi7lqoafi1cl"]
 
 [ext_resource type="Script" uid="uid://buw6ghtd823ix" path="res://stages/stage.gd" id="1_nfegs"]
 [ext_resource type="PackedScene" uid="uid://352pm4hcxqtx" path="res://stages/playground/block.tscn" id="1_qchbg"]
@@ -13,6 +13,7 @@
 [ext_resource type="Texture2D" uid="uid://cpu5muw1x3aky" path="res://assets/textures/prototype/dev_texture-white.png" id="11_7h8id"]
 [ext_resource type="Texture2D" uid="uid://bt344d7gai5pw" path="res://assets/textures/prototype/dev_texture-green.png" id="12_nfegs"]
 [ext_resource type="Texture2D" uid="uid://dg42n3sb1hvoy" path="res://assets/textures/prototype/dev_texture-red.png" id="13_iapem"]
+[ext_resource type="PackedScene" uid="uid://c4upv6xtythq5" path="res://stages/test_enemy.tscn" id="14_iapem"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_wt17y"]
 sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
@@ -93,9 +94,12 @@ var door2_opened_position: Vector3
 
 @export var is_opened: bool = false
 
+@onready var multiplayer_synchronizer: MultiplayerSynchronizer = $MultiplayerSynchronizer
 
 func _ready() -> void:
 	super()
+	multiplayer_synchronizer.set_visibility_for(0, true)
+	
 	update_prompt_message(open_prompt_message)
 	door1_closed_position = door_1.global_position
 	door2_closed_position = door_2.global_position
@@ -478,6 +482,7 @@ shape = SubResource("BoxShape3D_bkhp6")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="Room2/DoubleDoors"]
 replication_config = SubResource("SceneReplicationConfig_bkhp6")
+public_visibility = false
 
 [node name="TestEffectSetter" type="CSGBox3D" parent="Room2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0.025, -6)
@@ -647,10 +652,15 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 3)
 
 [node name="OutOfBoundsTriggerKill" type="Area3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -25, 0)
+collision_layer = 0
+collision_mask = 4
 script = SubResource("GDScript_iapem")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="OutOfBoundsTriggerKill"]
 shape = SubResource("WorldBoundaryShape3D_rwvch")
+
+[node name="TestEnemy" parent="." instance=ExtResource("14_iapem")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.6377335, -18.385002)
 
 [connection signal="body_entered" from="OutOfBoundsTriggerKill" to="OutOfBoundsTriggerKill" method="_on_body_entered"]
 
