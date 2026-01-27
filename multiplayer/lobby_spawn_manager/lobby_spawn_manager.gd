@@ -16,19 +16,20 @@ func _ready() -> void:
 	
 
 func _on_peer_connected(peer_id: int) -> void:
-	print("Player: %s connected!" % peer_id)
+	print("[%s] Player: %s connected!" % [self, peer_id])
+	#MultiplayerManager.load_lobby.rpc_id(peer_id)
 	lobby.add_connected_player(peer_id)
 
 
 func _on_peer_disconnected(peer_id: int) -> void:
-	print("Player: %s disconnected!" % peer_id)
+	print("[%s] Player: %s disconnected!" % [self, peer_id])
 	lobby.delete_connected_player.rpc(peer_id)
 	MultiplayerManager._delete_player_name(peer_id)
 	MultiplayerManager._delete_ready_peer(peer_id)
 
 
 func _on_client_joined(peer_id: int) -> void:
-	print("loading data for peer: %s" % peer_id)
+	print("[%s] loading data for peer: %s" % [self, peer_id])
 	await get_tree().physics_frame
 	# load already connected players for peer
 	lobby.add_already_connected_players.rpc_id(peer_id, peer_id)

@@ -49,12 +49,12 @@ func all_clients_ready() -> bool:
 
 
 func _on_peer_connected(peer_id: int) -> void:
-	print("Player: %s connected!" % peer_id)
+	print("[%s] Player: %s connected!" % [self, peer_id])
 	ready_peers[peer_id] = false
 
 
 func _on_peer_disconnected(peer_id: int) -> void:
-	print("Player: %s disconnected!" % peer_id)
+	print("[%s] Player: %s disconnected!" % [self, peer_id])
 	_delete_player(peer_id)
 
 

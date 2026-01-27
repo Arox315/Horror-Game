@@ -32,7 +32,7 @@ func _on_start_game_btn_pressed() -> void:
 	
 	await get_tree().physics_frame
 	
-	print("Loading %s..." % stage_selector.get_item_text(stage_selector.selected))
+	print("[%s] Loading %s..." % [self, stage_selector.get_item_text(stage_selector.selected)])
 	
 	var stage_id: int = stage_selector.selected + stage_id_offset
 	SceneManager.start_loading_scene.rpc(stage_id)

@@ -27,7 +27,7 @@ func create_lobby(nickname: String) -> void:
 	
 	player_names[1] = nickname
 	
-	print("Lobby created!")
+	print("[%s] Lobby created!" % self)
 
 
 func join_lobby(nickname: String) -> void:
@@ -40,11 +40,12 @@ func join_lobby(nickname: String) -> void:
 	
 	multiplayer.connected_to_server.connect(_on_connected_to_server.bind(peer.get_unique_id(), nickname))
 	
-	print("Joined lobby!")
+	print("[%s] Joined lobby!" % self)
 
 
+@rpc("reliable", "any_peer", "call_remote")
 func load_lobby() -> void:
-	print("Loading lobby...")
+	print("[%s] Loading lobby..." % self)
 	SceneManager.start_loading_scene(SceneManager.scene_id.LOBBY, false)
 
 
@@ -71,7 +72,7 @@ func client_ready() -> void:
 	
 	ready_peers[sender_id] = true
 	
-	print("Client %s ready." % sender_id)
+	print("[%s] Client %s ready." % [self, sender_id])
 	
 	if _all_clients_ready():
 		ServerRequests.send_emit_signal_global_request(self, all_peers_ready)
@@ -99,12 +100,12 @@ func _delete_ready_peer(peer_id) -> void:
 
 @rpc("reliable", "any_peer")
 func _delete_player_name(peer_id) -> void:
-	print("Deleting name for peer %s" % peer_id)
+	print("[%s] Deleting name for peer %s" % [self, peer_id])
 	player_names.erase(peer_id)
 
 
 func _on_server_disconnected() -> void:
-	print("Lobby has been disbanded.")
+	print("[%s] Lobby has been disbanded." % self)
 	terminate_connection()
 
 
@@ -112,14 +113,13 @@ func _on_connected_to_server(peer_id: int, nickname: String):
 	_register_player_name.rpc(peer_id, nickname)
 
 
-@rpc("reliable", "any_peer", "call_local")
+@rpc("reliable", "any_peer")
 func _register_player_name(peer_id: int, nickname: String) -> void:
-	print("Player name: %s registered." % nickname)
+	print("[%s] Player name: %s registered." % [self, nickname])
 	player_names[peer_id] = nickname
 	await get_tree().physics_frame
 	client_joined.emit(peer_id)
 	
-
 
 func _disconnect_signals() -> void:
 	if multiplayer.server_disconnected.has_connections():

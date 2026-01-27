@@ -34,14 +34,18 @@ func _process(_delta: float) -> void:
 			%LoadingText.text = "Waiting for other players..."
 			
 		# Arbitrary load time for players
-		if multiplayer.multiplayer_peer.get_unique_id() != 1:
-			await get_tree().create_timer(1).timeout
+		#if multiplayer.multiplayer_peer.get_unique_id() != 1:
+			#await get_tree().create_timer(1).timeout
 		
 		if multiplayer.is_server():
 			MultiplayerManager.client_ready()
 		else:
-			MultiplayerManager.client_ready.rpc_id(1)
-			
+			print("[%s] Sending ready..." % self)
+			if multiplayer.multiplayer_peer.get_connection_status() == multiplayer.multiplayer_peer.CONNECTION_CONNECTED:
+				MultiplayerManager.client_ready.rpc_id(1)
+			else:
+				_disable()
+		
 		if not _wait_for_all_peers:
 			_disable()
 
