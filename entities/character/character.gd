@@ -29,6 +29,7 @@ var CAMERA_ROTATION_SPEED = 50.0 * deg_to_rad(0.022)
 
 var direction:Vector3 = Vector3.ZERO
 var is_third_person: bool = false
+var spawn_point_position: Vector3 = Vector3.ZERO
 
 func _enter_tree() -> void:
 	# Disable process
@@ -40,21 +41,12 @@ func _enter_tree() -> void:
 
 
 func _ready() -> void:
-	# Enable process
-	process_mode = Node.PROCESS_MODE_ALWAYS
-	
 	# Set move speed
 	update_speed()
 	
 	# Turn on synchronization visibility
 	position_synchronizer.set_visibility_for(0, true)
 	model_synchronizer.set_visibility_for(0, true)
-	
-	# Move to satege spawn point
-	var spawn_point = get_tree().current_scene.current_scene.get_node_or_null("PlayersSpawnPoint")
-	var spawn_point_position: Vector3 = Vector3.ZERO
-	if spawn_point: spawn_point_position = spawn_point.global_position
-	position = spawn_point_position
 	
 	# Don't execute code if not authority
 	if not is_multiplayer_authority():
@@ -63,6 +55,11 @@ func _ready() -> void:
 		camera.set_process(false)
 		camera.set_physics_process(false)
 		return
+	
+	# Move to satege spawn point
+	var spawn_point = get_tree().current_scene.current_scene.get_node_or_null("PlayersSpawnPoint")
+	if spawn_point: spawn_point_position = spawn_point.global_position
+	position = spawn_point_position
 	
 	# add palyer type to hud
 	var player_type_label = Label.new()
@@ -203,7 +200,7 @@ func respawn() -> void:
 	
 	if self is CharacterBody3D: velocity = Vector3.ZERO
 	
-	position = get_tree().current_scene.current_scene.get_node("PlayersSpawnPoint").global_position
+	position = spawn_point_position
 
 
 func _on_died() -> void:
@@ -212,3 +209,9 @@ func _on_died() -> void:
 	respawn.rpc_id(get_multiplayer_authority())
 	
 	if multiplayer.is_server(): print("[%s] Died. Respawning..." % self)
+
+
+@rpc("reliable", "any_peer", "call_local")
+func enable_process() -> void:
+	# Enable process
+	process_mode = Node.PROCESS_MODE_ALWAYS

@@ -98,7 +98,6 @@ var door2_opened_position: Vector3
 
 func _ready() -> void:
 	super()
-	multiplayer_synchronizer.set_visibility_for(0, true)
 	
 	update_prompt_message(open_prompt_message)
 	door1_closed_position = door_1.global_position
@@ -480,7 +479,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.8, 1, -0.275)
 [node name="TriggerArea" parent="Room2/DoubleDoors/InteractableTrigger2" index="0"]
 shape = SubResource("BoxShape3D_bkhp6")
 
-[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="Room2/DoubleDoors"]
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="Room2/DoubleDoors" groups=["Synchronizers"]]
 replication_config = SubResource("SceneReplicationConfig_bkhp6")
 public_visibility = false
 

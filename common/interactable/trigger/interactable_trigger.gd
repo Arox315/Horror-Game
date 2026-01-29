@@ -23,8 +23,6 @@ func _ready() -> void:
 	set_collision_layer_value(2, true)
 	set_collision_mask_value(2, true)
 	
-	multiplayer_synchronizer.set_visibility_for(0, true)
-	
 	if not can_interact:
 		disable()
 	else:

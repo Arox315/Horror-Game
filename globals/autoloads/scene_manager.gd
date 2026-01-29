@@ -23,6 +23,7 @@ var next_scene: String = SCENES[scene_id.MAIN_MENU]
 
 @rpc("reliable", "authority", "call_local")
 func start_loading_scene(id: int, wait_for_all_peers: bool = true) -> void:
+	MultiplayerManager.server_current_scene_id = id
 	var ls: LoadingScreen = get_tree().current_scene.get_node_or_null("LoadingScreen")
 	if not ls:
 		push_error("[%s] Loading Screen not fount at %s. Unable to load scene!" % [self, get_tree().current_scene])

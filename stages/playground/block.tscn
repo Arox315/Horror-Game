@@ -6,7 +6,7 @@ script/source = "extends RigidBody3D
 @onready var multiplayer_synchronizer: MultiplayerSynchronizer = $MultiplayerSynchronizer
 
 func _ready() -> void:
-	multiplayer_synchronizer.set_visibility_for(0, true)
+	pass
 "
 
 [sub_resource type="BoxMesh" id="BoxMesh_qncar"]
@@ -30,6 +30,6 @@ mesh = SubResource("BoxMesh_qncar")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("BoxShape3D_im0tn")
 
-[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." groups=["Synchronizers"]]
 replication_config = SubResource("SceneReplicationConfig_3w4es")
 public_visibility = false

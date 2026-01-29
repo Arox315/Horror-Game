@@ -1,6 +1,7 @@
 class_name Lobby
 extends Control
 
+
 @onready var stage_selector: OptionButton = $Wrapper/StageSelectPanel/StageSelectWrapper/StageSelector
 @onready var start_game_btn: Button = $Wrapper/StageSelectPanel/StageSelectWrapper/StartGameBtn
 @onready var connected_players: VBoxContainer = %ConnectedPlayers
@@ -42,7 +43,7 @@ func _on_leave_lobby_btn_pressed() -> void:
 	MultiplayerManager.terminate_connection()
 
 
-@rpc("reliable", "any_peer")
+@rpc("reliable", "any_peer", "call_remote")
 func add_connected_player(peer_id: int = 1) -> void:
 	var connected_player_banner: ConnectedPlayerBanner = connected_player_banner_scene.instantiate()
 	connected_players.add_child(connected_player_banner)

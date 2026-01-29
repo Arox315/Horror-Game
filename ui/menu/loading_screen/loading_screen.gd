@@ -9,8 +9,16 @@ var next_scene: String
 var _wait_for_all_peers: bool = true
 
 
+var connected_to_server: bool = false
+var server_scene_received: bool = false
+
 func _ready() -> void:
 	MultiplayerManager.all_peers_ready.connect(_on_all_peers_ready)
+	#multiplayer.peer_connected.connect(_on_peer_connected)
+	multiplayer.connected_to_server.connect(_on_connected_to_server)
+	
+	MultiplayerManager.server_scene_received.connect(_on_server_scene_received)
+	
 	_set_next_scene(SceneManager.scene_id.MAIN_MENU)
 	ResourceLoader.load_threaded_request(next_scene)
 
@@ -32,10 +40,12 @@ func _process(_delta: float) -> void:
 			
 		if not multiplayer.get_peers().is_empty():
 			%LoadingText.text = "Waiting for other players..."
-			
+		
 		# Arbitrary load time for players
 		#if multiplayer.multiplayer_peer.get_unique_id() != 1:
 			#await get_tree().create_timer(1).timeout
+		
+		_send_status_loaded()
 		
 		if not _wait_for_all_peers:
 			_disable()
@@ -49,10 +59,34 @@ func start_loading_new_scene(scene_id: int, wait_for_all_peers: bool = true) -> 
 	_wait_for_all_peers = wait_for_all_peers
 
 	await get_tree().physics_frame
-	
+
 	_set_next_scene(scene_id)
 	ResourceLoader.load_threaded_request(next_scene)
 	_enable()
+
+
+func start_connecting_to_server() -> void:
+	connected_to_server = false
+	server_scene_received = false
+	_enable()
+	%LoadingText.text = "Connecting to the server..."
+
+
+func _start_loading_scene_on_connected() -> void:
+	if not connected_to_server: return
+	if not server_scene_received: return
+	start_loading_new_scene(MultiplayerManager.server_current_scene_id, false)
+	print_debug("server_scene = ", MultiplayerManager.server_current_scene_id)
+
+
+func _on_connected_to_server() -> void:
+	connected_to_server = true
+	_start_loading_scene_on_connected()
+
+
+func _on_server_scene_received() -> void:
+	server_scene_received = true
+	_start_loading_scene_on_connected()
 
 
 func _set_next_scene(scene_id: int) -> void:
@@ -84,6 +118,18 @@ func _enable() -> void:
 func _on_all_peers_ready() -> void:
 	if not _wait_for_all_peers: return
 	_disable()
+
+
+func _send_status_loaded() -> void:
+	if not multiplayer.multiplayer_peer: return
+	if multiplayer.multiplayer_peer.get_connection_status() != multiplayer.multiplayer_peer.CONNECTION_CONNECTED: return
+	
+	
+	if multiplayer.is_server():
+		MultiplayerManager.client_loaded()
+	else:
+		print("[%s] Client %s sending loaded..." % [self, multiplayer.multiplayer_peer.get_unique_id()])
+		MultiplayerManager.client_loaded.rpc_id(1)
 
 
 func _send_status_ready() -> void:
