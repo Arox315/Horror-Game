@@ -176,6 +176,7 @@ script/source = "extends Area3D
 var c := true
 var elapsed: float = -5.0
 func _physics_process(delta: float) -> void:
+	if not multiplayer.multiplayer_peer: return
 	if not multiplayer.is_server(): return
 	if get_tree().get_nodes_in_group(\"Players\").is_empty(): return
 	if not c: return
@@ -207,6 +208,7 @@ script/source = "extends Area3D
 
 var elapsed: float = 0.0
 func _physics_process(delta: float) -> void:
+	if not multiplayer.multiplayer_peer: return
 	if not multiplayer.is_server(): return
 	elapsed += delta
 	if elapsed >= retrigger_cooldown:
@@ -489,6 +491,8 @@ size = Vector3(2, 0.05, 2)
 material = SubResource("StandardMaterial3D_ac2je")
 
 [node name="Trigger" type="Area3D" parent="Room2/TestEffectSetter"]
+collision_layer = 0
+collision_mask = 4
 script = SubResource("GDScript_35kbn")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Room2/TestEffectSetter/Trigger"]
@@ -501,6 +505,8 @@ size = Vector3(2, 0.05, 2)
 material = SubResource("StandardMaterial3D_35kbn")
 
 [node name="Area3D" type="Area3D" parent="Room2/TestEffectRemover"]
+collision_layer = 0
+collision_mask = 4
 script = SubResource("GDScript_4y8jm")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Room2/TestEffectRemover/Area3D"]

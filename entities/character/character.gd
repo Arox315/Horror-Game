@@ -11,6 +11,7 @@ var current_speed: float
 
 var JUMP_VELOCITY = 4.5
 var CAMERA_ROTATION_SPEED = 50.0 * deg_to_rad(0.022)
+var game_manager: GameManager
 
 @onready var camera_controller: Node3D = $CameraController
 @onready var camera: Camera3D = $CameraController/Camera3D
@@ -48,6 +49,8 @@ func _ready() -> void:
 	position_synchronizer.set_visibility_for(0, true)
 	model_synchronizer.set_visibility_for(0, true)
 	
+	game_manager = get_tree().current_scene
+	
 	# Don't execute code if not authority
 	if not is_multiplayer_authority():
 		# disable camera if not authority
@@ -57,7 +60,7 @@ func _ready() -> void:
 		return
 	
 	# Move to satege spawn point
-	var spawn_point = get_tree().current_scene.current_scene.get_node_or_null("PlayersSpawnPoint")
+	var spawn_point = game_manager.main_scene.get_node_or_null("PlayersSpawnPoint")
 	if spawn_point: spawn_point_position = spawn_point.global_position
 	position = spawn_point_position
 	

@@ -20,12 +20,14 @@ const SCENES: Dictionary = {
 var loading_screen_scene: PackedScene = preload("uid://bni1jl5y3211l")
 var next_scene: String = SCENES[scene_id.MAIN_MENU]
 
+var _game_manager: GameManager
+
+
+func _ready() -> void:
+	_game_manager = get_tree().current_scene
+
 
 @rpc("reliable", "authority", "call_local")
 func start_loading_scene(id: int, wait_for_all_peers: bool = true) -> void:
 	MultiplayerManager.server_current_scene_id = id
-	var ls: LoadingScreen = get_tree().current_scene.get_node_or_null("LoadingScreen")
-	if not ls:
-		push_error("[%s] Loading Screen not fount at %s. Unable to load scene!" % [self, get_tree().current_scene])
-		return
-	ls.start_loading_new_scene(id, wait_for_all_peers)
+	_game_manager.loading_screen.start_loading_new_scene(id, wait_for_all_peers)

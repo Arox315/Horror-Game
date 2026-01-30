@@ -1,6 +1,5 @@
 extends Node
 
-#signal client_joined(peer_id: int)
 signal peer_loaded(peer_id: int)
 signal all_peers_ready
 signal server_scene_received
@@ -13,6 +12,8 @@ var ready_peers: Dictionary[int,bool] = {}
 var loaded_peers: Dictionary[int, bool] = {}
 
 var server_current_scene_id: int = 0
+var game_manager: GameManager
+
 
 func _ready() -> void:
 	multiplayer.allow_object_decoding = true
@@ -24,6 +25,8 @@ func _ready() -> void:
 	sync.name = "PlayerDataSync"
 	sync.replication_config = config
 	add_child(sync)
+	
+	game_manager = get_tree().current_scene
 
 
 func create_server(nickname: String) -> void:
@@ -50,31 +53,6 @@ func join_server(nickname: String) -> void:
 	print("[%s] Joining to the server..." % self)
 
 
-func create_lobby(nickname: String) -> void:
-	var peer: ENetMultiplayerPeer = ENetMultiplayerPeer.new()
-	peer.create_server(SERVER_PORT)
-	multiplayer.multiplayer_peer = peer
-	
-	player_names[1] = nickname
-	
-	print("[%s] Lobby created!" % self)
-
-
-func join_lobby(nickname: String) -> void:
-	var peer: ENetMultiplayerPeer = ENetMultiplayerPeer.new()
-	if not multiplayer.server_disconnected.is_connected(_on_server_disconnected):
-		multiplayer.server_disconnected.connect(_on_server_disconnected)
-	
-	peer.create_client(SERVER_IP,SERVER_PORT)
-	multiplayer.multiplayer_peer = peer
-	
-	#if not multiplayer.peer_connected.is_connected(_test):
-		#multiplayer.peer_connected.connect(_test)
-	multiplayer.connected_to_server.connect(_on_connected_to_server.bind(peer.get_unique_id(), nickname))
-	
-	print("[%s] Joined lobby!" % self)
-
-
 func load_lobby() -> void:
 	print("[%s] Loading lobby..." % self)
 	SceneManager.start_loading_scene(SceneManager.scene_id.LOBBY, false)
@@ -83,9 +61,8 @@ func load_lobby() -> void:
 func terminate_connection() -> void:
 	print("[%s] Connection terminated. Loading main menu..." % self)
 	if multiplayer.multiplayer_peer.get_connection_status() == multiplayer.multiplayer_peer.CONNECTION_CONNECTED:
-		_delete_ready_peer.rpc(multiplayer.multiplayer_peer.get_unique_id())
-		_delete_player_name.rpc(multiplayer.multiplayer_peer.get_unique_id())
-		
+		delete_peer_data.rpc(multiplayer.multiplayer_peer.get_unique_id())
+	
 	ready_peers.clear()
 	player_names.clear()
 	loaded_peers.clear()
@@ -98,31 +75,27 @@ func terminate_connection() -> void:
 @rpc("reliable", "any_peer")
 func client_loaded() -> void:
 	var sender_id: int = multiplayer.get_remote_sender_id()
-
-	if sender_id == 0: #called outside rpc (host)
+	if sender_id == 0: 
 		sender_id = 1
 	
 	loaded_peers[sender_id] = true
+	if sender_id != 1: 
+		peer_loaded.emit(sender_id)
 	
 	print("[%s] Client %s loaded." % [self, sender_id])
-	
-	if sender_id != 1:
-		peer_loaded.emit(sender_id)
 
 
 @rpc("reliable", "any_peer")
 func client_ready() -> void:
 	var sender_id: int = multiplayer.get_remote_sender_id()
-	
-	if sender_id == 0: #called outside rpc (host)
+	if sender_id == 0: 	 #called outside rpc (host)
 		sender_id = 1
 	
 	ready_peers[sender_id] = true
-	
-	print("[%s] Client %s ready." % [self, sender_id])
-	
 	if _all_clients_ready():
 		ServerRequests.send_emit_signal_global_request(self, all_peers_ready)
+	
+	print("[%s] Client %s ready." % [self, sender_id])
 
 
 @rpc("reliable", "any_peer")
@@ -140,8 +113,7 @@ func set_server_current_scene(new_scene_id: int) -> void:
 
 
 func _connect_to_server() -> void:
-	var ls: LoadingScreen = get_tree().current_scene.get_node_or_null("LoadingScreen")
-	if ls: ls.start_connecting_to_server()
+	game_manager.loading_screen.start_connecting_to_server()
 
 
 func _all_clients_ready() -> bool:
@@ -152,16 +124,6 @@ func _all_clients_ready() -> bool:
 
 
 @rpc("reliable", "any_peer")
-func _delete_ready_peer(peer_id) -> void:
-	ready_peers.erase(peer_id)
-
-
-@rpc("reliable", "any_peer")
-func _delete_player_name(peer_id) -> void:
-	print("[%s] Deleting name for peer %s" % [self, peer_id])
-	player_names.erase(peer_id)
-
-
 func delete_peer_data(peer_id: int) -> void:
 	player_names.erase(peer_id)
 	ready_peers.erase(peer_id)
@@ -182,7 +144,6 @@ func _register_player_name(peer_id: int, nickname: String) -> void:
 	print("[%s] Player name: %s registered." % [self, nickname])
 	player_names[peer_id] = nickname
 	await get_tree().physics_frame
-	#client_joined.emit(peer_id)
 
 
 func _disconnect_signals() -> void:
@@ -191,11 +152,3 @@ func _disconnect_signals() -> void:
 	
 	if multiplayer.connected_to_server.is_connected(_on_connected_to_server):
 		multiplayer.connected_to_server.disconnect(_on_connected_to_server)
-
-	if multiplayer.peer_connected.is_connected(_test):
-		multiplayer.peer_connected.disconnect(_test)
-
-
-func _test(_id: int) -> void:
-	print("[%s] Loading lobby..." % self)
-	SceneManager.start_loading_scene(SceneManager.scene_id.LOBBY, false)

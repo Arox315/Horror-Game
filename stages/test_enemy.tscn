@@ -47,6 +47,6 @@ mesh = SubResource("CapsuleMesh_7h8id")
 
 [node name="EffectsComponent" parent="." instance=ExtResource("1_pw7xr")]
 
-[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." groups=["Synchronizers"]]
 replication_config = SubResource("SceneReplicationConfig_pw7xr")
 public_visibility = false

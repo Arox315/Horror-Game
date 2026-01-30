@@ -12,12 +12,19 @@ var _wait_for_all_peers: bool = true
 var connected_to_server: bool = false
 var server_scene_received: bool = false
 
+var fallback_timer: Timer = Timer.new()
+
 func _ready() -> void:
 	MultiplayerManager.all_peers_ready.connect(_on_all_peers_ready)
-	#multiplayer.peer_connected.connect(_on_peer_connected)
 	multiplayer.connected_to_server.connect(_on_connected_to_server)
 	
 	MultiplayerManager.server_scene_received.connect(_on_server_scene_received)
+	
+	fallback_timer.autostart = false
+	fallback_timer.one_shot = true
+	fallback_timer.wait_time = 10.0
+	fallback_timer.timeout.connect(_on_fallback_timer_timeout)
+	add_child(fallback_timer)
 	
 	_set_next_scene(SceneManager.scene_id.MAIN_MENU)
 	ResourceLoader.load_threaded_request(next_scene)
@@ -40,10 +47,7 @@ func _process(_delta: float) -> void:
 			
 		if not multiplayer.get_peers().is_empty():
 			%LoadingText.text = "Waiting for other players..."
-		
-		# Arbitrary load time for players
-		#if multiplayer.multiplayer_peer.get_unique_id() != 1:
-			#await get_tree().create_timer(1).timeout
+			%LoadingProgress.text = ""
 		
 		_send_status_loaded()
 		
@@ -57,9 +61,9 @@ func _process(_delta: float) -> void:
 func start_loading_new_scene(scene_id: int, wait_for_all_peers: bool = true) -> void:
 	_send_status_not_ready()
 	_wait_for_all_peers = wait_for_all_peers
-
+	
 	await get_tree().physics_frame
-
+	
 	_set_next_scene(scene_id)
 	ResourceLoader.load_threaded_request(next_scene)
 	_enable()
@@ -68,8 +72,10 @@ func start_loading_new_scene(scene_id: int, wait_for_all_peers: bool = true) -> 
 func start_connecting_to_server() -> void:
 	connected_to_server = false
 	server_scene_received = false
-	_enable()
+	show()
+	fallback_timer.start()
 	%LoadingText.text = "Connecting to the server..."
+	%LoadingProgress.text = ""
 
 
 func _start_loading_scene_on_connected() -> void:
@@ -81,6 +87,7 @@ func _start_loading_scene_on_connected() -> void:
 
 func _on_connected_to_server() -> void:
 	connected_to_server = true
+	fallback_timer.stop()
 	_start_loading_scene_on_connected()
 
 
@@ -98,8 +105,8 @@ func _load_scene(scene_to_load: PackedScene) -> void:
 	var new_scene = scene_to_load.instantiate()
 	owner.add_child(new_scene)
 	
-	var previous_scene = owner.current_scene
-	owner.current_scene = new_scene
+	var previous_scene = owner.main_scene
+	owner.main_scene = new_scene
 	if previous_scene: previous_scene.queue_free()
 
 
@@ -151,3 +158,8 @@ func _send_status_not_ready() -> void:
 		MultiplayerManager.set_clinet_not_ready()
 	else:
 		MultiplayerManager.set_clinet_not_ready.rpc_id(1)
+
+
+func _on_fallback_timer_timeout() -> void:
+	print("[%s] Unable to connect to the server." % self)
+	_disable()
