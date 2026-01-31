@@ -31,12 +31,22 @@ func _ready() -> void:
 
 func create_server(nickname: String) -> void:
 	var peer: ENetMultiplayerPeer = ENetMultiplayerPeer.new()
-	peer.create_server(SERVER_PORT)
+	var server = peer.create_server(SERVER_PORT)
+	
+	if server == ERR_ALREADY_IN_USE:
+		print("[%s] Unable to create the server. This peer instance already has an open connection." % self)
+		return
+	
+	if server == ERR_CANT_CREATE:
+		print("[%s] Unable to create the server." % self)
+		return
+	
 	multiplayer.multiplayer_peer = peer
 	
 	player_names[1] = nickname
 	
 	print("[%s] Server created!" % self)
+	load_lobby()
 
 
 func join_server(nickname: String) -> void:
