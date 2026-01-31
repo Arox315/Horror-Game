@@ -49,8 +49,6 @@ func _process(_delta: float) -> void:
 			%LoadingText.text = "Waiting for other players..."
 			%LoadingProgress.text = ""
 		
-		_send_status_loaded()
-		
 		if not _wait_for_all_peers:
 			_disable()
 			return
@@ -108,6 +106,9 @@ func _load_scene(scene_to_load: PackedScene) -> void:
 	var previous_scene = owner.main_scene
 	owner.main_scene = new_scene
 	if previous_scene: previous_scene.queue_free()
+	
+	await get_tree().physics_frame
+	_send_status_loaded()
 
 
 func _disable() -> void:
@@ -162,4 +163,5 @@ func _send_status_not_ready() -> void:
 
 func _on_fallback_timer_timeout() -> void:
 	print("[%s] Unable to connect to the server." % self)
+	MultiplayerManager.terminate_connection()
 	_disable()

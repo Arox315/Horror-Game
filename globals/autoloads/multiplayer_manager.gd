@@ -47,7 +47,8 @@ func join_server(nickname: String) -> void:
 	peer.create_client(SERVER_IP,SERVER_PORT)
 	multiplayer.multiplayer_peer = peer
 	
-	multiplayer.connected_to_server.connect(_on_connected_to_server.bind(peer.get_unique_id(), nickname))
+	if not multiplayer.connected_to_server.is_connected(_on_connected_to_server):
+		multiplayer.connected_to_server.connect(_on_connected_to_server.bind(peer.get_unique_id(), nickname))
 	
 	_connect_to_server()
 	print("[%s] Joining to the server..." % self)
@@ -128,6 +129,9 @@ func delete_peer_data(peer_id: int) -> void:
 	player_names.erase(peer_id)
 	ready_peers.erase(peer_id)
 	loaded_peers.erase(peer_id)
+	
+	if _all_clients_ready():
+		ServerRequests.send_emit_signal_global_request(self, all_peers_ready)
 
 
 func _on_server_disconnected() -> void:

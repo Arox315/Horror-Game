@@ -60,12 +60,12 @@ size_flags_vertical = 4
 [node name="HostBtn" type="Button" parent="Wrapper/MainPanel/Buttons"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
-text = "Create lobby"
+text = "Host game"
 
 [node name="JoinBtn" type="Button" parent="Wrapper/MainPanel/Buttons"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
-text = "Join lobby"
+text = "Join game"
 
 [node name="NicknamePanel" type="LineEdit" parent="Wrapper"]
 custom_minimum_size = Vector2(512, 64)

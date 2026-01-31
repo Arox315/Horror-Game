@@ -24,7 +24,6 @@ func _on_peer_disconnected(peer_id: int) -> void:
 	lobby.delete_connected_player.rpc(peer_id)
 	# delete disconnected player data (ready status, loaded status, nickname)
 	MultiplayerManager.delete_peer_data(peer_id)
-	
 
 
 func _on_peer_loaded(peer_id: int) -> void:
