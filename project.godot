@@ -99,6 +99,13 @@ debug_key={
 ]
 }
 
+[layer_names]
+
+3d_physics/layer_1="Terrain"
+3d_physics/layer_2="Interactables"
+3d_physics/layer_3="Players"
+3d_physics/layer_4="Enemies"
+
 [physics]
 
 common/physics_jitter_fix=0.0
