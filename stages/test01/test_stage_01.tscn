@@ -1,0 +1,59 @@
+[gd_scene load_steps=10 format=3 uid="uid://n71req146s43"]
+
+[ext_resource type="Script" uid="uid://buw6ghtd823ix" path="res://stages/stage.gd" id="1_qwvg1"]
+[ext_resource type="PackedScene" uid="uid://cl0g3velarknm" path="res://entities/out_of_bounds_trigger_kill/out_of_bounds_trigger_kill.tscn" id="2_dgjki"]
+[ext_resource type="Texture2D" uid="uid://b86nqm7fi6hb0" path="res://assets/textures/prototype/dev_tiles-gray.png" id="3_0n8le"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_0n8le"]
+sky_top_color = Color(0.08706657, 0.11346652, 0.1486308, 1)
+sky_horizon_color = Color(0.13699308, 0.14066514, 0.14801753, 1)
+ground_bottom_color = Color(0, 0, 0, 1)
+ground_horizon_color = Color(0.12629122, 0.12976426, 0.13671857, 1)
+
+[sub_resource type="Sky" id="Sky_8atwx"]
+sky_material = SubResource("ProceduralSkyMaterial_0n8le")
+
+[sub_resource type="Environment" id="Environment_k0f6v"]
+background_mode = 2
+sky = SubResource("Sky_8atwx")
+tonemap_mode = 2
+glow_enabled = true
+volumetric_fog_enabled = true
+volumetric_fog_density = 0.03
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8atwx"]
+albedo_texture = ExtResource("3_0n8le")
+uv1_triplanar = true
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_jkhn1"]
+material = SubResource("StandardMaterial3D_8atwx")
+size = Vector2(50, 50)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_0fngc"]
+size = Vector3(50, 0, 50)
+
+[node name="TestStage01" type="Node3D"]
+script = ExtResource("1_qwvg1")
+
+[node name="Env" type="Node" parent="."]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="Env"]
+environment = SubResource("Environment_k0f6v")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Env"]
+transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
+light_color = Color(0.5251013, 0.5251013, 0.5251013, 1)
+light_energy = 0.5
+shadow_enabled = true
+directional_shadow_max_distance = 1.0
+
+[node name="OutOfBoundsTriggerKill" parent="." instance=ExtResource("2_dgjki")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -25, 0)
+
+[node name="Ground" type="StaticBody3D" parent="."]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Ground"]
+mesh = SubResource("PlaneMesh_jkhn1")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Ground"]
+shape = SubResource("BoxShape3D_0fngc")

@@ -15,7 +15,7 @@ func _ready() -> void:
 	await get_tree().physics_frame
 	
 	game_manager = get_tree().current_scene
-	players_spawn_point = game_manager.main_scene.get_node("PlayersSpawnPoint")
+	players_spawn_point = game_manager.main_scene.get_node_or_null("PlayersSpawnPoint")
 	
 	multiplayer.peer_connected.connect(_on_peer_connected)
 	multiplayer.peer_disconnected.connect(_on_peer_disconnected)
@@ -77,7 +77,8 @@ func _spawn_player(peer_id: int = 1) -> void:
 	else:
 		var player_to_spawn = multiplayer_player_scene.instantiate()
 		player_to_spawn.name = str(peer_id)
-		player_to_spawn.transform.origin = players_spawn_point.transform.origin
+		#if players_spawn_point:
+			#player_to_spawn.transform.origin = players_spawn_point.transform.origin
 		game_manager.add_child(player_to_spawn)
 		player_to_spawn.enable_process.rpc()
 

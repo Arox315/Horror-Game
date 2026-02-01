@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://cl0g3velarknm"]
+
+[ext_resource type="Script" uid="uid://ba6qlhluxy5x4" path="res://entities/out_of_bounds_trigger_kill/out_of_bounds_trigger_kill.gd" id="1_bkby7"]
+
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_rwvch"]
+
+[node name="OutOfBoundsTriggerKill" type="Area3D"]
+collision_layer = 0
+collision_mask = 4
+script = ExtResource("1_bkby7")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("WorldBoundaryShape3D_rwvch")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

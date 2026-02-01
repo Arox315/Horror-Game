@@ -4,17 +4,20 @@ extends Node
 enum scene_id{
 	MAIN_MENU,
 	LOBBY,
-	PLAYGROUND
+	PLAYGROUND,
+	TEST_STAGE_01
 }
 
 const STAGES: Dictionary = {
-	scene_id.PLAYGROUND: "uid://dvi7lqoafi1cl"
+	scene_id.PLAYGROUND: "uid://dvi7lqoafi1cl",
+	scene_id.TEST_STAGE_01: "uid://n71req146s43"
 }
 
 const SCENES: Dictionary = {
 	scene_id.MAIN_MENU: "uid://c5kb3tpbfje51",
 	scene_id.LOBBY: "uid://bwpiufd8m8gmh",
-	scene_id.PLAYGROUND: "uid://dvi7lqoafi1cl"
+	scene_id.PLAYGROUND: "uid://dvi7lqoafi1cl",
+	scene_id.TEST_STAGE_01: "uid://n71req146s43"
 }
 
 var loading_screen_scene: PackedScene = preload("uid://bni1jl5y3211l")
