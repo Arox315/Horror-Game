@@ -33,4 +33,6 @@ func _ready() -> void:
 @rpc("reliable", "authority", "call_local")
 func start_loading_scene(id: int, wait_for_all_peers: bool = true) -> void:
 	MultiplayerManager.server_current_scene_id = id
+	_game_manager.disable_synchronizers()
+	await  get_tree().physics_frame
 	_game_manager.loading_screen.start_loading_new_scene(id, wait_for_all_peers)

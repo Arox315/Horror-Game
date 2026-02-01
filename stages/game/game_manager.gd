@@ -15,3 +15,9 @@ func update_synchronizers() -> void:
 	for loaded_peer_id in MultiplayerManager.loaded_peers.keys():
 		for sync: MultiplayerSynchronizer in get_tree().get_nodes_in_group("Synchronizers"):
 			sync.set_visibility_for(loaded_peer_id, true)
+
+
+@rpc("reliable", "any_peer", "call_local")
+func disable_synchronizers() -> void:
+	for sync: MultiplayerSynchronizer in get_tree().get_nodes_in_group("Synchronizers"):
+			sync.set_visibility_for(0, false)

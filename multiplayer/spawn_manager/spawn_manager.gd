@@ -72,8 +72,7 @@ func _spawn_player(peer_id: int = 1) -> void:
 	var player = game_manager.get_node_or_null(str(peer_id))
 	
 	if player:
-		player.transform.origin = players_spawn_point.transform.origin
-		#player.enable_process.rpc()
+		player.respawn.rpc()
 	else:
 		var player_to_spawn = multiplayer_player_scene.instantiate()
 		player_to_spawn.name = str(peer_id)

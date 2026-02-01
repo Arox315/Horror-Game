@@ -18,8 +18,12 @@ background_mode = 2
 sky = SubResource("Sky_8atwx")
 tonemap_mode = 2
 glow_enabled = true
+fog_light_color = Color(0.43114778, 0.46529013, 0.51840526, 1)
+fog_light_energy = 0.0
+fog_sun_scatter = 5.0
 volumetric_fog_enabled = true
-volumetric_fog_density = 0.03
+volumetric_fog_albedo = Color(0.5712, 0.6074667, 0.68, 1)
+volumetric_fog_emission = Color(0.103743516, 0.10374353, 0.103743516, 1)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8atwx"]
 albedo_texture = ExtResource("3_0n8le")
@@ -42,10 +46,9 @@ environment = SubResource("Environment_k0f6v")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="Env"]
 transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
-light_color = Color(0.5251013, 0.5251013, 0.5251013, 1)
-light_energy = 0.5
+light_color = Color(0.52862096, 0.52860594, 0.6110182, 1)
+light_angular_distance = 8.0
 shadow_enabled = true
-directional_shadow_max_distance = 1.0
 
 [node name="OutOfBoundsTriggerKill" parent="." instance=ExtResource("2_dgjki")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -25, 0)

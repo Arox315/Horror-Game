@@ -113,7 +113,9 @@ func _physics_process(delta: float) -> void:
 	
 	if Input.is_action_just_pressed("debug_key"):
 		ServerRequests.send_emit_signal_request(self, test)
-		ServerRequests.send_damage_request(interact_ray.get_collider(), 1)
+		if multiplayer.is_server():
+			var stage_id = 3 if MultiplayerManager.server_current_scene_id == 2 else 2
+			SceneManager.start_loading_scene.rpc(stage_id)
 	
 	# toggle 3rd person
 	if Input.is_action_just_pressed("change_perspective"):
