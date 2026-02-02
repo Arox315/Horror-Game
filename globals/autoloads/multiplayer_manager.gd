@@ -1,6 +1,7 @@
 extends Node
 
 signal peer_loaded(peer_id: int)
+signal peer_ready(peer_id: int)
 signal all_peers_ready
 signal server_scene_received
 
@@ -83,6 +84,12 @@ func terminate_connection() -> void:
 	_disconnect_signals()
 
 
+func is_valid_multiplayer_connection() -> bool:
+	if not multiplayer.multiplayer_peer: return false
+	if multiplayer.multiplayer_peer.get_connection_status() != multiplayer.multiplayer_peer.CONNECTION_CONNECTED: return false
+	return true
+
+
 @rpc("reliable", "any_peer")
 func client_loaded() -> void:
 	var sender_id: int = multiplayer.get_remote_sender_id()
@@ -103,6 +110,10 @@ func client_ready() -> void:
 		sender_id = 1
 	
 	ready_peers[sender_id] = true
+	
+	if sender_id != 1:
+		peer_ready.emit(sender_id)
+	
 	if _all_clients_ready():
 		ServerRequests.send_emit_signal_global_request(self, all_peers_ready)
 	
@@ -115,6 +126,14 @@ func set_clinet_not_ready() -> void:
 	if sender_id == 0: #called outside rpc (host)
 		sender_id = 1
 	ready_peers[sender_id] = false
+
+
+@rpc("reliable", "any_peer")
+func set_clinet_not_loaded() -> void:
+	var sender_id: int = multiplayer.get_remote_sender_id()
+	if sender_id == 0: #called outside rpc (host)
+		sender_id = 1
+	loaded_peers[sender_id] = false
 
 
 @rpc("reliable", "any_peer", "call_local")

@@ -14,10 +14,13 @@ func _set_main_scene(new_scene) -> void:
 func update_synchronizers() -> void:
 	for loaded_peer_id in MultiplayerManager.loaded_peers.keys():
 		for sync: MultiplayerSynchronizer in get_tree().get_nodes_in_group("Synchronizers"):
+			sync.visibility_update_mode = MultiplayerSynchronizer.VISIBILITY_PROCESS_IDLE
 			sync.set_visibility_for(loaded_peer_id, true)
 
 
 @rpc("reliable", "any_peer", "call_local")
 func disable_synchronizers() -> void:
-	for sync: MultiplayerSynchronizer in get_tree().get_nodes_in_group("Synchronizers"):
-			sync.set_visibility_for(0, false)
+	for loaded_peer_id in MultiplayerManager.loaded_peers.keys():
+		for sync: MultiplayerSynchronizer in get_tree().get_nodes_in_group("Synchronizers"):
+			sync.visibility_update_mode = MultiplayerSynchronizer.VISIBILITY_PROCESS_NONE
+			sync.set_visibility_for(loaded_peer_id, false)

@@ -60,9 +60,7 @@ func _ready() -> void:
 		return
 	
 	# Move to satege spawn point
-	var spawn_point = game_manager.main_scene.get_node_or_null("PlayersSpawnPoint")
-	if spawn_point: spawn_point_position = spawn_point.global_position
-	position = spawn_point_position
+	position = _get_respawn_point()
 	
 	# add palyer type to hud
 	var player_type_label = Label.new()
@@ -116,6 +114,7 @@ func _physics_process(delta: float) -> void:
 		if multiplayer.is_server():
 			var stage_id = 3 if MultiplayerManager.server_current_scene_id == 2 else 2
 			SceneManager.start_loading_scene.rpc(stage_id)
+	
 	
 	# toggle 3rd person
 	if Input.is_action_just_pressed("change_perspective"):
@@ -205,7 +204,14 @@ func respawn() -> void:
 	
 	if self is CharacterBody3D: velocity = Vector3.ZERO
 	
-	position = spawn_point_position
+	position = _get_respawn_point()
+
+
+func _get_respawn_point() -> Vector3:
+	var spawn_point = game_manager.main_scene.get_node_or_null("PlayersSpawnPoint")
+	if spawn_point:  
+		return spawn_point.global_position
+	return Vector3.ZERO
 
 
 func _on_died() -> void:

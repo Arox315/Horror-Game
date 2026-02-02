@@ -26,14 +26,17 @@ func _ready() -> void:
 	if not multiplayer.is_server():
 		stage_selector.disabled = true
 		start_game_btn.disabled = true
+	
+	if MultiplayerManager.is_valid_multiplayer_connection():
+		await get_tree().physics_frame
+		var game_manager = get_tree().current_scene
+		game_manager.update_synchronizers.rpc()
 
 
 func _on_start_game_btn_pressed() -> void:
 	if not multiplayer.is_server(): return
 	
 	await get_tree().physics_frame
-	
-	print("[%s] Loading %s..." % [self, stage_selector.get_item_text(stage_selector.selected)])
 	
 	var stage_id: int = stage_selector.selected + stage_id_offset
 	SceneManager.start_loading_scene.rpc(stage_id)

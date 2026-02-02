@@ -58,6 +58,7 @@ func _process(_delta: float) -> void:
 
 func start_loading_new_scene(scene_id: int, wait_for_all_peers: bool = true) -> void:
 	_send_status_not_ready()
+	_send_status_not_loaded()
 	_wait_for_all_peers = wait_for_all_peers
 	
 	await get_tree().physics_frame
@@ -97,15 +98,25 @@ func _on_server_scene_received() -> void:
 func _set_next_scene(scene_id: int) -> void:
 	next_scene = SceneManager.SCENES.get(scene_id, SceneManager.SCENES[SceneManager.scene_id.MAIN_MENU])
 	%LoadingText.text = "Loading %s..." % SceneManager.scene_id.keys()[scene_id]
+	print("[%s] Loading %s..." % [self, SceneManager.scene_id.keys()[scene_id]])
 
 
 func _load_scene(scene_to_load: PackedScene) -> void:
+	if MultiplayerManager.is_valid_multiplayer_connection():
+		owner.disable_synchronizers.rpc()
+	
+	var previous_scene: Node = owner.main_scene
+	if previous_scene: 
+		for child in previous_scene.get_children():
+			child.queue_free()
+		previous_scene.call_deferred("queue_free")
+	
+	await get_tree().physics_frame
+	
 	var new_scene = scene_to_load.instantiate()
 	owner.add_child(new_scene)
-	
-	var previous_scene = owner.main_scene
 	owner.main_scene = new_scene
-	if previous_scene: previous_scene.queue_free()
+	
 	
 	await get_tree().physics_frame
 	_send_status_loaded()
@@ -129,9 +140,7 @@ func _on_all_peers_ready() -> void:
 
 
 func _send_status_loaded() -> void:
-	if not multiplayer.multiplayer_peer: return
-	if multiplayer.multiplayer_peer.get_connection_status() != multiplayer.multiplayer_peer.CONNECTION_CONNECTED: return
-	
+	if not MultiplayerManager.is_valid_multiplayer_connection(): return
 	
 	if multiplayer.is_server():
 		MultiplayerManager.client_loaded()
@@ -141,8 +150,7 @@ func _send_status_loaded() -> void:
 
 
 func _send_status_ready() -> void:
-	if not multiplayer.multiplayer_peer: return
-	if multiplayer.multiplayer_peer.get_connection_status() != multiplayer.multiplayer_peer.CONNECTION_CONNECTED: return
+	if not MultiplayerManager.is_valid_multiplayer_connection(): return
 		
 	if multiplayer.is_server():
 		MultiplayerManager.client_ready()
@@ -152,13 +160,21 @@ func _send_status_ready() -> void:
 
 
 func _send_status_not_ready() -> void:
-	if not multiplayer.multiplayer_peer: return
-	if multiplayer.multiplayer_peer.get_connection_status() != multiplayer.multiplayer_peer.CONNECTION_CONNECTED: return
+	if not MultiplayerManager.is_valid_multiplayer_connection(): return
 		
 	if multiplayer.is_server():
 		MultiplayerManager.set_clinet_not_ready()
 	else:
 		MultiplayerManager.set_clinet_not_ready.rpc_id(1)
+
+
+func _send_status_not_loaded() -> void:
+	if not MultiplayerManager.is_valid_multiplayer_connection(): return
+	
+	if multiplayer.is_server():
+		MultiplayerManager.set_clinet_not_loaded()
+	else:
+		MultiplayerManager.set_clinet_not_loaded.rpc_id(1)
 
 
 func _on_fallback_timer_timeout() -> void:

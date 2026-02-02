@@ -12,4 +12,5 @@ func _ready() -> void:
 	config.add_property(^"..:JUMP_VELOCITY")
 	sync.name = "StatsSync"
 	sync.replication_config = config
+	sync.add_to_group("Synchronizers")
 	add_child(sync)
