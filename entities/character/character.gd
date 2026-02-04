@@ -11,6 +11,7 @@ var current_speed: float
 
 var JUMP_VELOCITY = 4.5
 var CAMERA_ROTATION_SPEED = 50.0 * deg_to_rad(0.022)
+var game_manager: GameManager
 
 @onready var camera_controller: Node3D = $CameraController
 @onready var camera: Camera3D = $CameraController/Camera3D
@@ -23,14 +24,19 @@ var CAMERA_ROTATION_SPEED = 50.0 * deg_to_rad(0.022)
 @onready var effects: HBoxContainer = $Hud/EffectsContainer/Effects
 @onready var health_component: HealthComponent = $HealthComponent
 
+@onready var position_synchronizer: MultiplayerSynchronizer = $PositionSynchronizer
+@onready var model_synchronizer: MultiplayerSynchronizer = $ModelSynchronizer
+	
+
 var direction:Vector3 = Vector3.ZERO
 var is_third_person: bool = false
+var spawn_point_position: Vector3 = Vector3.ZERO
 
 func _enter_tree() -> void:
-	set_multiplayer_authority(name.to_int())
-	if get_tree().current_scene.get_node("PlayersSpawnPoint"):
-		position = get_tree().current_scene.get_node("PlayersSpawnPoint").global_position
+	# Disable process
+	process_mode = Node.PROCESS_MODE_DISABLED
 	
+	set_multiplayer_authority(name.to_int())
 	var hc := $HealthComponent
 	hc.died.connect(_on_died)
 
@@ -39,6 +45,12 @@ func _ready() -> void:
 	# Set move speed
 	update_speed()
 	
+	# Turn on synchronization visibility
+	position_synchronizer.set_visibility_for(0, true)
+	model_synchronizer.set_visibility_for(0, true)
+	
+	game_manager = get_tree().current_scene
+	
 	# Don't execute code if not authority
 	if not is_multiplayer_authority():
 		# disable camera if not authority
@@ -46,6 +58,9 @@ func _ready() -> void:
 		camera.set_process(false)
 		camera.set_physics_process(false)
 		return
+	
+	# Move to satege spawn point
+	position = _get_respawn_point()
 	
 	# add palyer type to hud
 	var player_type_label = Label.new()
@@ -96,7 +111,10 @@ func _physics_process(delta: float) -> void:
 	
 	if Input.is_action_just_pressed("debug_key"):
 		ServerRequests.send_emit_signal_request(self, test)
-		ServerRequests.send_damage_request(interact_ray.get_collider(), 1)
+		if multiplayer.is_server():
+			var stage_id = 3 if MultiplayerManager.server_current_scene_id == 2 else 2
+			SceneManager.start_loading_scene.rpc(stage_id)
+	
 	
 	# toggle 3rd person
 	if Input.is_action_just_pressed("change_perspective"):
@@ -186,7 +204,14 @@ func respawn() -> void:
 	
 	if self is CharacterBody3D: velocity = Vector3.ZERO
 	
-	position = get_tree().current_scene.get_node("PlayersSpawnPoint").global_position
+	position = _get_respawn_point()
+
+
+func _get_respawn_point() -> Vector3:
+	var spawn_point = game_manager.main_scene.get_node_or_null("PlayersSpawnPoint")
+	if spawn_point:  
+		return spawn_point.global_position
+	return Vector3.ZERO
 
 
 func _on_died() -> void:
@@ -195,3 +220,9 @@ func _on_died() -> void:
 	respawn.rpc_id(get_multiplayer_authority())
 	
 	if multiplayer.is_server(): print("[%s] Died. Respawning..." % self)
+
+
+@rpc("reliable", "any_peer", "call_local")
+func enable_process() -> void:
+	# Enable process
+	process_mode = Node.PROCESS_MODE_ALWAYS

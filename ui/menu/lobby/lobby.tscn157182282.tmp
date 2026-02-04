@@ -1,0 +1,97 @@
+[gd_scene load_steps=2 format=3 uid="uid://bwpiufd8m8gmh"]
+
+[ext_resource type="Script" uid="uid://ddxbq3x1r2yb2" path="res://stages/lobby/lobby.gd" id="1_i4flk"]
+
+[node name="Lobby" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_i4flk")
+
+[node name="Background" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Wrapper" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 25
+theme_override_constants/margin_top = 25
+theme_override_constants/margin_right = 25
+theme_override_constants/margin_bottom = 25
+
+[node name="ConnectedPlayersPanel" type="Panel" parent="Wrapper"]
+custom_minimum_size = Vector2(512, 0)
+layout_mode = 2
+size_flags_horizontal = 8
+
+[node name="ConnectedPlayersWrapper" type="MarginContainer" parent="Wrapper/ConnectedPlayersPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 15
+theme_override_constants/margin_bottom = 15
+
+[node name="ConnectedPlayers" type="VBoxContainer" parent="Wrapper/ConnectedPlayersPanel/ConnectedPlayersWrapper"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="StageSelectPanel" type="Panel" parent="Wrapper"]
+custom_minimum_size = Vector2(256, 256)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 8
+
+[node name="StageSelectWrapper" type="MarginContainer" parent="Wrapper/StageSelectPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 15
+theme_override_constants/margin_bottom = 15
+
+[node name="StageSelector" type="OptionButton" parent="Wrapper/StageSelectPanel/StageSelectWrapper"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="StartGameBtn" type="Button" parent="Wrapper/StageSelectPanel/StageSelectWrapper"]
+layout_mode = 2
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 32
+text = "Start Game"
+
+[node name="LeaveLobbyBtn" type="Button" parent="Wrapper"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme_override_font_sizes/font_size = 32
+text = "Leave
+"
+
+[node name="ConnectedPlayerSpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("uid://csixnn6wfsgjd")
+spawn_path = NodePath("../Wrapper/ConnectedPlayersPanel/ConnectedPlayersWrapper/ConnectedPlayers")
+
+[connection signal="pressed" from="Wrapper/StageSelectPanel/StageSelectWrapper/StartGameBtn" to="." method="_on_start_game_btn_pressed"]
+[connection signal="pressed" from="Wrapper/LeaveLobbyBtn" to="." method="_on_leave_lobby_btn_pressed"]

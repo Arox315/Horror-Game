@@ -1,0 +1,70 @@
+class_name SpawnManager
+extends Node
+
+var multiplayer_player_scene: PackedScene = preload("uid://c7ksecespxm2u")
+var players_spawn_point: Marker3D
+var game_manager: GameManager
+
+
+func _ready() -> void:
+	if not multiplayer.is_server():
+		process_mode = Node.PROCESS_MODE_DISABLED
+		return
+	
+	await get_tree().physics_frame
+	
+	game_manager = get_tree().current_scene
+	players_spawn_point = game_manager.main_scene.get_node_or_null("PlayersSpawnPoint")
+	
+	multiplayer.peer_connected.connect(_on_peer_connected)
+	multiplayer.peer_disconnected.connect(_on_peer_disconnected)
+	
+	MultiplayerManager.peer_loaded.connect(_on_peer_loaded)
+	MultiplayerManager.peer_ready.connect(_on_peer_ready)
+	
+	_spawn_player()
+	
+	for peer in multiplayer.get_peers():
+		_spawn_player(peer)
+
+
+func _on_peer_connected(peer_id: int) -> void:
+	print("[%s] Player: %s connected!" % [self, peer_id])
+	MultiplayerManager.set_server_current_scene.rpc_id(peer_id, MultiplayerManager.server_current_scene_id)
+	_spawn_player(peer_id)
+
+
+func _on_peer_disconnected(peer_id: int) -> void:
+	print("[%s] Player: %s disconnected!" % [self, peer_id])
+	_delete_player(peer_id)
+
+
+func _on_peer_loaded(_peer_id: int) -> void:
+	pass
+
+
+func _on_peer_ready(_peer_id: int) -> void:
+	pass
+
+
+func _spawn_player(peer_id: int = 1) -> void:
+	if not multiplayer.is_server(): return
+	
+	var player = game_manager.get_node_or_null(str(peer_id))
+	
+	if player:
+		player.respawn.rpc()
+	else:
+		var player_to_spawn = multiplayer_player_scene.instantiate()
+		player_to_spawn.name = str(peer_id)
+		game_manager.add_child(player_to_spawn)
+		player_to_spawn.enable_process.rpc()
+
+
+func _delete_player(peer_id: int) -> void:
+	if not game_manager.has_node(str(peer_id)):
+		return
+	
+	MultiplayerManager.delete_peer_data(peer_id)
+	game_manager.get_node(str(peer_id)).queue_free()
+	print("[%s] Peer %s deleted." % [self, peer_id])

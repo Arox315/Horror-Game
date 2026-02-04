@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://beakrpp01vkt1"]
+
+[ext_resource type="Script" uid="uid://2ycds4pgelkp" path="res://stages/game/game_manager.gd" id="1_prqhm"]
+[ext_resource type="PackedScene" uid="uid://bni1jl5y3211l" path="res://ui/menu/loading_screen/loading_screen.tscn" id="2_her1c"]
+
+[node name="Game" type="Node"]
+script = ExtResource("1_prqhm")
+
+[node name="PlayerSpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("uid://c7ksecespxm2u")
+spawn_path = NodePath("..")
+
+[node name="LoadingScreen" parent="." instance=ExtResource("2_her1c")]

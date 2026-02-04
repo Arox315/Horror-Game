@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://bj46wjkp0wjls"]
+
+[ext_resource type="Script" uid="uid://cp7guri4n00n4" path="res://multiplayer/lobby_spawn_manager/lobby_spawn_manager.gd" id="1_eglel"]
+
+[node name="LobbySpawnManager" type="Node"]
+script = ExtResource("1_eglel")

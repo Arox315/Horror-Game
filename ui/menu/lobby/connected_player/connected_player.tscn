@@ -1,0 +1,57 @@
+[gd_scene load_steps=3 format=3 uid="uid://csixnn6wfsgjd"]
+
+[ext_resource type="Script" uid="uid://5l4y1n5wqhcc" path="res://ui/menu/lobby/connected_player/connected_player.gd" id="1_fxnbv"]
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_mlypd"]
+
+[node name="ConnectedPlayer" type="Control"]
+custom_minimum_size = Vector2(0, 81)
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_bottom = -999.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_fxnbv")
+
+[node name="BannerPanel" type="Panel" parent="."]
+custom_minimum_size = Vector2(0, 81)
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+grow_horizontal = 2
+
+[node name="Wrapper" type="MarginContainer" parent="BannerPanel"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 81.0
+grow_horizontal = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Items" type="HBoxContainer" parent="BannerPanel/Wrapper"]
+layout_mode = 2
+
+[node name="Icon" type="TextureRect" parent="BannerPanel/Wrapper/Items"]
+texture_filter = 1
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+texture = SubResource("PlaceholderTexture2D_mlypd")
+expand_mode = 3
+
+[node name="PlayerInfo" type="VBoxContainer" parent="BannerPanel/Wrapper/Items"]
+layout_mode = 2
+
+[node name="PlayerName" type="Label" parent="BannerPanel/Wrapper/Items/PlayerInfo"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Player"
+
+[node name="PlayerId" type="Label" parent="BannerPanel/Wrapper/Items/PlayerInfo"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.5890956, 0.5890956, 0.5890956, 1)
+text = "0"

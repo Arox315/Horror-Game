@@ -13,6 +13,7 @@ var prompt_input: String = "interact"
 
 @onready var trigger_area: CollisionShape3D = $TriggerArea
 @onready var interactable_popup: InteractablePopup = $InteractablePopup
+@onready var multiplayer_synchronizer: MultiplayerSynchronizer = $MultiplayerSynchronizer
 
 
 func _ready() -> void:

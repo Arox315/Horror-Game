@@ -1,47 +1,187 @@
 extends Node
 
+signal peer_loaded(peer_id: int)
+signal peer_ready(peer_id: int)
+signal all_peers_ready
+signal server_scene_received
+
 const SERVER_PORT: int = 42069
 const SERVER_IP: String = "localhost"
 
-var multiplayer_player_scene: PackedScene = preload("res://entities/character/character.tscn")
-var players_spawn_point: Marker3D
-var current_scene : Node
+var player_names: Dictionary[int, String] = {}
+var ready_peers: Dictionary[int,bool] = {}
+var loaded_peers: Dictionary[int, bool] = {}
 
-var peer: ENetMultiplayerPeer = ENetMultiplayerPeer.new()
+var server_current_scene_id: int = 0
+var game_manager: GameManager
 
 
-func host_game() -> void:
-	players_spawn_point = get_tree().current_scene.get_node("PlayersSpawnPoint")
-	current_scene = get_tree().current_scene
+func _ready() -> void:
+	multiplayer.allow_object_decoding = true
+	var sync := MultiplayerSynchronizer.new()
+	var config := SceneReplicationConfig.new()
+	config.add_property(^":player_names")
+	config.add_property(^":ready_peers")
+	config.add_property(^":loaded_peers")
+	sync.name = "PlayerDataSync"
+	sync.replication_config = config
+	add_child(sync)
 	
-	peer.create_server(SERVER_PORT)
+	game_manager = get_tree().current_scene
+
+
+func create_server(nickname: String) -> void:
+	var peer: ENetMultiplayerPeer = ENetMultiplayerPeer.new()
+	var server = peer.create_server(SERVER_PORT)
+	
+	if server == ERR_ALREADY_IN_USE:
+		print("[%s] Unable to create the server. This peer instance already has an open connection." % self)
+		return
+	
+	if server == ERR_CANT_CREATE:
+		print("[%s] Unable to create the server." % self)
+		return
+	
 	multiplayer.multiplayer_peer = peer
 	
-	multiplayer.peer_connected.connect(_spawn_player)
-	multiplayer.peer_disconnected.connect(_delete_player)
+	player_names[1] = nickname
 	
-	_spawn_player()
-	print_debug("Joined as host! ID: %d" % peer.get_unique_id())
+	print("[%s] Server created!" % self)
+	load_lobby()
 
 
-func join_game() -> void:
+func join_server(nickname: String) -> void:
+	var peer: ENetMultiplayerPeer = ENetMultiplayerPeer.new()
+	if not multiplayer.server_disconnected.is_connected(_on_server_disconnected):
+		multiplayer.server_disconnected.connect(_on_server_disconnected)
+	
 	peer.create_client(SERVER_IP,SERVER_PORT)
 	multiplayer.multiplayer_peer = peer
-	print_debug("Joined as player! ID: %d" % peer.get_unique_id())
-
-
-func _spawn_player(id: int = 1) -> void:
-	if not multiplayer.is_server():
-		return
 	
-	var player_to_spawn = multiplayer_player_scene.instantiate()
-	player_to_spawn.name = str(id)
-	player_to_spawn.transform.origin = players_spawn_point.transform.origin
-	current_scene.call_deferred("add_child", player_to_spawn)
-
-
-func _delete_player(id: int) -> void:
-	if not current_scene.has_node(str(id)):
-		return
+	if not multiplayer.connected_to_server.is_connected(_on_connected_to_server):
+		multiplayer.connected_to_server.connect(_on_connected_to_server.bind(peer.get_unique_id(), nickname))
 	
-	current_scene.get_node(str(id)).queue_free()
+	_connect_to_server()
+	print("[%s] Joining to the server..." % self)
+
+
+func load_lobby() -> void:
+	print("[%s] Loading lobby..." % self)
+	SceneManager.start_loading_scene(SceneManager.scene_id.LOBBY, false)
+
+
+func terminate_connection() -> void:
+	print("[%s] Connection terminated. Loading main menu..." % self)
+	if multiplayer.multiplayer_peer.get_connection_status() == multiplayer.multiplayer_peer.CONNECTION_CONNECTED:
+		delete_peer_data.rpc(multiplayer.multiplayer_peer.get_unique_id())
+	
+	ready_peers.clear()
+	player_names.clear()
+	loaded_peers.clear()
+	
+	SceneManager.start_loading_scene(SceneManager.scene_id.MAIN_MENU)
+	multiplayer.multiplayer_peer = null
+	_disconnect_signals()
+
+
+func is_valid_multiplayer_connection() -> bool:
+	if not multiplayer.multiplayer_peer: return false
+	if multiplayer.multiplayer_peer.get_connection_status() != multiplayer.multiplayer_peer.CONNECTION_CONNECTED: return false
+	return true
+
+
+@rpc("reliable", "any_peer")
+func client_loaded() -> void:
+	var sender_id: int = multiplayer.get_remote_sender_id()
+	if sender_id == 0: 
+		sender_id = 1
+	
+	loaded_peers[sender_id] = true
+	if sender_id != 1: 
+		peer_loaded.emit(sender_id)
+	
+	print("[%s] Client %s loaded." % [self, sender_id])
+
+
+@rpc("reliable", "any_peer")
+func client_ready() -> void:
+	var sender_id: int = multiplayer.get_remote_sender_id()
+	if sender_id == 0: 	 #called outside rpc (host)
+		sender_id = 1
+	
+	ready_peers[sender_id] = true
+	
+	if sender_id != 1:
+		peer_ready.emit(sender_id)
+	
+	if _all_clients_ready():
+		ServerRequests.send_emit_signal_global_request(self, all_peers_ready)
+	
+	print("[%s] Client %s ready." % [self, sender_id])
+
+
+@rpc("reliable", "any_peer")
+func set_clinet_not_ready() -> void:
+	var sender_id: int = multiplayer.get_remote_sender_id()
+	if sender_id == 0: #called outside rpc (host)
+		sender_id = 1
+	ready_peers[sender_id] = false
+
+
+@rpc("reliable", "any_peer")
+func set_clinet_not_loaded() -> void:
+	var sender_id: int = multiplayer.get_remote_sender_id()
+	if sender_id == 0: #called outside rpc (host)
+		sender_id = 1
+	loaded_peers[sender_id] = false
+
+
+@rpc("reliable", "any_peer", "call_local")
+func set_server_current_scene(new_scene_id: int) -> void:
+	server_current_scene_id = new_scene_id
+	server_scene_received.emit()
+
+
+@rpc("reliable", "any_peer")
+func delete_peer_data(peer_id: int) -> void:
+	player_names.erase(peer_id)
+	ready_peers.erase(peer_id)
+	loaded_peers.erase(peer_id)
+	
+	if _all_clients_ready():
+		ServerRequests.send_emit_signal_global_request(self, all_peers_ready)
+
+
+func _connect_to_server() -> void:
+	game_manager.loading_screen.start_connecting_to_server()
+
+
+func _all_clients_ready() -> bool:
+	for ready_peer_id in ready_peers.keys():
+		if not ready_peers[ready_peer_id]: 
+			return false
+	return true
+
+
+func _on_server_disconnected() -> void:
+	print("[%s] Lobby has been disbanded." % self)
+	terminate_connection()
+
+
+func _on_connected_to_server(peer_id: int, nickname: String):
+	_register_player_name.rpc_id(1, peer_id, nickname)
+
+
+@rpc("reliable", "any_peer")
+func _register_player_name(peer_id: int, nickname: String) -> void:
+	print("[%s] Player name: %s registered." % [self, nickname])
+	player_names[peer_id] = nickname
+	await get_tree().physics_frame
+
+
+func _disconnect_signals() -> void:
+	if multiplayer.server_disconnected.has_connections():
+		multiplayer.server_disconnected.disconnect(_on_server_disconnected)
+	
+	if multiplayer.connected_to_server.is_connected(_on_connected_to_server):
+		multiplayer.connected_to_server.disconnect(_on_connected_to_server)

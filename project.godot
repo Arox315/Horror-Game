@@ -8,6 +8,10 @@
 
 config_version=5
 
+[animation]
+
+compatibility/default_parent_skeleton_in_mesh_instance_3d=true
+
 [application]
 
 config/name="Horror Game"
@@ -20,6 +24,7 @@ MultiplayerManager="*res://globals/autoloads/multiplayer_manager.gd"
 EffectsTable="*res://globals/autoloads/effects_table.gd"
 ServerRequests="*res://globals/autoloads/server_requests.gd"
 Utilities="*res://globals/autoloads/utilities.gd"
+SceneManager="*res://globals/autoloads/scene_manager.gd"
 
 [display]
 
@@ -35,6 +40,7 @@ window/stretch/aspect="expand"
 folder_colors={
 "res://assets/": "gray",
 "res://entities/": "blue",
+"res://multiplayer/": "yellow",
 "res://scripts/": "teal",
 "res://stages/": "purple",
 "res://ui/": "green"
@@ -43,6 +49,7 @@ folder_colors={
 [global_group]
 
 Players=""
+Synchronizers=""
 
 [input]
 
@@ -91,6 +98,13 @@ debug_key={
 "events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":75,"key_label":0,"unicode":107,"location":0,"echo":false,"script":null)
 ]
 }
+
+[layer_names]
+
+3d_physics/layer_1="Terrain"
+3d_physics/layer_2="Interactables"
+3d_physics/layer_3="Players"
+3d_physics/layer_4="Enemies"
 
 [physics]
 

@@ -5,9 +5,14 @@
 [sub_resource type="GDScript" id="GDScript_pw7xr"]
 script/source = "extends CharacterBody3D
 
+@onready var multiplayer_synchronizer: MultiplayerSynchronizer = $MultiplayerSynchronizer
 
 var SPEED = 5.0
 var JUMP_VELOCITY = 4.5
+
+func _ready() -> void:
+	#multiplayer_synchronizer.set_visibility_for(0, true)
+	pass
 
 
 func _physics_process(delta: float) -> void:
@@ -32,6 +37,8 @@ properties/0/spawn = true
 properties/0/replication_mode = 1
 
 [node name="TestEnemy" type="CharacterBody3D"]
+collision_layer = 8
+collision_mask = 13
 script = SubResource("GDScript_pw7xr")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
@@ -42,5 +49,6 @@ mesh = SubResource("CapsuleMesh_7h8id")
 
 [node name="EffectsComponent" parent="." instance=ExtResource("1_pw7xr")]
 
-[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." groups=["Synchronizers"]]
 replication_config = SubResource("SceneReplicationConfig_pw7xr")
+public_visibility = false

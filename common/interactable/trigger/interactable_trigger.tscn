@@ -26,5 +26,6 @@ shape = SubResource("BoxShape3D_mxfnr")
 
 [node name="InteractablePopup" parent="." instance=ExtResource("2_mxfnr")]
 
-[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." groups=["Synchronizers"]]
 replication_config = SubResource("SceneReplicationConfig_mxfnr")
+public_visibility = false
