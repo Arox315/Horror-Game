@@ -62,7 +62,9 @@ func _spawn_player(peer_id: int = 1) -> void:
 
 
 func _delete_player(peer_id: int) -> void:
-	if not game_manager.main_scene.has_node(str(peer_id)):
+	if not game_manager.has_node(str(peer_id)):
 		return
 	
-	game_manager.main_scene.get_node(str(peer_id)).queue_free()
+	MultiplayerManager.delete_peer_data(peer_id)
+	game_manager.get_node(str(peer_id)).queue_free()
+	print("[%s] Peer %s deleted." % [self, peer_id])

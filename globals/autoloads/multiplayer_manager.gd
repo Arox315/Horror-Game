@@ -142,6 +142,16 @@ func set_server_current_scene(new_scene_id: int) -> void:
 	server_scene_received.emit()
 
 
+@rpc("reliable", "any_peer")
+func delete_peer_data(peer_id: int) -> void:
+	player_names.erase(peer_id)
+	ready_peers.erase(peer_id)
+	loaded_peers.erase(peer_id)
+	
+	if _all_clients_ready():
+		ServerRequests.send_emit_signal_global_request(self, all_peers_ready)
+
+
 func _connect_to_server() -> void:
 	game_manager.loading_screen.start_connecting_to_server()
 
@@ -151,16 +161,6 @@ func _all_clients_ready() -> bool:
 		if not ready_peers[ready_peer_id]: 
 			return false
 	return true
-
-
-@rpc("reliable", "any_peer")
-func delete_peer_data(peer_id: int) -> void:
-	player_names.erase(peer_id)
-	ready_peers.erase(peer_id)
-	loaded_peers.erase(peer_id)
-	
-	if _all_clients_ready():
-		ServerRequests.send_emit_signal_global_request(self, all_peers_ready)
 
 
 func _on_server_disconnected() -> void:

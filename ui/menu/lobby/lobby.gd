@@ -1,7 +1,6 @@
 class_name Lobby
 extends Control
 
-
 @onready var stage_selector: OptionButton = $Wrapper/StageSelectPanel/StageSelectWrapper/StageSelector
 @onready var start_game_btn: Button = $Wrapper/StageSelectPanel/StageSelectWrapper/StartGameBtn
 @onready var connected_players: VBoxContainer = %ConnectedPlayers

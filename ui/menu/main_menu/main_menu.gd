@@ -2,6 +2,7 @@ extends Control
 
 @onready var nickname_panel: LineEdit = $Wrapper/NicknamePanel
 
+
 func _ready() -> void:
 	if MultiplayerManager.is_valid_multiplayer_connection():
 		await get_tree().physics_frame

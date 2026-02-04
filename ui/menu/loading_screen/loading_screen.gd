@@ -1,23 +1,19 @@
 class_name LoadingScreen
 extends CanvasLayer
 
-
 var ready_clients: Dictionary = {}
 var is_loading: bool = true
 var progress: Array = []
 var next_scene: String
 var _wait_for_all_peers: bool = true
-
-
 var connected_to_server: bool = false
 var server_scene_received: bool = false
-
 var fallback_timer: Timer = Timer.new()
 
+
 func _ready() -> void:
-	MultiplayerManager.all_peers_ready.connect(_on_all_peers_ready)
 	multiplayer.connected_to_server.connect(_on_connected_to_server)
-	
+	MultiplayerManager.all_peers_ready.connect(_on_all_peers_ready)
 	MultiplayerManager.server_scene_received.connect(_on_server_scene_received)
 	
 	fallback_timer.autostart = false
@@ -116,7 +112,6 @@ func _load_scene(scene_to_load: PackedScene) -> void:
 	var new_scene = scene_to_load.instantiate()
 	owner.add_child(new_scene)
 	owner.main_scene = new_scene
-	
 	
 	await get_tree().physics_frame
 	_send_status_loaded()
