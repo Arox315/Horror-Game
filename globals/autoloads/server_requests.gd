@@ -280,3 +280,61 @@ func _request_force_kill_server(_sender_id: int, target_path: NodePath) -> void:
 	
 	var hc = target.get_node_or_null("HealthComponent") as HealthComponent
 	if hc: hc.force_kill()
+
+
+## Sends a request to the server to set Invulnerability for the [param target] to [param value]
+## @experimental
+func send_set_invulnerability_request(target: Node, value: bool) -> void:
+	if not target: return
+	
+	var target_path: NodePath = target.get_path()
+	if target_path.is_empty(): return
+	
+	if multiplayer.is_server():
+		_request_set_invulnerability_server(1, target_path, value)
+	else:
+		_request_set_invulnerability.rpc_id(1, target_path, value)
+
+
+@rpc("reliable","any_peer","call_local")
+func _request_set_invulnerability(target_path:NodePath, value: bool) -> void:
+	if not multiplayer.is_server(): return
+	var sender_id: int = multiplayer.get_remote_sender_id()
+	_request_set_invulnerability_server(sender_id, target_path, value)
+
+
+func _request_set_invulnerability_server(_sender_id: int, target_path: NodePath, value: bool) -> void:
+	var target = get_node_or_null(target_path)
+	if not target: return
+	var hc = target.get_node_or_null("HealthComponent") as HealthComponent
+	if hc:
+		hc.is_invulnerable = value
+
+
+## Sends a request to the server to set God Mode for the [param target] to [param value]
+## @experimental
+func send_set_godmode_request(target: Node, value: bool) -> void:
+	if not target: return
+	
+	var target_path: NodePath = target.get_path()
+	if target_path.is_empty(): return
+	
+	if multiplayer.is_server():
+		_request_set_godmode_server(1, target_path, value)
+	else:
+		_request_set_godmode.rpc_id(1, target_path, value)
+
+
+@rpc("reliable","any_peer","call_local")
+func _request_set_godmode(target_path:NodePath, value: bool) -> void:
+	if not multiplayer.is_server(): return
+	var sender_id: int = multiplayer.get_remote_sender_id()
+	_request_set_godmode_server(sender_id, target_path, value)
+
+
+func _request_set_godmode_server(_sender_id: int, target_path: NodePath, value: bool) -> void:
+	var target = get_node_or_null(target_path)
+	if not target: return
+	var hc = target.get_node_or_null("HealthComponent") as HealthComponent
+	if hc:
+		hc.is_god_mode = value

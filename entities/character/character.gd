@@ -1,7 +1,5 @@
 extends CharacterBody3D
 
-signal test
-
 @export var first_person_camera_position: Vector3 = Vector3.ZERO
 @export var third_person_camera_position: Vector3 = Vector3(0, 0.8, 1.8)
 
@@ -81,6 +79,12 @@ func _ready() -> void:
 	
 	# Hide authority's world model
 	hide_world_model()
+	
+	if multiplayer.is_server():
+		const CHEAT_PANEL = preload("uid://c8k0dl4dlmk0u")
+		var cheat_panel: Control = CHEAT_PANEL.instantiate()
+		cheat_panel.hide()
+		add_child(cheat_panel)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -110,10 +114,14 @@ func _physics_process(delta: float) -> void:
 		return
 	
 	if Input.is_action_just_pressed("debug_key"):
-		ServerRequests.send_emit_signal_request(self, test)
-		if multiplayer.is_server():
-			var stage_id = 3 if MultiplayerManager.server_current_scene_id == 2 else 2
-			SceneManager.start_loading_scene.rpc(stage_id)
+		var cheat_panel: Control = get_node_or_null("CheatPanel")
+		if cheat_panel:
+			if cheat_panel.visible:
+				Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+				cheat_panel.hide()
+			else:
+				Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+				cheat_panel.show()
 	
 	
 	# toggle 3rd person

@@ -1,0 +1,180 @@
+[gd_scene format=3 uid="uid://c8k0dl4dlmk0u"]
+
+[ext_resource type="Script" uid="uid://reorg7lxb5cf" path="res://debug/cheat_tools/cheat_panel.gd" id="1_41sa4"]
+
+[node name="CheatPanel" type="Control" unique_id=48063093]
+custom_minimum_size = Vector2(800, 500)
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_41sa4")
+
+[node name="TabContainer" type="TabContainer" parent="." unique_id=1760417179]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+current_tab = 0
+
+[node name="Player" type="MarginContainer" parent="TabContainer" unique_id=1693657347]
+layout_mode = 2
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 15
+theme_override_constants/margin_bottom = 15
+metadata/_tab_index = 0
+
+[node name="ToolsList" type="VBoxContainer" parent="TabContainer/Player" unique_id=1883530866]
+layout_mode = 2
+
+[node name="HealthPanelWrapper" type="MarginContainer" parent="TabContainer/Player/ToolsList" unique_id=222573923]
+layout_mode = 2
+
+[node name="HealthPanel" type="VBoxContainer" parent="TabContainer/Player/ToolsList/HealthPanelWrapper" unique_id=1616776395]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TabContainer/Player/ToolsList/HealthPanelWrapper/HealthPanel" unique_id=3645942]
+layout_mode = 2
+text = "HEALTH"
+
+[node name="AddHealthPanel" type="HBoxContainer" parent="TabContainer/Player/ToolsList/HealthPanelWrapper/HealthPanel" unique_id=1342097949]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TabContainer/Player/ToolsList/HealthPanelWrapper/HealthPanel/AddHealthPanel" unique_id=78412500]
+layout_mode = 2
+text = "Add Health: "
+
+[node name="AddHealthNumber" type="SpinBox" parent="TabContainer/Player/ToolsList/HealthPanelWrapper/HealthPanel/AddHealthPanel" unique_id=1603939690]
+layout_mode = 2
+rounded = true
+allow_greater = true
+
+[node name="AddHealthBtn" type="Button" parent="TabContainer/Player/ToolsList/HealthPanelWrapper/HealthPanel/AddHealthPanel" unique_id=1451100846]
+layout_mode = 2
+text = "Add"
+
+[node name="SubHealthPanel" type="HBoxContainer" parent="TabContainer/Player/ToolsList/HealthPanelWrapper/HealthPanel" unique_id=1124927891]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TabContainer/Player/ToolsList/HealthPanelWrapper/HealthPanel/SubHealthPanel" unique_id=693339369]
+layout_mode = 2
+text = "Substract Health: "
+
+[node name="SubHealthNumber" type="SpinBox" parent="TabContainer/Player/ToolsList/HealthPanelWrapper/HealthPanel/SubHealthPanel" unique_id=2021548362]
+layout_mode = 2
+rounded = true
+allow_greater = true
+
+[node name="SubHealthBtn" type="Button" parent="TabContainer/Player/ToolsList/HealthPanelWrapper/HealthPanel/SubHealthPanel" unique_id=1166749987]
+layout_mode = 2
+text = "Substract"
+
+[node name="ResetHealthPanel" type="HBoxContainer" parent="TabContainer/Player/ToolsList/HealthPanelWrapper/HealthPanel" unique_id=184845852]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TabContainer/Player/ToolsList/HealthPanelWrapper/HealthPanel/ResetHealthPanel" unique_id=1518346079]
+layout_mode = 2
+text = "Reset Health: "
+
+[node name="ResetHealthBtn" type="Button" parent="TabContainer/Player/ToolsList/HealthPanelWrapper/HealthPanel/ResetHealthPanel" unique_id=1260494445]
+layout_mode = 2
+text = "Reset"
+
+[node name="ForceKillPanel" type="HBoxContainer" parent="TabContainer/Player/ToolsList/HealthPanelWrapper/HealthPanel" unique_id=1500195595]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TabContainer/Player/ToolsList/HealthPanelWrapper/HealthPanel/ForceKillPanel" unique_id=125301642]
+layout_mode = 2
+text = "Force Kill: "
+
+[node name="ForceKillBtn" type="Button" parent="TabContainer/Player/ToolsList/HealthPanelWrapper/HealthPanel/ForceKillPanel" unique_id=269137691]
+layout_mode = 2
+text = "Kill"
+
+[node name="InvulnerablePanel" type="HBoxContainer" parent="TabContainer/Player/ToolsList/HealthPanelWrapper/HealthPanel" unique_id=1884284720]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TabContainer/Player/ToolsList/HealthPanelWrapper/HealthPanel/InvulnerablePanel" unique_id=87912199]
+layout_mode = 2
+text = "Invulnerable: "
+
+[node name="InvlunerableBtn" type="CheckButton" parent="TabContainer/Player/ToolsList/HealthPanelWrapper/HealthPanel/InvulnerablePanel" unique_id=1610367908]
+layout_mode = 2
+
+[node name="GodModePanel" type="HBoxContainer" parent="TabContainer/Player/ToolsList/HealthPanelWrapper/HealthPanel" unique_id=1412368725]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TabContainer/Player/ToolsList/HealthPanelWrapper/HealthPanel/GodModePanel" unique_id=1280755305]
+layout_mode = 2
+text = "God mode: "
+
+[node name="GodModeBtn" type="CheckButton" parent="TabContainer/Player/ToolsList/HealthPanelWrapper/HealthPanel/GodModePanel" unique_id=641018692]
+layout_mode = 2
+
+[node name="HSeparator" type="HSeparator" parent="TabContainer/Player/ToolsList" unique_id=720208157]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+
+[node name="MovementPanelWrapper" type="MarginContainer" parent="TabContainer/Player/ToolsList" unique_id=1728115063]
+layout_mode = 2
+
+[node name="MovementsPanel" type="VBoxContainer" parent="TabContainer/Player/ToolsList/MovementPanelWrapper" unique_id=1707810225]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TabContainer/Player/ToolsList/MovementPanelWrapper/MovementsPanel" unique_id=530037321]
+layout_mode = 2
+text = "MOVEMENT"
+
+[node name="NoClipPannel" type="HBoxContainer" parent="TabContainer/Player/ToolsList/MovementPanelWrapper/MovementsPanel" unique_id=1875447775]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TabContainer/Player/ToolsList/MovementPanelWrapper/MovementsPanel/NoClipPannel" unique_id=108552551]
+layout_mode = 2
+text = "No clip: "
+
+[node name="NoClipBtn" type="CheckButton" parent="TabContainer/Player/ToolsList/MovementPanelWrapper/MovementsPanel/NoClipPannel" unique_id=1307771228]
+layout_mode = 2
+
+[node name="NoClipWithNoCollision" type="HBoxContainer" parent="TabContainer/Player/ToolsList/MovementPanelWrapper/MovementsPanel" unique_id=236417955]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TabContainer/Player/ToolsList/MovementPanelWrapper/MovementsPanel/NoClipWithNoCollision" unique_id=1434540989]
+layout_mode = 2
+text = "No clip with no collision: "
+
+[node name="NoCollisionNoClipBtn" type="CheckButton" parent="TabContainer/Player/ToolsList/MovementPanelWrapper/MovementsPanel/NoClipWithNoCollision" unique_id=1246029502]
+layout_mode = 2
+
+[node name="Effects" type="MarginContainer" parent="TabContainer" unique_id=1663507681]
+visible = false
+layout_mode = 2
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 15
+theme_override_constants/margin_bottom = 15
+metadata/_tab_index = 1
+
+[node name="Stage" type="MarginContainer" parent="TabContainer" unique_id=1156738846]
+visible = false
+layout_mode = 2
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 15
+theme_override_constants/margin_bottom = 15
+metadata/_tab_index = 2
+
+[connection signal="pressed" from="TabContainer/Player/ToolsList/HealthPanelWrapper/HealthPanel/AddHealthPanel/AddHealthBtn" to="." method="_on_add_health_btn_pressed"]
+[connection signal="pressed" from="TabContainer/Player/ToolsList/HealthPanelWrapper/HealthPanel/SubHealthPanel/SubHealthBtn" to="." method="_on_sub_health_btn_pressed"]
+[connection signal="pressed" from="TabContainer/Player/ToolsList/HealthPanelWrapper/HealthPanel/ResetHealthPanel/ResetHealthBtn" to="." method="_on_reset_health_btn_pressed"]
+[connection signal="pressed" from="TabContainer/Player/ToolsList/HealthPanelWrapper/HealthPanel/ForceKillPanel/ForceKillBtn" to="." method="_on_force_kill_btn_pressed"]
+[connection signal="toggled" from="TabContainer/Player/ToolsList/HealthPanelWrapper/HealthPanel/InvulnerablePanel/InvlunerableBtn" to="." method="_on_invlunerable_btn_toggled"]
+[connection signal="toggled" from="TabContainer/Player/ToolsList/HealthPanelWrapper/HealthPanel/GodModePanel/GodModeBtn" to="." method="_on_god_mode_btn_toggled"]
+[connection signal="toggled" from="TabContainer/Player/ToolsList/MovementPanelWrapper/MovementsPanel/NoClipPannel/NoClipBtn" to="." method="_on_no_clip_btn_toggled"]
+[connection signal="toggled" from="TabContainer/Player/ToolsList/MovementPanelWrapper/MovementsPanel/NoClipWithNoCollision/NoCollisionNoClipBtn" to="." method="_on_no_collision_no_clip_btn_toggled"]
