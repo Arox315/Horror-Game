@@ -35,7 +35,7 @@ func _on_reset_health_btn_pressed() -> void:
 
 
 func _on_force_kill_btn_pressed() -> void:
-	ServerRequests.send_force_kill_request(get_parent())
+	ServerRequests.send_force_kill_god_mode_request(get_parent())
 
 
 func _on_invlunerable_btn_toggled(toggled_on: bool) -> void:
