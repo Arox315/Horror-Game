@@ -21,7 +21,8 @@ const EFFECT_PANEL_SCENE = preload("uid://ctrhcda4l2x6m")
 
 
 # --- Stage ---
-
+@onready var stage_selector: OptionButton = $TabContainer/Stage/Items/StageSelector
+var stage_id_offset: int
 
 func _ready() -> void:
 	for effect_id in EffectsTable.TABLE.keys():
@@ -29,6 +30,12 @@ func _ready() -> void:
 		effects_list.add_child(effect_panel)
 		effect_panel.effect_id = effect_id
 		effect_panel.effect_label.text = EffectsTable.Effects.keys()[effect_id]
+	
+	for stage_id in SceneManager.STAGES.keys():
+		stage_selector.add_item(SceneManager.scene_id.keys()[stage_id], stage_id)
+	
+	stage_id_offset = SceneManager.STAGES.keys()[0]
+	stage_selector.selected = 0
 
 
 func _on_add_health_btn_pressed() -> void:
@@ -59,3 +66,10 @@ func _on_god_mode_btn_toggled(toggled_on: bool) -> void:
 
 func _on_no_clip_btn_toggled(_toggled_on: bool) -> void:
 	pass # Replace with function body.
+
+
+func _on_stage_load_btn_pressed() -> void:
+	await get_tree().physics_frame
+	
+	var stage_id: int = stage_selector.selected + stage_id_offset
+	SceneManager.start_loading_scene.rpc(stage_id)

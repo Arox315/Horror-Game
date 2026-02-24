@@ -21,9 +21,10 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-current_tab = 0
+current_tab = 2
 
 [node name="Player" type="MarginContainer" parent="TabContainer" unique_id=1693657347]
+visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 15
 theme_override_constants/margin_top = 15
@@ -155,13 +156,24 @@ metadata/_tab_index = 1
 layout_mode = 2
 
 [node name="Stage" type="MarginContainer" parent="TabContainer" unique_id=1156738846]
-visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 15
 theme_override_constants/margin_top = 15
 theme_override_constants/margin_right = 15
 theme_override_constants/margin_bottom = 15
 metadata/_tab_index = 2
+
+[node name="Items" type="HBoxContainer" parent="TabContainer/Stage" unique_id=178662206]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="StageSelector" type="OptionButton" parent="TabContainer/Stage/Items" unique_id=1921697283]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+
+[node name="StageLoadBtn" type="Button" parent="TabContainer/Stage/Items" unique_id=550100032]
+layout_mode = 2
+text = "Load"
 
 [connection signal="pressed" from="TabContainer/Player/ToolsList/HealthPanelWrapper/HealthPanel/AddHealthPanel/AddHealthBtn" to="." method="_on_add_health_btn_pressed"]
 [connection signal="pressed" from="TabContainer/Player/ToolsList/HealthPanelWrapper/HealthPanel/SubHealthPanel/SubHealthBtn" to="." method="_on_sub_health_btn_pressed"]
@@ -170,3 +182,4 @@ metadata/_tab_index = 2
 [connection signal="toggled" from="TabContainer/Player/ToolsList/HealthPanelWrapper/HealthPanel/InvulnerablePanel/InvlunerableBtn" to="." method="_on_invlunerable_btn_toggled"]
 [connection signal="toggled" from="TabContainer/Player/ToolsList/HealthPanelWrapper/HealthPanel/GodModePanel/GodModeBtn" to="." method="_on_god_mode_btn_toggled"]
 [connection signal="toggled" from="TabContainer/Player/ToolsList/MovementPanelWrapper/MovementsPanel/NoClipPannel/NoClipBtn" to="." method="_on_no_clip_btn_toggled"]
+[connection signal="pressed" from="TabContainer/Stage/Items/StageLoadBtn" to="." method="_on_stage_load_btn_pressed"]
