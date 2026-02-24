@@ -142,16 +142,6 @@ text = "No clip: "
 [node name="NoClipBtn" type="CheckButton" parent="TabContainer/Player/ToolsList/MovementPanelWrapper/MovementsPanel/NoClipPannel" unique_id=1307771228]
 layout_mode = 2
 
-[node name="NoClipWithNoCollision" type="HBoxContainer" parent="TabContainer/Player/ToolsList/MovementPanelWrapper/MovementsPanel" unique_id=236417955]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="TabContainer/Player/ToolsList/MovementPanelWrapper/MovementsPanel/NoClipWithNoCollision" unique_id=1434540989]
-layout_mode = 2
-text = "No clip with no collision: "
-
-[node name="NoCollisionNoClipBtn" type="CheckButton" parent="TabContainer/Player/ToolsList/MovementPanelWrapper/MovementsPanel/NoClipWithNoCollision" unique_id=1246029502]
-layout_mode = 2
-
 [node name="Effects" type="MarginContainer" parent="TabContainer" unique_id=1663507681]
 visible = false
 layout_mode = 2
@@ -160,6 +150,9 @@ theme_override_constants/margin_top = 15
 theme_override_constants/margin_right = 15
 theme_override_constants/margin_bottom = 15
 metadata/_tab_index = 1
+
+[node name="EffectsList" type="VBoxContainer" parent="TabContainer/Effects" unique_id=1583930209]
+layout_mode = 2
 
 [node name="Stage" type="MarginContainer" parent="TabContainer" unique_id=1156738846]
 visible = false
@@ -177,4 +170,3 @@ metadata/_tab_index = 2
 [connection signal="toggled" from="TabContainer/Player/ToolsList/HealthPanelWrapper/HealthPanel/InvulnerablePanel/InvlunerableBtn" to="." method="_on_invlunerable_btn_toggled"]
 [connection signal="toggled" from="TabContainer/Player/ToolsList/HealthPanelWrapper/HealthPanel/GodModePanel/GodModeBtn" to="." method="_on_god_mode_btn_toggled"]
 [connection signal="toggled" from="TabContainer/Player/ToolsList/MovementPanelWrapper/MovementsPanel/NoClipPannel/NoClipBtn" to="." method="_on_no_clip_btn_toggled"]
-[connection signal="toggled" from="TabContainer/Player/ToolsList/MovementPanelWrapper/MovementsPanel/NoClipWithNoCollision/NoCollisionNoClipBtn" to="." method="_on_no_collision_no_clip_btn_toggled"]

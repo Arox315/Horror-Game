@@ -1,0 +1,42 @@
+[gd_scene format=3 uid="uid://ctrhcda4l2x6m"]
+
+[ext_resource type="Script" uid="uid://7clnws0hucsw" path="res://debug/cheat_tools/effect_panel/effect_panel.gd" id="1_7ojhs"]
+
+[node name="EffectPanel" type="Control" unique_id=1377810707]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 3
+anchors_preset = 10
+anchor_right = 1.0
+grow_horizontal = 2
+script = ExtResource("1_7ojhs")
+
+[node name="Wrapper" type="MarginContainer" parent="." unique_id=1061121544]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Items" type="HBoxContainer" parent="Wrapper" unique_id=1389947936]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="EffectLabel" type="Label" parent="Wrapper/Items" unique_id=1904836628]
+layout_mode = 2
+text = "Effect name"
+
+[node name="AddEffectBtn" type="Button" parent="Wrapper/Items" unique_id=2089410499]
+layout_mode = 2
+text = "Add"
+
+[node name="RemoveEffectBtn" type="Button" parent="Wrapper/Items" unique_id=1761964320]
+layout_mode = 2
+text = "Remove"
+
+[connection signal="pressed" from="Wrapper/Items/AddEffectBtn" to="." method="_on_add_effect_btn_pressed"]
+[connection signal="pressed" from="Wrapper/Items/RemoveEffectBtn" to="." method="_on_remove_effect_btn_pressed"]

@@ -1,5 +1,6 @@
 extends Control
 
+# --- Player ---
 # Health
 @onready var add_health_btn: Button = $TabContainer/Player/ToolsList/HealthPanelWrapper/HealthPanel/AddHealthPanel/AddHealthBtn
 @onready var sub_health_btn: Button = $TabContainer/Player/ToolsList/HealthPanelWrapper/HealthPanel/SubHealthPanel/SubHealthBtn
@@ -13,11 +14,21 @@ extends Control
 
 # Movement
 @onready var no_clip_btn: CheckButton = $TabContainer/Player/ToolsList/MovementPanelWrapper/MovementsPanel/NoClipPannel/NoClipBtn
-@onready var no_collision_no_clip_btn: CheckButton = $TabContainer/Player/ToolsList/MovementPanelWrapper/MovementsPanel/NoClipWithNoCollision/NoCollisionNoClipBtn
+
+# --- Effects ---
+@onready var effects_list: VBoxContainer = $TabContainer/Effects/EffectsList
+const EFFECT_PANEL_SCENE = preload("uid://ctrhcda4l2x6m")
+
+
+# --- Stage ---
 
 
 func _ready() -> void:
-	pass
+	for effect_id in EffectsTable.TABLE.keys():
+		var effect_panel: CTEffectPanel = EFFECT_PANEL_SCENE.instantiate()
+		effects_list.add_child(effect_panel)
+		effect_panel.effect_id = effect_id
+		effect_panel.effect_label.text = EffectsTable.Effects.keys()[effect_id]
 
 
 func _on_add_health_btn_pressed() -> void:
@@ -47,8 +58,4 @@ func _on_god_mode_btn_toggled(toggled_on: bool) -> void:
 
 
 func _on_no_clip_btn_toggled(_toggled_on: bool) -> void:
-	pass # Replace with function body.
-
-
-func _on_no_collision_no_clip_btn_toggled(_toggled_on: bool) -> void:
 	pass # Replace with function body.

@@ -53,7 +53,7 @@ func update_display(new_stacks: int) -> void:
 
 
 func delete() -> void:
-	tween.kill()
+	if tween: tween.kill()
 	queue_free()
 
 
