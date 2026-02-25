@@ -65,7 +65,7 @@ func _on_god_mode_btn_toggled(toggled_on: bool) -> void:
 
 
 func _on_no_clip_btn_toggled(_toggled_on: bool) -> void:
-	pass # Replace with function body.
+	get_parent().toggle_noclip()
 
 
 func _on_stage_load_btn_pressed() -> void:

@@ -7,6 +7,11 @@ const BASE_SPEED: float = 5.0
 var _speed_multipliers: Dictionary = {}
 var current_speed: float
 
+var is_noclip: bool = false
+var camera_direction: Vector3 = Vector3.ZERO
+var noclip_speed_multiplier: float = 3.0
+var noclip_speed_step: float = 0.2
+
 var JUMP_VELOCITY = 4.5
 var CAMERA_ROTATION_SPEED = 50.0 * deg_to_rad(0.022)
 var game_manager: GameManager
@@ -21,6 +26,7 @@ var game_manager: GameManager
 @onready var player_type: Control = $Hud/PlayerType
 @onready var effects: HBoxContainer = $Hud/EffectsContainer/Effects
 @onready var health_component: HealthComponent = $HealthComponent
+@onready var hitbox: CollisionShape3D = $Hitbox
 
 @onready var position_synchronizer: MultiplayerSynchronizer = $PositionSynchronizer
 @onready var model_synchronizer: MultiplayerSynchronizer = $ModelSynchronizer
@@ -113,7 +119,7 @@ func _physics_process(delta: float) -> void:
 	if !is_multiplayer_authority():
 		return
 	
-	if Input.is_action_just_pressed("debug_key"):
+	if Input.is_action_just_pressed("toggle_cheat_panel") and OS.has_feature("debug"):
 		var cheat_panel: Control = get_node_or_null("CheatPanel")
 		if cheat_panel:
 			if cheat_panel.visible:
@@ -128,24 +134,27 @@ func _physics_process(delta: float) -> void:
 	if Input.is_action_just_pressed("change_perspective"):
 		toggle_third_person()
 	
-	# Add the gravity.
-	if not is_on_floor():
-		velocity += get_gravity() * delta
-
-	# Handle jump.
-	if Input.is_action_just_pressed("jump") and is_on_floor():
-		velocity.y = JUMP_VELOCITY
-
 	var input_dir := Input.get_vector("left", "right", "forward", "back").normalized()
 	direction = transform.basis * Vector3(input_dir.x, 0, input_dir.y)
-	if direction:
-		velocity.x = direction.x * current_speed
-		velocity.z = direction.z * current_speed
-	else:
-		velocity.x = move_toward(velocity.x, 0, current_speed)
-		velocity.z = move_toward(velocity.z, 0, current_speed)
+	camera_direction = camera_controller.transform.basis * camera.transform.basis * Vector3(input_dir.x, 0, input_dir.y)
 	
-	move_and_slide()
+	if not _handle_noclip(delta):
+		# Add the gravity.
+		if not is_on_floor():
+			velocity += get_gravity() * delta
+	
+		# Handle jump.
+		if Input.is_action_just_pressed("jump") and is_on_floor():
+			velocity.y = JUMP_VELOCITY
+	
+		if direction:
+			velocity.x = direction.x * current_speed
+			velocity.z = direction.z * current_speed
+		else:
+			velocity.x = move_toward(velocity.x, 0, current_speed)
+			velocity.z = move_toward(velocity.z, 0, current_speed)
+		
+		move_and_slide()
 
 
 func _process(_delta: float) -> void:
@@ -234,3 +243,32 @@ func _on_died() -> void:
 func enable_process() -> void:
 	# Enable process
 	process_mode = Node.PROCESS_MODE_ALWAYS
+
+
+func _handle_noclip(delta: float) -> bool:
+	if not is_noclip: return false
+	
+	velocity = camera_direction * current_speed
+	global_position += velocity * delta
+	
+	if Input.is_action_just_pressed("noclip_speed_up"):
+		noclip_speed_multiplier += noclip_speed_step
+		noclip_speed_multiplier = min(noclip_speed_multiplier, 100.0)
+		set_speed_multiplier("NoclipSpeedMult", noclip_speed_multiplier)
+	
+	if Input.is_action_just_pressed("noclip_speed_down"):
+		noclip_speed_multiplier -= noclip_speed_step
+		noclip_speed_multiplier = max(noclip_speed_multiplier, 0.1)
+		set_speed_multiplier("NoclipSpeedMult", noclip_speed_multiplier) 
+	
+	return true
+
+
+func toggle_noclip() -> void:
+	is_noclip = not is_noclip
+	hitbox.disabled = is_noclip
+	
+	if is_noclip:
+		set_speed_multiplier("NoclipSpeedMult", noclip_speed_multiplier)
+	else:
+		remove_speed_multiplier("NoclipSpeedMult")
