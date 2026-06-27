@@ -49,8 +49,22 @@ func heal(amount: int) -> void:
 
 
 ## Sets [member current_health] to 0
+func kill() -> void:
+	if is_god_mode: return
+	if is_invulnerable: return
+	current_health = 0
+	ServerRequests.send_emit_signal_global_request(self, killed)
+
+
+## Sets [member current_health] to 0. Ignores [member is_invulnerable].
 func force_kill() -> void:
 	if is_god_mode: return
+	current_health = 0
+	ServerRequests.send_emit_signal_global_request(self, killed)
+
+
+## Sets [member current_health] to 0. Ignores [member is_invulnerable] and [member is_god_mode].
+func force_kill_god_mode() -> void:
 	current_health = 0
 	ServerRequests.send_emit_signal_global_request(self, killed)
 

@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://c7ksecespxm2u"]
+[gd_scene format=3 uid="uid://c7ksecespxm2u"]
 
 [ext_resource type="Script" uid="uid://cktonvsvavro3" path="res://entities/character/character.gd" id="1_glpr6"]
 [ext_resource type="PackedScene" uid="uid://shh7ov5oet2b" path="res://entities/character/interact-ray/interact_ray.tscn" id="2_6i0tm"]
@@ -64,59 +64,59 @@ func generate_new_color() -> void:
 	color = Color(Utilities.get_random_hex_color())
 "
 
-[node name="Character" type="CharacterBody3D" groups=["Players"]]
+[node name="Character" type="CharacterBody3D" unique_id=1301625121 groups=["Players"]]
 collision_layer = 4
 collision_mask = 9
 script = ExtResource("1_glpr6")
 
-[node name="EffectsComponent" parent="." instance=ExtResource("2_7315l")]
+[node name="EffectsComponent" parent="." unique_id=341065586 instance=ExtResource("2_7315l")]
 
-[node name="HealthComponent" parent="." instance=ExtResource("3_xn0r5")]
+[node name="HealthComponent" parent="." unique_id=1857716535 instance=ExtResource("3_xn0r5")]
 
-[node name="StatsSynchronizer" parent="." instance=ExtResource("4_l75fg")]
+[node name="StatsSynchronizer" parent="." unique_id=123967720 instance=ExtResource("4_l75fg")]
 
-[node name="PositionSynchronizer" type="MultiplayerSynchronizer" parent="." groups=["Synchronizers"]]
+[node name="PositionSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=29860553 groups=["Synchronizers"]]
 replication_config = SubResource("SceneReplicationConfig_0c2ax")
 public_visibility = false
 
-[node name="ModelSynchronizer" type="MultiplayerSynchronizer" parent="." groups=["Synchronizers"]]
+[node name="ModelSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=2021412784 groups=["Synchronizers"]]
 replication_config = SubResource("SceneReplicationConfig_6i0tm")
 public_visibility = false
 
-[node name="Hitbox" type="CollisionShape3D" parent="."]
+[node name="Hitbox" type="CollisionShape3D" parent="." unique_id=130228794]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
 shape = SubResource("CapsuleShape3D_6i0tm")
 
-[node name="CameraControllerAnchor" type="Marker3D" parent="."]
+[node name="CameraControllerAnchor" type="Marker3D" parent="." unique_id=610560780]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)
 
-[node name="InteractRay" parent="CameraControllerAnchor" instance=ExtResource("2_6i0tm")]
+[node name="InteractRay" parent="CameraControllerAnchor" unique_id=1057624379 instance=ExtResource("2_6i0tm")]
 
-[node name="CameraController" type="Node3D" parent="."]
+[node name="CameraController" type="Node3D" parent="." unique_id=578653165]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)
 
-[node name="Camera3D" type="Camera3D" parent="CameraController"]
+[node name="Camera3D" type="Camera3D" parent="CameraController" unique_id=1924417753]
 
-[node name="WorldModel" type="Node3D" parent="."]
+[node name="WorldModel" type="Node3D" parent="." unique_id=1585721200]
 
-[node name="BodyModel" type="MeshInstance3D" parent="WorldModel"]
+[node name="BodyModel" type="MeshInstance3D" parent="WorldModel" unique_id=344584690]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
 mesh = SubResource("CapsuleMesh_7315l")
 skeleton = NodePath("../..")
 script = SubResource("GDScript_0c2ax")
 
-[node name="WorldModelAnchor" type="Marker3D" parent="WorldModel"]
+[node name="WorldModelAnchor" type="Marker3D" parent="WorldModel" unique_id=367597240]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
 
-[node name="Hud" type="CanvasLayer" parent="."]
+[node name="Hud" type="CanvasLayer" parent="." unique_id=1851862232]
 
-[node name="PlayerType" type="Control" parent="Hud"]
+[node name="PlayerType" type="Control" parent="Hud" unique_id=1358446591]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
-[node name="EffectsContainer" type="MarginContainer" parent="Hud"]
+[node name="EffectsContainer" type="MarginContainer" parent="Hud" unique_id=1960535886]
 anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
@@ -129,8 +129,8 @@ theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="Effects" type="HBoxContainer" parent="Hud/EffectsContainer"]
+[node name="Effects" type="HBoxContainer" parent="Hud/EffectsContainer" unique_id=683927110]
 layout_mode = 2
 
-[node name="HealthDisplay" parent="Hud" node_paths=PackedStringArray("health_component") instance=ExtResource("6_l75fg")]
+[node name="HealthDisplay" parent="Hud" unique_id=2007832954 node_paths=PackedStringArray("health_component") instance=ExtResource("6_l75fg")]
 health_component = NodePath("../../HealthComponent")
