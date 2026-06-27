@@ -31,7 +31,7 @@ func _ready() -> void:
 func _on_peer_connected(peer_id: int) -> void:
 	print("[%s] Player: %s connected!" % [self, peer_id])
 	MultiplayerManager.set_server_current_scene.rpc_id(peer_id, MultiplayerManager.server_current_scene_id)
-	_spawn_player(peer_id)
+	#_spawn_player(peer_id)
 
 
 func _on_peer_disconnected(peer_id: int) -> void:
@@ -39,8 +39,8 @@ func _on_peer_disconnected(peer_id: int) -> void:
 	_delete_player(peer_id)
 
 
-func _on_peer_loaded(_peer_id: int) -> void:
-	pass
+func _on_peer_loaded(peer_id: int) -> void:
+	_spawn_player(peer_id)
 
 
 func _on_peer_ready(_peer_id: int) -> void:

@@ -86,7 +86,7 @@ func _ready() -> void:
 	# Hide authority's world model
 	hide_world_model()
 	
-	if multiplayer.is_server():
+	if multiplayer.is_server() and OS.has_feature("debug"):
 		const CHEAT_PANEL = preload("uid://c8k0dl4dlmk0u")
 		var cheat_panel: Control = CHEAT_PANEL.instantiate()
 		cheat_panel.hide()
