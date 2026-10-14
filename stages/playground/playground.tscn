@@ -1,4 +1,4 @@
-[gd_scene load_steps=66 format=3 uid="uid://dvi7lqoafi1cl"]
+[gd_scene format=3 uid="uid://dvi7lqoafi1cl"]
 
 [ext_resource type="Script" uid="uid://buw6ghtd823ix" path="res://stages/stage.gd" id="1_nfegs"]
 [ext_resource type="PackedScene" uid="uid://352pm4hcxqtx" path="res://stages/playground/block.tscn" id="1_qchbg"]
@@ -340,177 +340,177 @@ func _on_interacted(body:Variant, _sender: InteractableTrigger) -> void:
 [sub_resource type="BoxShape3D" id="BoxShape3D_rwvch"]
 size = Vector3(0.55, 0.55, 0.3)
 
-[node name="Playground" type="Node3D"]
+[node name="Playground" type="Node3D" unique_id=1203489348]
 script = ExtResource("1_nfegs")
 
-[node name="Env" type="Node" parent="."]
+[node name="Env" type="Node" parent="." unique_id=1995226996]
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="Env"]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="Env" unique_id=1501120493]
 environment = SubResource("Environment_is3ju")
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Env"]
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Env" unique_id=1138157895]
 transform = Transform3D(0.764359, 0.423645, 0.486087, -0.594107, 0.755703, 0.275591, -0.250584, -0.499438, 0.829319, 7.43818, 2.70805, 2.9176)
 shadow_enabled = true
 
-[node name="Room1" type="Node3D" parent="."]
+[node name="Room1" type="Node3D" parent="." unique_id=805344700]
 
-[node name="Floor" type="StaticBody3D" parent="Room1"]
+[node name="Floor" type="StaticBody3D" parent="Room1" unique_id=1279656347]
 metadata/_edit_group_ = true
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Room1/Floor"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Room1/Floor" unique_id=1801740346]
 mesh = SubResource("PlaneMesh_7h8id")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Room1/Floor"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Room1/Floor" unique_id=822304296]
 shape = SubResource("BoxShape3D_nfegs")
 
-[node name="Blocks" type="Node3D" parent="Room1"]
+[node name="Blocks" type="Node3D" parent="Room1" unique_id=1667893556]
 
-[node name="Block1" parent="Room1/Blocks" instance=ExtResource("1_qchbg")]
+[node name="Block1" parent="Room1/Blocks" unique_id=1759067188 instance=ExtResource("1_qchbg")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.68614, 2, -3)
 
-[node name="Block2" parent="Room1/Blocks" instance=ExtResource("1_qchbg")]
+[node name="Block2" parent="Room1/Blocks" unique_id=1234606726 instance=ExtResource("1_qchbg")]
 transform = Transform3D(0.727114, 0.326387, -0.603967, -0.686517, 0.345688, -0.639683, 0, 0.879756, 0.475425, -0.843957, 3.43399, -2.99328)
 
-[node name="Block3" parent="Room1/Blocks" instance=ExtResource("1_qchbg")]
+[node name="Block3" parent="Room1/Blocks" unique_id=1106161963 instance=ExtResource("1_qchbg")]
 transform = Transform3D(0.944026, -0.156829, 0.290207, 0.329872, 0.448813, -0.830513, 1.19209e-07, 0.879756, 0.475425, 0.714679, 4.48829, -2.99328)
 
-[node name="ColorChanger" parent="Room1" instance=ExtResource("3_bkhp6")]
+[node name="ColorChanger" parent="Room1" unique_id=1201011253 instance=ExtResource("3_bkhp6")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.24658, 1.04155, 0)
 
-[node name="TestInteractable" type="StaticBody3D" parent="Room1"]
+[node name="TestInteractable" type="StaticBody3D" parent="Room1" unique_id=244928220]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.31665, 1, -0.354247)
 script = SubResource("GDScript_ruau5")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Room1/TestInteractable"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Room1/TestInteractable" unique_id=1996231902]
 mesh = SubResource("CylinderMesh_o6tti")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Room1/TestInteractable"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Room1/TestInteractable" unique_id=1503256531]
 shape = SubResource("CylinderShape3D_ruau5")
 
-[node name="InteractableTrigger" parent="Room1/TestInteractable" instance=ExtResource("4_ruau5")]
+[node name="InteractableTrigger" parent="Room1/TestInteractable" unique_id=712777453 instance=ExtResource("4_ruau5")]
 
 [node name="TriggerArea" parent="Room1/TestInteractable/InteractableTrigger" index="0"]
 shape = SubResource("CylinderShape3D_bkhp6")
 
-[node name="Teleporter" parent="Room1" instance=ExtResource("6_ilnn3")]
+[node name="Teleporter" parent="Room1" unique_id=979288460 instance=ExtResource("6_ilnn3")]
 
 [node name="TeleporterTarget" parent="Room1/Teleporter" index="4"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00273311, 0.7, -14.9999)
 
-[node name="Room2" type="Node3D" parent="."]
+[node name="Room2" type="Node3D" parent="." unique_id=1219856222]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -15)
 
-[node name="Floor" type="StaticBody3D" parent="Room2"]
+[node name="Floor" type="StaticBody3D" parent="Room2" unique_id=441324132]
 metadata/_edit_group_ = true
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Room2/Floor"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Room2/Floor" unique_id=1447950999]
 mesh = SubResource("PlaneMesh_nfegs")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Room2/Floor"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Room2/Floor" unique_id=2136444605]
 shape = SubResource("BoxShape3D_rupst")
 
-[node name="Wall" type="CSGBox3D" parent="Room2"]
+[node name="Wall" type="CSGBox3D" parent="Room2" unique_id=534059441]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 7.25)
 use_collision = true
 size = Vector3(15, 5, 0.5)
 material = SubResource("StandardMaterial3D_nfegs")
 
-[node name="CSGBox3D" type="CSGBox3D" parent="Room2/Wall"]
+[node name="CSGBox3D" type="CSGBox3D" parent="Room2/Wall" unique_id=1461536445]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.5, 0)
 operation = 2
 size = Vector3(3, 2, 1)
 
-[node name="DoubleDoors" type="Node3D" parent="Room2"]
+[node name="DoubleDoors" type="Node3D" parent="Room2" unique_id=382128807]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 7.25)
 script = SubResource("GDScript_bkhp6")
 
-[node name="Door1" type="CSGBox3D" parent="Room2/DoubleDoors"]
+[node name="Door1" type="CSGBox3D" parent="Room2/DoubleDoors" unique_id=2116394653]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.75, 1, 0)
 use_collision = true
 size = Vector3(1.5, 2, 0.2)
 material = SubResource("StandardMaterial3D_bkhp6")
 
-[node name="Door2" type="CSGBox3D" parent="Room2/DoubleDoors"]
+[node name="Door2" type="CSGBox3D" parent="Room2/DoubleDoors" unique_id=1794937221]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.75, 1, 0)
 use_collision = true
 size = Vector3(1.5, 2, 0.2)
 material = SubResource("StandardMaterial3D_bkhp6")
 
-[node name="DoorButtonStand" type="CSGBox3D" parent="Room2/DoubleDoors"]
+[node name="DoorButtonStand" type="CSGBox3D" parent="Room2/DoubleDoors" unique_id=288969832]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.8, 1, -0.275)
 use_collision = true
 size = Vector3(0.2, 0.25, 0.05)
 material = SubResource("StandardMaterial3D_ilnn3")
 
-[node name="DoorButton" type="CSGSphere3D" parent="Room2/DoubleDoors/DoorButtonStand"]
+[node name="DoorButton" type="CSGSphere3D" parent="Room2/DoubleDoors/DoorButtonStand" unique_id=1850047317]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.02)
 radius = 0.05
 rings = 12
 material = SubResource("StandardMaterial3D_5wu1j")
 
-[node name="DoorButtonStand2" type="CSGBox3D" parent="Room2/DoubleDoors"]
+[node name="DoorButtonStand2" type="CSGBox3D" parent="Room2/DoubleDoors" unique_id=1093991125]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.8, 1, 0.275)
 use_collision = true
 size = Vector3(0.2, 0.25, 0.05)
 material = SubResource("StandardMaterial3D_ilnn3")
 
-[node name="DoorButton" type="CSGSphere3D" parent="Room2/DoubleDoors/DoorButtonStand2"]
+[node name="DoorButton" type="CSGSphere3D" parent="Room2/DoubleDoors/DoorButtonStand2" unique_id=363687546]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.02)
 radius = 0.05
 rings = 12
 material = SubResource("StandardMaterial3D_5wu1j")
 
-[node name="InteractableTrigger" parent="Room2/DoubleDoors" instance=ExtResource("4_ruau5")]
+[node name="InteractableTrigger" parent="Room2/DoubleDoors" unique_id=430452826 instance=ExtResource("4_ruau5")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.8, 1, 0.275)
 
 [node name="TriggerArea" parent="Room2/DoubleDoors/InteractableTrigger" index="0"]
 shape = SubResource("BoxShape3D_ilnn3")
 
-[node name="InteractableTrigger2" parent="Room2/DoubleDoors" instance=ExtResource("4_ruau5")]
+[node name="InteractableTrigger2" parent="Room2/DoubleDoors" unique_id=1202843186 instance=ExtResource("4_ruau5")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.8, 1, -0.275)
 
 [node name="TriggerArea" parent="Room2/DoubleDoors/InteractableTrigger2" index="0"]
 shape = SubResource("BoxShape3D_bkhp6")
 
-[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="Room2/DoubleDoors" groups=["Synchronizers"]]
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="Room2/DoubleDoors" unique_id=1816796720 groups=["Synchronizers"]]
 replication_config = SubResource("SceneReplicationConfig_bkhp6")
 public_visibility = false
 
-[node name="TestEffectSetter" type="CSGBox3D" parent="Room2"]
+[node name="TestEffectSetter" type="CSGBox3D" parent="Room2" unique_id=763904426]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0.025, -6)
 size = Vector3(2, 0.05, 2)
 material = SubResource("StandardMaterial3D_ac2je")
 
-[node name="Trigger" type="Area3D" parent="Room2/TestEffectSetter"]
+[node name="Trigger" type="Area3D" parent="Room2/TestEffectSetter" unique_id=567784162]
 collision_layer = 0
 collision_mask = 4
 script = SubResource("GDScript_35kbn")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Room2/TestEffectSetter/Trigger"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Room2/TestEffectSetter/Trigger" unique_id=1286749023]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
 shape = SubResource("BoxShape3D_4y8jm")
 
-[node name="TestEffectRemover" type="CSGBox3D" parent="Room2"]
+[node name="TestEffectRemover" type="CSGBox3D" parent="Room2" unique_id=1189904924]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0.025, -6)
 size = Vector3(2, 0.05, 2)
 material = SubResource("StandardMaterial3D_35kbn")
 
-[node name="Area3D" type="Area3D" parent="Room2/TestEffectRemover"]
+[node name="Area3D" type="Area3D" parent="Room2/TestEffectRemover" unique_id=2049759558]
 collision_layer = 0
 collision_mask = 4
 script = SubResource("GDScript_4y8jm")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Room2/TestEffectRemover/Area3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Room2/TestEffectRemover/Area3D" unique_id=933357673]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 shape = SubResource("BoxShape3D_7h8id")
 
-[node name="AccMoveSpeedEffectSetter" type="CSGBox3D" parent="Room2"]
+[node name="AccMoveSpeedEffectSetter" type="CSGBox3D" parent="Room2" unique_id=2146860161]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 7, 0.5, 6)
 material = SubResource("StandardMaterial3D_ndv58")
 script = SubResource("GDScript_o71dx")
 prompt_message = "Press [{str}] to gain Accelerating Move Speed effect"
 
-[node name="InteractableTrigger" parent="Room2/AccMoveSpeedEffectSetter" instance=ExtResource("4_ruau5")]
+[node name="InteractableTrigger" parent="Room2/AccMoveSpeedEffectSetter" unique_id=997477107 instance=ExtResource("4_ruau5")]
 
 [node name="TriggerArea" parent="Room2/AccMoveSpeedEffectSetter/InteractableTrigger" index="0"]
 shape = SubResource("BoxShape3D_x0fsn")
@@ -518,13 +518,13 @@ shape = SubResource("BoxShape3D_x0fsn")
 [node name="InteractablePopup" parent="Room2/AccMoveSpeedEffectSetter/InteractableTrigger" index="1"]
 transform = Transform3D(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.5, 0)
 
-[node name="BonusJumoHeightEffectSetter" type="CSGBox3D" parent="Room2"]
+[node name="BonusJumoHeightEffectSetter" type="CSGBox3D" parent="Room2" unique_id=635559939]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 7, 0.5, 4)
 material = SubResource("StandardMaterial3D_o71dx")
 script = SubResource("GDScript_x0fsn")
 prompt_message = "Press [{str}] to gain Bonus Jump Height effect"
 
-[node name="InteractableTrigger" parent="Room2/BonusJumoHeightEffectSetter" instance=ExtResource("4_ruau5")]
+[node name="InteractableTrigger" parent="Room2/BonusJumoHeightEffectSetter" unique_id=368790882 instance=ExtResource("4_ruau5")]
 
 [node name="TriggerArea" parent="Room2/BonusJumoHeightEffectSetter/InteractableTrigger" index="0"]
 shape = SubResource("BoxShape3D_eyhu8")
@@ -532,13 +532,13 @@ shape = SubResource("BoxShape3D_eyhu8")
 [node name="InteractablePopup" parent="Room2/BonusJumoHeightEffectSetter/InteractableTrigger" index="1"]
 transform = Transform3D(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.5, 0)
 
-[node name="PassiveHealthRegenerationEffectSetter" type="CSGBox3D" parent="Room2"]
+[node name="PassiveHealthRegenerationEffectSetter" type="CSGBox3D" parent="Room2" unique_id=2024350207]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 7, 0.5, 2)
 material = SubResource("StandardMaterial3D_x0fsn")
 script = SubResource("GDScript_eyhu8")
 prompt_message = "Press [{str}] to gain Passive Health Regeneration effect"
 
-[node name="InteractableTrigger" parent="Room2/PassiveHealthRegenerationEffectSetter" instance=ExtResource("4_ruau5")]
+[node name="InteractableTrigger" parent="Room2/PassiveHealthRegenerationEffectSetter" unique_id=1593931874 instance=ExtResource("4_ruau5")]
 
 [node name="TriggerArea" parent="Room2/PassiveHealthRegenerationEffectSetter/InteractableTrigger" index="0"]
 shape = SubResource("BoxShape3D_4vqsl")
@@ -546,76 +546,76 @@ shape = SubResource("BoxShape3D_4vqsl")
 [node name="InteractablePopup" parent="Room2/PassiveHealthRegenerationEffectSetter/InteractableTrigger" index="1"]
 transform = Transform3D(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.5, 0)
 
-[node name="Wall2" type="StaticBody3D" parent="Room2"]
+[node name="Wall2" type="StaticBody3D" parent="Room2" unique_id=939007721]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, -7.5)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Room2/Wall2"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Room2/Wall2" unique_id=180553805]
 mesh = SubResource("QuadMesh_4vqsl")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Room2/Wall2"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Room2/Wall2" unique_id=714299742]
 shape = SubResource("BoxShape3D_p2lxx")
 
-[node name="Wall3" type="StaticBody3D" parent="Room2"]
+[node name="Wall3" type="StaticBody3D" parent="Room2" unique_id=1663839092]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 7.5, 2.5, 0)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Room2/Wall3"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Room2/Wall3" unique_id=2033101452]
 mesh = SubResource("QuadMesh_4vqsl")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Room2/Wall3"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Room2/Wall3" unique_id=2090732566]
 shape = SubResource("BoxShape3D_p2lxx")
 
-[node name="Wall4" type="StaticBody3D" parent="Room2"]
+[node name="Wall4" type="StaticBody3D" parent="Room2" unique_id=1355099007]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -7.5, 2.5, 0)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Room2/Wall4"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Room2/Wall4" unique_id=1486605676]
 mesh = SubResource("QuadMesh_4vqsl")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Room2/Wall4"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Room2/Wall4" unique_id=1667169669]
 shape = SubResource("BoxShape3D_p2lxx")
 
-[node name="Room3" type="Node3D" parent="."]
+[node name="Room3" type="Node3D" parent="." unique_id=1995598507]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 15)
 
-[node name="Floor" type="StaticBody3D" parent="Room3"]
+[node name="Floor" type="StaticBody3D" parent="Room3" unique_id=522538613]
 metadata/_edit_group_ = true
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Room3/Floor"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Room3/Floor" unique_id=2108983996]
 mesh = SubResource("PlaneMesh_rwvch")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Room3/Floor"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Room3/Floor" unique_id=147413983]
 shape = SubResource("BoxShape3D_rupst")
 
-[node name="Wall" type="StaticBody3D" parent="Room3"]
+[node name="Wall" type="StaticBody3D" parent="Room3" unique_id=1228273663]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 7.5)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Room3/Wall"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Room3/Wall" unique_id=469365423]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, 0)
 mesh = SubResource("QuadMesh_k3nho")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Room3/Wall"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Room3/Wall" unique_id=762483910]
 shape = SubResource("BoxShape3D_ndv58")
 
-[node name="Wall2" type="StaticBody3D" parent="Room3"]
+[node name="Wall2" type="StaticBody3D" parent="Room3" unique_id=1374122817]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 7.5, 2.5, 0)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Room3/Wall2"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Room3/Wall2" unique_id=1684141156]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, 0)
 mesh = SubResource("QuadMesh_k3nho")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Room3/Wall2"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Room3/Wall2" unique_id=1475278670]
 shape = SubResource("BoxShape3D_ndv58")
 
-[node name="Wall3" type="StaticBody3D" parent="Room3"]
+[node name="Wall3" type="StaticBody3D" parent="Room3" unique_id=2103881699]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -7.5, 2.5, 0)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Room3/Wall3"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Room3/Wall3" unique_id=2140416727]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, 0)
 mesh = SubResource("QuadMesh_k3nho")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Room3/Wall3"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Room3/Wall3" unique_id=1848892282]
 shape = SubResource("BoxShape3D_ndv58")
 
-[node name="TestHealInteractable" type="CSGBox3D" parent="Room3"]
+[node name="TestHealInteractable" type="CSGBox3D" parent="Room3" unique_id=117078411]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 7.375, 1.5, -7)
 cast_shadow = 0
 size = Vector3(0.5, 0.5, 0.25)
@@ -623,13 +623,13 @@ material = SubResource("StandardMaterial3D_rwvch")
 script = SubResource("GDScript_pir2p")
 prompt_message = "Press [{str}] to heal"
 
-[node name="InteractableTrigger" parent="Room3/TestHealInteractable" instance=ExtResource("4_ruau5")]
+[node name="InteractableTrigger" parent="Room3/TestHealInteractable" unique_id=1686488409 instance=ExtResource("4_ruau5")]
 
 [node name="TriggerArea" parent="Room3/TestHealInteractable/InteractableTrigger" index="0"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.025)
 shape = SubResource("BoxShape3D_iapem")
 
-[node name="TestDamageInteractable" type="CSGBox3D" parent="Room3"]
+[node name="TestDamageInteractable" type="CSGBox3D" parent="Room3" unique_id=613096810]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 7.375, 1.5, -6)
 cast_shadow = 0
 size = Vector3(0.5, 0.5, 0.25)
@@ -637,19 +637,19 @@ material = SubResource("StandardMaterial3D_k3nho")
 script = SubResource("GDScript_nfegs")
 prompt_message = "Press [{str}] to take damage"
 
-[node name="InteractableTrigger" parent="Room3/TestDamageInteractable" instance=ExtResource("4_ruau5")]
+[node name="InteractableTrigger" parent="Room3/TestDamageInteractable" unique_id=1660000442 instance=ExtResource("4_ruau5")]
 
 [node name="TriggerArea" parent="Room3/TestDamageInteractable/InteractableTrigger" index="0"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.025)
 shape = SubResource("BoxShape3D_rwvch")
 
-[node name="PlayersSpawnPoint" type="Marker3D" parent="."]
+[node name="PlayersSpawnPoint" type="Marker3D" parent="." unique_id=47356096]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 3)
 
-[node name="OutOfBoundsTriggerKill" parent="." instance=ExtResource("14_rwvch")]
+[node name="OutOfBoundsTriggerKill" parent="." unique_id=879447888 instance=ExtResource("14_rwvch")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -25, 0)
 
-[node name="TestEnemy" parent="." instance=ExtResource("14_iapem")]
+[node name="TestEnemy" parent="." unique_id=1711109551 instance=ExtResource("14_iapem")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.6377335, -18.385002)
 
 [editable path="Room1/TestInteractable/InteractableTrigger"]
