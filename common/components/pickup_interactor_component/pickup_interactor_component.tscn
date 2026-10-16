@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://be3w3bpk5d33b"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_lk524"]
+
+[node name="PickupInteractorComponent" type="Node" unique_id=1769020240]
+
+[node name="Area3D" type="Area3D" parent="." unique_id=1745120604]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D" unique_id=106260627]
+shape = SubResource("SphereShape3D_lk524")
+
+[node name="Marker3D" type="Marker3D" parent="." unique_id=1271263451]
+gizmo_extents = 0.0
