@@ -1,8 +1,11 @@
 [gd_scene format=3 uid="uid://be3w3bpk5d33b"]
 
+[ext_resource type="Script" uid="uid://bjs3oqx0fu53r" path="res://common/components/pickup_interactor_component/pickup_interactor_component.gd" id="1_x1rie"]
+
 [sub_resource type="SphereShape3D" id="SphereShape3D_lk524"]
 
-[node name="PickupInteractorComponent" type="Node" unique_id=1769020240]
+[node name="PickupInteractorComponent" type="Node3D" unique_id=849904632]
+script = ExtResource("1_x1rie")
 
 [node name="Area3D" type="Area3D" parent="." unique_id=1745120604]
 

@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://dmgtd4kr3b0wd" path="res://entities/interactables/color_changer/color_changer.tscn" id="3_bkhp6"]
 [ext_resource type="PackedScene" uid="uid://dbwe4mpgrbf1o" path="res://common/interactable/trigger/interactable_trigger.tscn" id="4_ruau5"]
 [ext_resource type="PackedScene" uid="uid://cj72bmdxu2h7b" path="res://entities/interactables/teleporter/teleporter.tscn" id="6_ilnn3"]
+[ext_resource type="PackedScene" uid="uid://c6hhrwcpqprlj" path="res://entities/interactables/barrel/Barrel.tscn" id="7_pir2p"]
 [ext_resource type="Texture2D" uid="uid://c6l4gm0v03vwf" path="res://assets/textures/prototype/dev_texture-gray.png" id="8_ac2je"]
 [ext_resource type="Texture2D" uid="uid://1jdonkbwwchk" path="res://assets/textures/prototype/dev_texture-orange.png" id="10_iapem"]
 [ext_resource type="Texture2D" uid="uid://cpu5muw1x3aky" path="res://assets/textures/prototype/dev_texture-white.png" id="11_7h8id"]
@@ -397,6 +398,9 @@ shape = SubResource("CylinderShape3D_bkhp6")
 [node name="TeleporterTarget" parent="Room1/Teleporter" index="4"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00273311, 0.7, -14.9999)
 
+[node name="Barrel" parent="Room1" unique_id=739436326 instance=ExtResource("7_pir2p")]
+transform = Transform3D(0.7477517, -0.6639784, 0, 0.6639784, 0.7477517, 0, 0, 0, 1, 5.2417865, 1.6502006, 2.3260078)
+
 [node name="Room2" type="Node3D" parent="." unique_id=1219856222]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -15)
 
@@ -655,6 +659,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.6377335, -18.385002)
 [editable path="Room1/TestInteractable/InteractableTrigger"]
 [editable path="Room1/Teleporter"]
 [editable path="Room1/Teleporter/InteractableTrigger"]
+[editable path="Room1/Barrel"]
+[editable path="Room1/Barrel/InteractableTrigger"]
 [editable path="Room2/DoubleDoors/InteractableTrigger"]
 [editable path="Room2/DoubleDoors/InteractableTrigger2"]
 [editable path="Room2/AccMoveSpeedEffectSetter/InteractableTrigger"]

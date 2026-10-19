@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://dnbdbyvhguoy4" path="res://common/components/health_component/health_component.tscn" id="3_xn0r5"]
 [ext_resource type="PackedScene" uid="uid://6t61x1sq0h34" path="res://entities/character/stats_synchronizer/stats_synchronizer.tscn" id="4_l75fg"]
 [ext_resource type="PackedScene" uid="uid://p5q0jtydp1wl" path="res://ui/player_hud/health_display/health_display.tscn" id="6_l75fg"]
+[ext_resource type="PackedScene" uid="uid://be3w3bpk5d33b" path="res://common/components/pickup_interactor_component/pickup_interactor_component.tscn" id="7_vwd7k"]
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_0c2ax"]
 properties/0/path = NodePath(".:position")
@@ -134,3 +135,5 @@ layout_mode = 2
 
 [node name="HealthDisplay" parent="Hud" unique_id=2007832954 node_paths=PackedStringArray("health_component") instance=ExtResource("6_l75fg")]
 health_component = NodePath("../../HealthComponent")
+
+[node name="PickupInteractorComponent" parent="." unique_id=1769020240 instance=ExtResource("7_vwd7k")]

@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://3hwkvbdom1yy"]
+
+[ext_resource type="Script" uid="uid://dkxqpfaymjniq" path="res://common/components/pickup_component/pickup_component.gd" id="1_swntl"]
+
+[node name="PickupComponent" type="Node3D" unique_id=1031260334]
+script = ExtResource("1_swntl")
+drop_offset = Vector3(5, 0, -2)
